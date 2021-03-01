@@ -10,6 +10,7 @@ This project is still early and parts of it are being ported over from earlier p
 
 ### 3D Engine
 * Marvel_d3d11 - Directx 11 3D Engine
+* Marvel_opengl - OpenGL 3D Engine
 
 ## Building
 ### Windows
