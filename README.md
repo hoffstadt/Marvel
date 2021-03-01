@@ -1,5 +1,5 @@
 ## Hello Triangle
-Single file examples of creating a triangle with various graphics APIs. This were collected and modified from various sources as a starting point.
+Single file examples of creating a triangle with various graphics APIs. These were collected and modified from various sources as a starting point.
 
 ## Building
 ### Windows
