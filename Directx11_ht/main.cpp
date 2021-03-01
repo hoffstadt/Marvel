@@ -63,7 +63,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
 
         hwnd = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
             winClass.lpszClassName,
-            L"02. Drawing a Triangle",
+            L"Hello Triangle - Directx11",
             WS_OVERLAPPEDWINDOW | WS_VISIBLE,
             CW_USEDEFAULT, CW_USEDEFAULT,
             initialWidth,
@@ -250,9 +250,9 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     UINT offset;
     {
         float vertexData[] = { // x, y, r, g, b, a
-            0.0f,  0.5f, 0.f, 1.f, 0.f, 1.f,
-            0.5f, -0.5f, 1.f, 0.f, 0.f, 1.f,
-            -0.5f, -0.5f, 0.f, 0.f, 1.f, 1.f
+            0.0f,  0.5f, 1.f, 1.f, 1.f, 1.f,
+            0.5f, -0.5f, 1.f, 1.f, 1.f, 1.f,
+            -0.5f, -0.5f, 1.f, 1.f, 1.f, 1.f
         };
         stride = 6 * sizeof(float);
         numVerts = sizeof(vertexData) / stride;
@@ -302,7 +302,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
             global_windowDidResize = false;
         }
 
-        FLOAT backgroundColor[4] = { 0.1f, 0.2f, 0.6f, 1.0f };
+        FLOAT backgroundColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
         d3d11DeviceContext->ClearRenderTargetView(d3d11FrameBufferView, backgroundColor);
 
         RECT winRect;

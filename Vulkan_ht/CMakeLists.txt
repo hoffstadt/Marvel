@@ -14,7 +14,7 @@ target_sources(vulkan_ht
 target_include_directories(vulkan_ht
 
 	PRIVATE
-	    "C:/VulkanSDK/1.2.170.0/Include"
+	    "$ENV{VK_SDK_PATH}/Include"
 		"../Dependencies/glfw/include/"
 		"../Dependencies/glm/"
 )
@@ -23,7 +23,7 @@ target_link_directories(vulkan_ht
 
 	PRIVATE
 
-		"C:/VulkanSDK/1.2.170.0/Lib"
+		"$ENV{VK_SDK_PATH}/Lib"
 
 )
 
@@ -33,5 +33,4 @@ target_link_libraries(vulkan_ht
 
 		vulkan-1
 		glfw
-
 )
