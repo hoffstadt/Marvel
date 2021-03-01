@@ -7,6 +7,7 @@ set(GLFW_BUILD_DOCS OFF)
 add_definitions(-D_USE_MATH_DEFINES)
 
 add_subdirectory ("Marvel_d3d11")
+add_subdirectory ("Marvel_opengl")
 add_subdirectory ("Directx11_ht")
 add_subdirectory ("Vulkan_ht")
 add_subdirectory ("OpenGL_ht")

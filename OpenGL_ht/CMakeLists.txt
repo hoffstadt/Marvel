@@ -21,14 +21,6 @@ target_include_directories(opengl_ht
 		"../Dependencies/glm/"
 )
 
-target_link_directories(opengl_ht
-
-	PRIVATE
-
-		"C:/VulkanSDK/1.2.170.0/Lib"
-
-)
-
 target_link_libraries(opengl_ht
 
 	PRIVATE
