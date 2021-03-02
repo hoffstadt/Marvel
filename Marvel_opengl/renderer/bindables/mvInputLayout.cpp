@@ -3,7 +3,7 @@
 
 namespace Marvel {
 
-	mvInputLayout::mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvShader& shader)
+	mvInputLayout::mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout)
 		:
 		m_layout(std::move(vertexLayout))
 	{
@@ -11,6 +11,11 @@ namespace Marvel {
 		glGenVertexArrays(1, &m_vao);
 		glBindVertexArray(m_vao);
 
+
+	}
+
+	void mvInputLayout::init(mvShader& shader)
+	{
 		int offset = 0;
 		for (size_t i = 0; i < m_layout.GetElementCount(); i++)
 		{
@@ -18,7 +23,7 @@ namespace Marvel {
 
 			glEnableVertexAttribArray(i);
 
-			glVertexAttribPointer(i, element.GetItemCount(), element.GetGLType(), element.Normalized(), 
+			glVertexAttribPointer(i, element.GetItemCount(), element.GetGLType(), element.Normalized(),
 				mvVertexElement::SizeOf(element.GetType()), (void*)offset);
 
 			glBindAttribLocation(shader.getProgram(), i, element.GetSemantic());
@@ -26,13 +31,16 @@ namespace Marvel {
 			offset += mvVertexElement::SizeOf(element.GetType());
 
 		}
-
-
 	}
 
 	void mvInputLayout::bind(mvGraphics& graphics)
 	{
 		glBindVertexArray(m_vao);
+	}
+
+	void mvInputLayout::unbind(mvGraphics& graphics)
+	{
+		glBindVertexArray(0);
 	}
 
 }

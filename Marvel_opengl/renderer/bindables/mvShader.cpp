@@ -66,7 +66,7 @@ namespace Marvel {
 		glDeleteShader(vs);
 		glDeleteShader(fs);
 
-		glUseProgram(m_program);
+		glUseProgram(0);
 
 	}
 

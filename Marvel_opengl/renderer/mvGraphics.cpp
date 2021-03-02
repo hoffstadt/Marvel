@@ -22,5 +22,10 @@ namespace Marvel {
 		glfwSwapBuffers(m_handle);
 
 	}
+
+	void mvGraphics::drawIndexed(int count)
+	{
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
+	}
 	
 }

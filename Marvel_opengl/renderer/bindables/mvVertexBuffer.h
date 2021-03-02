@@ -10,9 +10,10 @@ namespace Marvel
 
 	public:
 
-		mvVertexBuffer(mvGraphics& gfx, const mvDynamicVertexBuffer& vbuf);
+		mvVertexBuffer(mvGraphics& graphics, const mvDynamicVertexBuffer& vbuf);
 
-		void bind(mvGraphics& gfx) override;
+		void bind(mvGraphics& graphics) override;
+		void unbind(mvGraphics& graphics) override;
 
 	private:
 

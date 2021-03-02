@@ -13,6 +13,8 @@ namespace Marvel {
 
 		void swapBuffers();
 
+		void drawIndexed(int count);
+
 	private:
 
 		GLFWwindow* m_handle;

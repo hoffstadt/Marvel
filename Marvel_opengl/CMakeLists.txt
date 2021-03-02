@@ -13,10 +13,14 @@ target_sources(marvel_opengl
 		"core/mvWindow.cpp"
 		"renderer/mvGraphics.cpp"
 		"renderer/mvVertexLayout.cpp"
+
 		"renderer/bindables/mvShader.cpp"
 		"renderer/bindables/mvIndexBuffer.cpp"
 		"renderer/bindables/mvVertexBuffer.cpp"
 		"renderer/bindables/mvInputLayout.cpp"
+		
+		"renderer/drawables/mvDrawable.cpp"
+		"renderer/drawables/mvQuad.cpp"
 
 		"../Dependencies/imgui/examples/libs/gl3w/GL/gl3w.c"
 
@@ -25,9 +29,12 @@ target_sources(marvel_opengl
 target_include_directories(marvel_opengl
 
 	PRIVATE
+
 		"core/"
 		"renderer/"
 		"renderer/bindables"
+		"renderer/drawables"
+
 		"../Dependencies/imgui/examples/libs/gl3w/"
 		"../Dependencies/glfw/include/"
 		"../Dependencies/glm/"
