@@ -6,6 +6,7 @@
 #include "mvGraphics.h"
 
 #include "mvQuad.h"
+#include "mvUniform.h"
 
 using namespace Marvel;
 
@@ -18,6 +19,8 @@ int main(void)
 
 	auto quad = mvQuad(graphics);
 
+	auto uniform = mvUniformVector(graphics, std::array{ 0.0f, 1.0f, 0.0f, 1.0f }, 4);
+
 	/* Loop until the user closes the window */
 	while (window.isRunning())
 	{
@@ -25,6 +28,12 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_CULL_FACE);
 
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		uniform.update(std::array{ 0.0f, greenValue, 0.0f, 1.0f });
+
+		quad.bind(graphics);
+		uniform.bind(graphics);
 		quad.draw(graphics);
 
 		graphics.swapBuffers();

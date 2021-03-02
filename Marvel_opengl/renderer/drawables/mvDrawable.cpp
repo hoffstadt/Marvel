@@ -31,7 +31,7 @@ namespace Marvel {
 
 	void mvDrawable::draw(mvGraphics& graphics) const
 	{
-		bind(graphics);
+		//bind(graphics);
 		graphics.drawIndexed(getIndexCount());
 	}
 
