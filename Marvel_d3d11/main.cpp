@@ -17,10 +17,10 @@ int main()
     mvWindow window("Marvel", width, height);
 
     // create graphics
-    mvGraphics graphics(window.getHandle(), width, height);
+    mvGraphics graphics(window.getWin32Handle(), width, height);
 
     // create imgui manager
-    mvImGuiManager imManager(window.getHandle(), graphics);
+    mvImGuiManager imManager(window.getWin32Handle(), graphics);
 
     // Create Vertex Shader
     mvVertexShader vertexShader(graphics, "../../../Marvel_d3d11/shaders/vs_texture.hlsl");
@@ -87,12 +87,8 @@ int main()
     mvPixelConstantBuffer<Constants> pixelConstBuffer(graphics, cbuffer);
 
     // Main Loop
-    bool isRunning = true;
-    while (isRunning)
+    while (window.isRunning())
     {
-        // process all messages pending, but to not block for new messages
-        if (const auto ecode = mvWindow::ProcessMessages())
-            break;
 
         imManager.beginFrame();
 
@@ -122,6 +118,8 @@ int main()
         imManager.endFrame();
 
         graphics.getSwapChain()->Present(1, 0);
+
+        window.processEvents();
     }
 
     return 0;
