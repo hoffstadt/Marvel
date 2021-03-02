@@ -5,6 +5,7 @@
 #include "mvVertexLayout.h"
 #include "mvInputLayout.h"
 #include "mvShader.h"
+#include "mvTransformUniform.h"
 
 namespace Marvel {
 
@@ -43,7 +44,16 @@ namespace Marvel {
 		m_vertexBuffer->unbind(graphics);
 
 		addBindable(graphics, shader);
+		addBindable(graphics, new mvTransformUniform(graphics));
 
+	}
+
+	glm::mat4 mvQuad::getTransform() const
+	{
+		return glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f }) *
+			glm::rotate(m_yangle, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
+			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
+			glm::translate(glm::vec3{ m_x, m_y, m_z });
 	}
 
 	void mvQuad::setPosition(float x, float y, float z)

@@ -27,5 +27,25 @@ namespace Marvel {
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
 	}
+
+	void mvGraphics::setProjection(glm::mat4 proj)
+	{
+		m_projection = proj;
+	}
+
+	void mvGraphics::setCamera(glm::mat4 cam)
+	{
+		m_camera = cam;
+	}
+
+	glm::mat4 mvGraphics::getProjection() const
+	{
+		return m_projection;
+	}
+
+	glm::mat4 mvGraphics::getCamera() const
+	{
+		return m_camera;
+	}
 	
 }

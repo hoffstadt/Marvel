@@ -3,6 +3,10 @@
 #include <array>
 #include <type_traits>
 #include "mvBindable.h"
+#include <GL/gl3w.h>
+#include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp> 
 
 namespace Marvel
 {
@@ -90,20 +94,22 @@ namespace Marvel
 
 		void bind(mvGraphics& graphics) override
 		{
-			if (std::is_same<T, std::array<float, 4>>::value)
-			{
-				glUniformMatrix4fv(m_slot, 1, false, m_data.data());
-			}
+			//if (std::is_same<T, glm::mat4::value)
+			//{
+			//	glUniformMatrix4fv(m_slot, 1, false, &m_data[0][0]);
+			//}
 
-			else if (std::is_same<T, std::array<float, 3>>::value)
-			{
-				glUniformMatrix3fv(m_slot, 1, false, m_data.data());
-			}
+			//else if (std::is_same<T, glm::mat3::value)
+			//{
+			//	glUniformMatrix3fv(m_slot, 1, false, &m_data[0][0]);
+			//}
 
-			else if (std::is_same<T, std::array<float, 2>>::value)
-			{
-				glUniformMatrix2fv(m_slot, 1, false, m_data.data());
-			}
+			//else if (std::is_same<T, glm::mat2::value)
+			//{
+			//	glUniformMatrix2fv(m_slot, 1, false, &m_data[0][0]);
+			//}
+
+			glUniformMatrix4fv(m_slot, 1, false, &m_data[0][0]);
 		}
 
 	};

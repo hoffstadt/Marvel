@@ -1,6 +1,9 @@
 #pragma once
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp> 
 
 namespace Marvel {
 
@@ -15,9 +18,16 @@ namespace Marvel {
 
 		void drawIndexed(int count);
 
+		void setProjection(glm::mat4 proj);
+		void setCamera    (glm::mat4 cam);
+		glm::mat4 getProjection() const;
+		glm::mat4 getCamera() const;
+
 	private:
 
 		GLFWwindow* m_handle;
+		glm::mat4   m_projection;
+		glm::mat4   m_camera;
 
 	};
 

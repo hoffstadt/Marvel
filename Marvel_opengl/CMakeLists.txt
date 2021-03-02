@@ -13,11 +13,14 @@ target_sources(marvel_opengl
 		"core/mvWindow.cpp"
 		"renderer/mvGraphics.cpp"
 		"renderer/mvVertexLayout.cpp"
+		"renderer/mvProjection.cpp"
+		"renderer/mvCamera.cpp"
 
 		"renderer/bindables/mvShader.cpp"
 		"renderer/bindables/mvIndexBuffer.cpp"
 		"renderer/bindables/mvVertexBuffer.cpp"
 		"renderer/bindables/mvInputLayout.cpp"
+		"renderer/bindables/mvTransformUniform.cpp"
 		
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvQuad.cpp"

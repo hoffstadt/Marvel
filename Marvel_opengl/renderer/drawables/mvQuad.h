@@ -18,6 +18,8 @@ namespace Marvel {
 		void setPosition(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 
+		glm::mat4 getTransform() const override;
+
 	private:
 
 		float m_x = 0.0f;

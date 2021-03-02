@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp> 
 
 namespace Marvel {
 
@@ -25,6 +28,8 @@ namespace Marvel {
 		void bind(mvGraphics& graphics) const;
 
 		size_t getIndexCount() const;
+
+		virtual glm::mat4 getTransform() const = 0;
 
 	protected:
 
