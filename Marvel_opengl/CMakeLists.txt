@@ -12,7 +12,11 @@ target_sources(marvel_opengl
 
 		"core/mvWindow.cpp"
 		"renderer/mvGraphics.cpp"
+		"renderer/mvVertexLayout.cpp"
 		"renderer/bindables/mvShader.cpp"
+		"renderer/bindables/mvIndexBuffer.cpp"
+		"renderer/bindables/mvVertexBuffer.cpp"
+		"renderer/bindables/mvInputLayout.cpp"
 
 		"../Dependencies/imgui/examples/libs/gl3w/GL/gl3w.c"
 

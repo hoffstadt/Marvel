@@ -12,7 +12,8 @@ namespace Marvel {
 
 	static void ReadFile(const char* path, std::string& dst)
 	{
-		std::ifstream stream(path);
+		std::string fullpath = "../../../Marvel_opengl/shaders/" + std::string(path);
+		std::ifstream stream(fullpath);
 		if (stream)
 		{
 			std::ostringstream ss;
