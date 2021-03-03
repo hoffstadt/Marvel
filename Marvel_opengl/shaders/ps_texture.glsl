@@ -4,9 +4,9 @@ in vec2 TextureOut;
 
 layout(location = 0) out vec4 color;
 
-layout(location = 0) uniform sampler2D texture1;
+layout(binding = 0) uniform sampler2D texture2;
 
 void main()
 {
-	color = texture(texture1, TextureOut) + vec4(0.3, 0.3, 0.3, 1.0);
+	color = texture(texture2, TextureOut) + vec4(0.3, 0.3, 0.3, 1.0);
 }
