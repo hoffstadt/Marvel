@@ -19,6 +19,7 @@ target_include_directories(opengl_ht
 		"../Dependencies/imgui/examples/libs/gl3w/"
 		"../Dependencies/glfw/include/"
 		"../Dependencies/glm/"
+		"../Dependencies/stb/"
 )
 
 target_link_libraries(opengl_ht

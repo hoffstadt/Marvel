@@ -2,6 +2,7 @@
 #include <vector>
 #include <assert.h>
 #include "mvBindable.h"
+#include <GL/gl3w.h>
 
 namespace Marvel
 {
@@ -19,7 +20,7 @@ namespace Marvel
 
 	private:
 
-		unsigned int m_buffer;
+		GLuint       m_buffer;
 		size_t       m_count = 0;
 
 	};

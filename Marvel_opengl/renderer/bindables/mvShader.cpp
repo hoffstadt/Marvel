@@ -82,6 +82,7 @@ namespace Marvel {
 
 	void mvShader::bind(mvGraphics& graphics)
 	{
+		graphics.setCurrentProgram(m_program);
 		glUseProgram(m_program);
 	}
 

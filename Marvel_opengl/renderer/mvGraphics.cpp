@@ -44,5 +44,15 @@ namespace Marvel {
 	{
 		return m_camera;
 	}
+
+	void mvGraphics::setCurrentProgram(GLuint program)
+	{
+		m_program = program;
+	}
+
+	GLuint mvGraphics::getCurrentProgram() const
+	{
+		return m_program;
+	}
 	
 }

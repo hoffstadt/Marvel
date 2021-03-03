@@ -20,11 +20,11 @@ namespace Marvel {
 			const auto& element = m_layout.ResolveByIndex(i);
 
 			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(i, 2, element.GetGLType(), element.Normalized(),
+				m_layout.Size(), (void*)offset);
 
-			glVertexAttribPointer(i, element.GetItemCount(), element.GetGLType(), element.Normalized(),
-				mvVertexElement::SizeOf(element.GetType()), (void*)offset);
-
-			glBindAttribLocation(shader->getProgram(), i, element.GetSemantic());
+			
+			//glBindAttribLocation(shader->getProgram(), i, element.GetSemantic());
 
 			offset += mvVertexElement::SizeOf(element.GetType());
 

@@ -4,6 +4,7 @@
 #include "mvWindow.h"
 #include "mvGraphics.h"
 #include "mvQuad.h"
+#include "mvTexturedQuad.h"
 #include "mvCamera.h"
 
 using namespace Marvel;
@@ -12,7 +13,8 @@ int width = 640;
 int height = 480;
 auto window = mvWindow("Marvel - OpenGL", width, height);
 auto graphics = mvGraphics(window.getHandle(), width, height);
-auto quad = mvQuad(graphics);
+auto quad = mvTexturedQuad(graphics, "../../../Resources/SpriteMapExample.png");
+auto quad1 = mvQuad(graphics);
 auto camera = mvCamera(graphics);
 bool free_mode = false;
 
@@ -68,7 +70,7 @@ int main(void)
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 
 		camera.bind(graphics);
 
@@ -77,6 +79,9 @@ int main(void)
 
 		quad.bind(graphics);
 		quad.draw(graphics);
+
+		quad1.bind(graphics);
+		quad1.draw(graphics);
 
 		graphics.swapBuffers();
 

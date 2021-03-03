@@ -21,9 +21,11 @@ target_sources(marvel_opengl
 		"renderer/bindables/mvVertexBuffer.cpp"
 		"renderer/bindables/mvInputLayout.cpp"
 		"renderer/bindables/mvTransformUniform.cpp"
+		"renderer/bindables/mvTexture.cpp"
 		
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvQuad.cpp"
+		"renderer/drawables/mvTexturedQuad.cpp"
 
 		"../Dependencies/imgui/examples/libs/gl3w/GL/gl3w.c"
 
@@ -41,6 +43,7 @@ target_include_directories(marvel_opengl
 		"../Dependencies/imgui/examples/libs/gl3w/"
 		"../Dependencies/glfw/include/"
 		"../Dependencies/glm/"
+		"../Dependencies/stb/"
 )
 
 target_link_libraries(marvel_opengl

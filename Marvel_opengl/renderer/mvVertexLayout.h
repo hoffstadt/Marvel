@@ -22,6 +22,7 @@ namespace Marvel {
 	enum class ElementType
 	{
 		Position2D,
+		Texture2D,
 		Count
 	};
 
@@ -84,6 +85,9 @@ namespace Marvel {
 
 			case ElementType::Position2D:
 				return F<ElementType::Position2D>::Exec(std::forward<Args>(args)...);
+
+			case ElementType::Texture2D:
+				return F<ElementType::Texture2D>::Exec(std::forward<Args>(args)...);
 
 			case ElementType::Count:
 				return F<ElementType::Count>::Exec(std::forward<Args>(args)...);
@@ -246,6 +250,15 @@ namespace Marvel {
 		static constexpr int ItemCount = 2;
 		static constexpr bool Normalize = false;
 		static constexpr const char* semantic = "Position";
+	};
+
+	template<> struct mvMap<ElementType::Texture2D>
+	{
+		using SysType = std::array<float, 2>;
+		static constexpr GLenum GlType = GL_FLOAT;
+		static constexpr int ItemCount = 2;
+		static constexpr bool Normalize = false;
+		static constexpr const char* semantic = "Texture";
 	};
 
 	template<> struct mvMap<ElementType::Count>
