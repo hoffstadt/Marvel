@@ -2,15 +2,19 @@
 #include <memory>
 #include "mvBindable.h"
 #include "mvUniform.h"
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include "mvMath.h"
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
+	// forward declarations
+	//-----------------------------------------------------------------------------
 	class mvDrawable;
 	class mvGraphics;
 
+	//-----------------------------------------------------------------------------
+	// mvTransformUniform
+	//-----------------------------------------------------------------------------
 	class mvTransformUniform : public mvBindable
 	{
 
@@ -31,10 +35,10 @@ namespace Marvel {
 
 	private:
 
-		Transforms                 m_transforms;
-		mvUniformMatrix<glm::mat4> m_model;
-		mvUniformMatrix<glm::mat4> m_modelView;
-		mvUniformMatrix<glm::mat4> m_modelViewProj;
+		Transforms                  m_transforms;
+		mvUniform4Matrix<glm::mat4> m_model;
+		mvUniform4Matrix<glm::mat4> m_modelView;
+		mvUniform4Matrix<glm::mat4> m_modelViewProj;
 
 	};
 

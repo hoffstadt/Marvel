@@ -1,9 +1,7 @@
 #pragma once
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include "mvMath.h"
 
 namespace Marvel {
 
@@ -14,14 +12,12 @@ namespace Marvel {
 
 		mvGraphics(GLFWwindow* handle, int width, int height);
 
-		void swapBuffers();
-
-		void drawIndexed(int count);
-
-		void setProjection(glm::mat4 proj);
-		void setCamera    (glm::mat4 cam);
+		void      swapBuffers();
+		void      drawIndexed(int count);
+		void      setProjection(glm::mat4 proj);
+		void      setCamera    (glm::mat4 cam);
 		glm::mat4 getProjection() const;
-		glm::mat4 getCamera() const;
+		glm::mat4 getCamera    () const;
 
 	private:
 

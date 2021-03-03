@@ -3,10 +3,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include "mvGraphics.h"
-
 
 namespace Marvel {
 
@@ -22,9 +20,11 @@ namespace Marvel {
 		}
 	}
 
-	static unsigned int CompileShader(unsigned int type, const std::string& source)
+	static
+		GLuint CompileShader(unsigned int type, const std::string& source)
 	{
-		unsigned int id = glCreateShader(type);
+
+		GLuint id = glCreateShader(type);
 		const char* src = source.c_str();
 		glShaderSource(id, 1, &src, nullptr);
 		glCompileShader(id);
@@ -55,8 +55,8 @@ namespace Marvel {
 		ReadFile(ps_path, FragmentSource);
 
 		m_program = glCreateProgram();
-		unsigned int vs = CompileShader(GL_VERTEX_SHADER, VertexSource);
-		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, FragmentSource);
+		GLuint vs = CompileShader(GL_VERTEX_SHADER, VertexSource);
+		GLuint fs = CompileShader(GL_FRAGMENT_SHADER, FragmentSource);
 
 		glAttachShader(m_program, vs);
 		glAttachShader(m_program, fs);
@@ -68,6 +68,11 @@ namespace Marvel {
 
 		glUseProgram(0);
 
+	}
+
+	GLuint mvShader::getProgram() const 
+	{ 
+		return m_program; 
 	}
 
 	mvShader::~mvShader()

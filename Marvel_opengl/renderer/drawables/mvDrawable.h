@@ -1,42 +1,41 @@
 #pragma once
 #include <vector>
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include <memory>
+#include "mvMath.h"
+#include "mvIndexBuffer.h"
+#include "mvVertexBuffer.h"
+#include "mvInputLayout.h"
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
 	// forward declarations
-	class mvIndexBuffer;
-	class mvVertexBuffer;
-	class mvInputLayout;
+	//-----------------------------------------------------------------------------
 	class mvBindable;
 	class mvGraphics;
 
+	//-----------------------------------------------------------------------------
+	// mvDrawable
+	//-----------------------------------------------------------------------------
 	class mvDrawable
 	{
 
 	public:
 
-		mvDrawable() = default;
-		virtual ~mvDrawable();
+		virtual void      draw         (mvGraphics& graphics) const;
+		virtual glm::mat4 getTransform () const = 0;
 
-		virtual void draw(mvGraphics& graphics) const;
-
-		void addBindable(mvGraphics& graphics, mvBindable* bindable);
-
-		void bind(mvGraphics& graphics) const;
-
-		size_t getIndexCount() const;
-
-		virtual glm::mat4 getTransform() const = 0;
+		void              addBindable  (mvGraphics& graphics, std::shared_ptr<mvBindable> bindable);
+		void              bind         (mvGraphics& graphics) const;
+		size_t            getIndexCount() const;
+		
 
 	protected:
 
-		mvIndexBuffer*           m_indexBuffer;
-		mvVertexBuffer*          m_vertexBuffer;
-		mvInputLayout*           m_layout; // for vao
-		std::vector<mvBindable*> m_bindables;
+		std::unique_ptr<mvIndexBuffer>           m_indexBuffer;
+		std::unique_ptr<mvVertexBuffer>          m_vertexBuffer;
+		std::unique_ptr<mvInputLayout>           m_layout; // for vao
+		std::vector<std::shared_ptr<mvBindable>> m_bindables;
 
 	};
 

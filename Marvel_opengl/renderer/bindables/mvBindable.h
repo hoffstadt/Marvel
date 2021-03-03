@@ -16,10 +16,13 @@ namespace Marvel {
 
     public:
 
-        virtual void bind(mvGraphics& graphics) = 0;
-        virtual void unbind(mvGraphics& graphics) {};
+        virtual void bind  (mvGraphics& graphics) = 0;
+        virtual void unbind(mvGraphics& graphics) {}; // necessary for vbo and ido
 
-        void setParent(const mvDrawable* parent) { m_parent = parent; }
+        void setParent(const mvDrawable* parent) 
+        {
+            m_parent = parent; 
+        }
 
     protected:
 

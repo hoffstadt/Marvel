@@ -1,5 +1,6 @@
 #pragma once
 #include "mvBindable.h"
+#include <GL/gl3w.h>
 
 namespace Marvel {
 
@@ -11,13 +12,13 @@ namespace Marvel {
 		mvShader(mvGraphics& graphics, const char* vs_path, const char* ps_path);
 		~mvShader();
 
-		unsigned int getProgram() const { return m_program; }
-
 		void bind(mvGraphics& graphics) override;
+
+		GLuint getProgram() const;
 
 	private:
 
-		unsigned int m_program;
+		GLuint m_program;
 
 	};
 

@@ -6,9 +6,9 @@ namespace Marvel {
 
 	mvTransformUniform::mvTransformUniform(mvGraphics& graphics)
 		:
-		m_model(mvUniformMatrix<glm::mat4>(graphics, m_transforms.model, 20)),
-		m_modelView(mvUniformMatrix<glm::mat4>(graphics, m_transforms.modelView, 40)),
-		m_modelViewProj(mvUniformMatrix<glm::mat4>(graphics, m_transforms.modelViewProj, 60))
+		m_model(mvUniform4Matrix<glm::mat4>(graphics, m_transforms.model, 20)),
+		m_modelView(mvUniform4Matrix<glm::mat4>(graphics, m_transforms.modelView, 40)),
+		m_modelViewProj(mvUniform4Matrix<glm::mat4>(graphics, m_transforms.modelViewProj, 60))
 	{
 
 	}

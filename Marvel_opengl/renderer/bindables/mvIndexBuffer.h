@@ -12,8 +12,9 @@ namespace Marvel
 
 		mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned short>& indices);
 
-		void bind(mvGraphics& graphics) override;
+		void bind  (mvGraphics& graphics) override;
 		void unbind(mvGraphics& graphics) override;
+		
 		size_t getCount() const;
 
 	private:

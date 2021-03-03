@@ -14,9 +14,14 @@ namespace Marvel {
 
 		mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout);
 
-		void init(mvShader& shader);
-		void bind(mvGraphics& graphics) override;
+		void bind  (mvGraphics& graphics) override;
 		void unbind(mvGraphics& graphics) override;
+
+		// binds attributes to the vertex array object,
+		// this is necessary to first bind the vertex
+		// buffer and index buffer AFTER binding the
+		// vao
+		void init(mvShader* shader);
 
 	private:
 

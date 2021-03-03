@@ -22,29 +22,28 @@ namespace Marvel {
 		dvertexBuffer.EmplaceBack(std::array{  0.5f, -0.5f });
 		dvertexBuffer.EmplaceBack(std::array{ -0.5f, -0.5f });
 
-
-		auto shader = new mvShader(graphics, "vs_simple.glsl", "ps_simple.glsl");
+		auto shader = std::make_shared<mvShader>(graphics, "vs_simple.glsl", "ps_simple.glsl");
 
 		// create input layout
-		m_layout = new mvInputLayout(graphics, vl);
+		m_layout = std::make_unique<mvInputLayout>(graphics, vl);
 
 		// create vertex buffer
-		m_vertexBuffer = new mvVertexBuffer(graphics, dvertexBuffer);
+		m_vertexBuffer = std::make_unique<mvVertexBuffer>(graphics, dvertexBuffer);
 
 		// create index buffer
-		m_indexBuffer = new mvIndexBuffer(graphics,
+		m_indexBuffer = std::make_unique<mvIndexBuffer>(graphics,
 			std::vector<unsigned short>{
 			   2, 1, 0,
 			   2, 0, 3
 		});
 
-		m_layout->init(*shader);
+		m_layout->init(shader.get());
 		m_layout->unbind(graphics);
 		m_indexBuffer->unbind(graphics);
 		m_vertexBuffer->unbind(graphics);
 
 		addBindable(graphics, shader);
-		addBindable(graphics, new mvTransformUniform(graphics));
+		addBindable(graphics, std::make_shared<mvTransformUniform>(graphics));
 
 	}
 

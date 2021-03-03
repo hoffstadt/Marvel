@@ -1,14 +1,17 @@
 #pragma once
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include "mvMath.h"
 #include "mvProjection.h"
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
 	// forward declarations
+	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
+	//-----------------------------------------------------------------------------
+	// mvCamera
+	//-----------------------------------------------------------------------------
 	class mvCamera
 	{
 
@@ -19,9 +22,9 @@ namespace Marvel {
 
 		glm::mat4 getMatrix() const;
 
-		void bind(mvGraphics& graphics) const;
-		void rotate(float dx, float dy);
-		void translate(float dx, float dy, float dz);
+		void bind       (mvGraphics& graphics) const;
+		void rotate     (float dx, float dy);
+		void translate  (float dx, float dy, float dz);
 		void setRotation(float x, float y, float z);
 		void setPosition(float x, float y, float z);
 

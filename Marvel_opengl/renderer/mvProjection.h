@@ -1,13 +1,16 @@
 #pragma once
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include "mvMath.h"
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
 	// forward declarations
+	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
+	//-----------------------------------------------------------------------------
+	// mvProjection
+	//-----------------------------------------------------------------------------
 	class mvProjection
 	{
 	public:

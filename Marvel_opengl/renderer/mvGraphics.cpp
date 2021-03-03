@@ -8,7 +8,6 @@ namespace Marvel {
 		:
 		m_handle(handle)
 	{
-		/* Make the window's context current */
 		glfwMakeContextCurrent(m_handle);
 
 		gl3wInit();
@@ -18,9 +17,7 @@ namespace Marvel {
 
 	void mvGraphics::swapBuffers()
 	{
-		/* Swap front and back buffers */
 		glfwSwapBuffers(m_handle);
-
 	}
 
 	void mvGraphics::drawIndexed(int count)

@@ -4,9 +4,7 @@
 #include <type_traits>
 #include "mvBindable.h"
 #include <GL/gl3w.h>
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp> 
+#include "mvMath.h"
 
 namespace Marvel
 {
@@ -78,7 +76,7 @@ namespace Marvel
 	};
 
 	template<typename T>
-	class mvUniformMatrix : public mvUniform<T>
+	class mvUniform4Matrix : public mvUniform<T>
 	{
 
 		using mvUniform<T>::m_data;
@@ -86,7 +84,7 @@ namespace Marvel
 
 	public:
 
-		mvUniformMatrix(mvGraphics& graphics, const T& data, int slot)
+		mvUniform4Matrix(mvGraphics& graphics, const T& data, int slot)
 			:
 			mvUniform(graphics, data, slot)
 		{
@@ -94,21 +92,6 @@ namespace Marvel
 
 		void bind(mvGraphics& graphics) override
 		{
-			//if (std::is_same<T, glm::mat4::value)
-			//{
-			//	glUniformMatrix4fv(m_slot, 1, false, &m_data[0][0]);
-			//}
-
-			//else if (std::is_same<T, glm::mat3::value)
-			//{
-			//	glUniformMatrix3fv(m_slot, 1, false, &m_data[0][0]);
-			//}
-
-			//else if (std::is_same<T, glm::mat2::value)
-			//{
-			//	glUniformMatrix2fv(m_slot, 1, false, &m_data[0][0]);
-			//}
-
 			glUniformMatrix4fv(m_slot, 1, false, &m_data[0][0]);
 		}
 

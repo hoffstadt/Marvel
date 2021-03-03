@@ -6,7 +6,7 @@
 
 namespace Marvel {
 
-	void mvDrawable::addBindable(mvGraphics& graphics, mvBindable* bindable)
+	void mvDrawable::addBindable(mvGraphics& graphics, std::shared_ptr<mvBindable> bindable)
 	{
 		m_bindables.push_back(bindable);
 	}
@@ -31,23 +31,7 @@ namespace Marvel {
 
 	void mvDrawable::draw(mvGraphics& graphics) const
 	{
-		//bind(graphics);
 		graphics.drawIndexed(getIndexCount());
-	}
-
-	mvDrawable::~mvDrawable()
-	{
-		delete m_indexBuffer;
-		delete m_vertexBuffer;
-
-		for (mvBindable* bindable : m_bindables)
-		{
-			delete bindable;
-			bindable = nullptr;
-		}
-
-		m_indexBuffer = nullptr;
-		m_vertexBuffer = nullptr;
 	}
 
 }
