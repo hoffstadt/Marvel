@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGLSandbox</title>
+    <script src="mvGraphics.mjs" type="module" defer></script>
+    <script src="bindables/mvBindable.mjs" type="module" defer></script>
+    <script src="bindables/mvVertexBuffer.mjs" type="module" defer></script>
+    <script src="bindables/mvIndexBuffer.mjs" type="module" defer></script>
+    <script src="bindables/mvShader.mjs" type="module" defer></script>
+    <script src="bindables/mvInputLayout.mjs" type="module" defer></script>
+    <script src="bindables/mvRenderTarget.mjs" type="module" defer></script>
+    <script src="bindables/mvConstantBuffer.mjs" type="module" defer></script>
+    <script src="bindables/mvTransformConstantBuffer.mjs" type="module" defer></script>
+
+    <script src="drawables/mvTexturedQuad.mjs" type="module" defer></script>
+    <script src="drawables/mvQuad.mjs" type="module" defer></script>
+    <script src="drawables/mvCube.mjs" type="module" defer></script>
+    <script src="drawables/mvSphere.mjs" type="module" defer></script>
+
+    <script src="shaders/simple.mjs" type="module" defer></script>
+    <script src="shaders/textured.mjs" type="module" defer></script>
+    <script src="shaders/phong.mjs" type="module" defer></script>
+
+    <script src="geometry/Sphere.mjs" type="module" defer></script>
+
+    <script src="mvPointLight.mjs" type="module" defer></script>
+    <script src="mvCamera.mjs" type="module" defer></script>
+    <script src="mvProjection.mjs" type="module" defer></script>
+    <script src="mvDrawable.mjs" type="module" defer></script>
+    <script src="mvVertex.mjs" type="module" defer></script>
+    <script src="mvMath.mjs" type="module" defer></script>
+    <script src="main.js" type="module" defer></script>
+</head>
+
+<style>
+
+    body {
+        color: greenyellow;
+    }
+
+    #container {
+        position: relative;
+    }
+    #container #glcanvas, #overlay {
+        position: absolute;
+    }
+
+</style>
+
+<body>
+<div id="container">
+    <canvas id="glcanvas" width="1700" height="900"></canvas>
+    <div id="overlay">
+        <div>
+            <label>FPS</label>
+            <output id="frame_rate">0</output>
+        </div>
+<!--        <div>-->
+<!--            <label for="xangle">X Angle Cube</label>-->
+<!--            <input type="range" min="-180" max="180" value="0" class="slider" id="xangle" step="0.01">-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label for="yangle">Y Angle Cube</label>-->
+<!--            <input type="range" min="-180" max="180" value="0" class="slider" id="yangle" step="0.01">-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label for="zangle">Z Angle Cube</label>-->
+<!--            <input type="range" min="-180" max="180" value="0" class="slider" id="zangle" step="0.01">-->
+<!--        </div>-->
+    </div>
+</div>
+</body>
+</html>
