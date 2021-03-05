@@ -24,9 +24,9 @@ jobs:
         git checkout gh-pages
         cd ..
         cd public
-        Xcopy . ..\Marvel3D\ /e /h /c /i /y
+        Xcopy . ..\Marvel\ /e /h /c /i /y
         cd ..
-        cd Marvel3D
+        cd Marvel
         git config --global user.email "jonathanhoffstadt@yahoo.com"
         git config --global user.name "Jonathan Hoffstadt"
         git commit -a -m "Update site"
