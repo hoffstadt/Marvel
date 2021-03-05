@@ -92,7 +92,7 @@ export const ps_phong =`#version 300 es
             void main() {
                 
                 vec3 diffuse;
-                vec3 material = vec3(1.0, 0.0, 0.0);
+                vec3 material = vec3(0.0, 1.0, 0.0);
                 vec3 specularColor = vec3(1.0, 1.0, 1.0);
                 float specularWeight = 1.0;
                 float specularGloss = 15.0;
