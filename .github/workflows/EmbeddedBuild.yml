@@ -22,7 +22,7 @@ jobs:
         cd Marvel_webgl
         cd public
         git checkout gh-pages
-        Xcopy . ..\..\ /e /h/ c/ /i
+        Xcopy . ..\..\ /e /h c/ /i
         cd ..
         cd ..
         git config --global user.email "jonathanhoffstadt@yahoo.com"
