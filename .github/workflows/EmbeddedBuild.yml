@@ -1,0 +1,35 @@
+name: Marvel WebGl
+
+on:
+  push: {}
+  pull_request: {}
+    
+jobs:
+
+  build-windows:
+    
+    runs-on: windows-2019
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Retrieve submodules
+      shell: cmd
+      run: git submodule update --init --recursive
+      
+    - name: Deploy Site
+      shell: cmd
+      run: |
+        git checkout gh-pages
+        cd Marvel_webgl
+        cd public
+        Xcopy . ..\..\ /e /h/ c/ i
+        cd ..
+        cd ..
+        git config --global user.email "jonathanhoffstadt@yahoo.com"
+        git config --global user.name "Jonathan Hoffstadt"
+        git commit -a -m "Update Docs for $env:APPVEYOR_BUILD_VERSION"
+        git push origin gh-pages -q
+        

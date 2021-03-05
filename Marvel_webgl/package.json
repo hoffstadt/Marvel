@@ -1,0 +1,23 @@
+{
+  "name": "webglsandbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoffstadt/WebGLSandbox.git"
+  },
+  "author": "Jonathan Hoffstadt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoffstadt/WebGLSandbox/issues"
+  },
+  "homepage": "https://github.com/hoffstadt/WebGLSandbox#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
