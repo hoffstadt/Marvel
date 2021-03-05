@@ -19,9 +19,9 @@ jobs:
       shell: cmd
       run: |
         git fetch
-        git checkout gh-pages
         cd Marvel_webgl
         cd public
+        git checkout gh-pages
         Xcopy . ..\..\ /e /h/ c/ i
         cd ..
         cd ..
