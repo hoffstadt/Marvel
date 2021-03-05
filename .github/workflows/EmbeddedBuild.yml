@@ -20,7 +20,7 @@ jobs:
       run: |
         git fetch
         
-        Xcopy .\Marvel_webgl ..\..\ /e /h /c /i
+        Xcopy .\Marvel_webgl ..\ /e /h /c /i
         git checkout gh-pages
         cd ..
         cd public
