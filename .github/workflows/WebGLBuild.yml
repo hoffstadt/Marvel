@@ -1,7 +1,13 @@
 name: Marvel WebGl
 
 on:
-  push: master
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - main
     
 jobs:
 
