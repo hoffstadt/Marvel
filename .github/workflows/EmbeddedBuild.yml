@@ -14,14 +14,11 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
-
-    - name: Retrieve submodules
-      shell: cmd
-      run: git submodule update --init --recursive
       
     - name: Deploy Site
       shell: cmd
       run: |
+        git fetch
         git checkout gh-pages
         cd Marvel_webgl
         cd public
@@ -30,6 +27,6 @@ jobs:
         cd ..
         git config --global user.email "jonathanhoffstadt@yahoo.com"
         git config --global user.name "Jonathan Hoffstadt"
-        git commit -a -m "Update Docs for $env:APPVEYOR_BUILD_VERSION"
+        git commit -a -m "Update site"
         git push origin gh-pages -q
         
