@@ -19,12 +19,14 @@ jobs:
       shell: cmd
       run: |
         git fetch
-        cd Marvel_webgl
-        cd public
+        
+        Xcopy .\Marvel_webgl ..\..\ /e /h /c /i
         git checkout gh-pages
-        Xcopy . ..\..\ /e /h /c /i
         cd ..
+        cd public
+        Xcopy . ..\Marvel3D\ /e /h /c /i
         cd ..
+        cd Marvel3D
         git config --global user.email "jonathanhoffstadt@yahoo.com"
         git config --global user.name "Jonathan Hoffstadt"
         git commit -a -m "Update site"
