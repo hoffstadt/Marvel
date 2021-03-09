@@ -32,35 +32,20 @@ int main()
     mvTopology topology(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     mvVertexLayout vl;
-    vl.Append(ElementType::Position2D)
-        .Append(ElementType::Texture2D);
-
-    mvDynamicVertexBuffer dvertexBuffer(std::move(vl));
-    dvertexBuffer.EmplaceBack(
-        DirectX::XMFLOAT2{ -0.5f,  0.5f },
-        DirectX::XMFLOAT2{  0.0f,  0.0f }
-    );
-
-    dvertexBuffer.EmplaceBack(
-        DirectX::XMFLOAT2{  0.5f, -0.5f },
-        DirectX::XMFLOAT2{  1.0f, 1.0f }
-    );
-
-    dvertexBuffer.EmplaceBack(
-        DirectX::XMFLOAT2{ -0.5f, -0.5f },
-        DirectX::XMFLOAT2{  0.0f,  1.0f }
-    );
-
-    dvertexBuffer.EmplaceBack(
-        DirectX::XMFLOAT2{  0.5f,  0.5f },
-        DirectX::XMFLOAT2{  1.0f,  0.0f }
-    );
+    vl.append(ElementType::Position2D);
+    vl.append(ElementType::Texture2D);
 
     // create vertex buffer
-    mvVertexBuffer vertexBuffer(graphics, dvertexBuffer);
+    mvVertexBuffer vertexBuffer(graphics, 
+        {
+            -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, 1.0f, 0.0f
+        }, vl);
 
     // create input layout
-    mvInputLayout inputLayout(graphics, dvertexBuffer.GetLayout(), vertexShader);
+    mvInputLayout inputLayout(graphics, vl, vertexShader);
 
     // create Index Buffer
     mvIndexBuffer indexBuffer(graphics,

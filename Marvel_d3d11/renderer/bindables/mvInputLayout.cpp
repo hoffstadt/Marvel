@@ -8,7 +8,7 @@ namespace Marvel {
 		m_layout(std::move(vertexLayout))
 	{
 
-		const auto d3dLayout = m_layout.GetD3DLayout();
+		const auto d3dLayout = m_layout.getD3DLayout();
 		const auto pBytecode = vertexShader.getBlob();
 
 		HRESULT hResult = graphics.getDevice()->CreateInputLayout(d3dLayout.data(),
