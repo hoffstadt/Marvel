@@ -382,8 +382,8 @@ int main() {
     //-----------------------------------------------------------------------------
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
-    auto vertShaderCode = readFile("../../../Vulkan_ht/shaders/vert.spv");
-    auto fragShaderCode = readFile("../../../Vulkan_ht/shaders/frag.spv");
+    auto vertShaderCode = readFile("../../../Demo_Vulkan/shaders/vert.spv");
+    auto fragShaderCode = readFile("../../../Demo_Vulkan/shaders/frag.spv");
 
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, device);
     VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, device);

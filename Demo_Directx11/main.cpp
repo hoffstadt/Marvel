@@ -187,7 +187,8 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     ID3D11VertexShader* vertexShader;
     {
         ID3DBlob* shaderCompileErrorsBlob;
-        HRESULT hResult = D3DCompileFromFile(L"../../../Directx11_ht/shaders/shaders.hlsl", nullptr, nullptr, "vs_main", "vs_5_0", 0, 0, &vsBlob, &shaderCompileErrorsBlob);
+        HRESULT hResult = D3DCompileFromFile(L"../../../Demo_Directx11/shaders/shaders.hlsl", 
+            nullptr, nullptr, "vs_main", "vs_5_0", 0, 0, &vsBlob, &shaderCompileErrorsBlob);
         if (FAILED(hResult))
         {
             const char* errorString = NULL;
@@ -210,7 +211,8 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     {
         ID3DBlob* psBlob;
         ID3DBlob* shaderCompileErrorsBlob;
-        HRESULT hResult = D3DCompileFromFile(L"../../../Directx11_ht/shaders/shaders.hlsl", nullptr, nullptr, "ps_main", "ps_5_0", 0, 0, &psBlob, &shaderCompileErrorsBlob);
+        HRESULT hResult = D3DCompileFromFile(L"../../../Demo_Directx11/shaders/shaders.hlsl", 
+            nullptr, nullptr, "ps_main", "ps_5_0", 0, 0, &psBlob, &shaderCompileErrorsBlob);
         if (FAILED(hResult))
         {
             const char* errorString = NULL;

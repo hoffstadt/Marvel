@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 3.13)
 
-add_executable (opengl_ht)
+add_executable (demo_opengl)
 
-set_property(TARGET opengl_ht PROPERTY CXX_STANDARD 17)
+set_property(TARGET demo_opengl PROPERTY CXX_STANDARD 17)
 
-target_sources(opengl_ht
+target_sources(demo_opengl
 
 	PRIVATE
 
@@ -13,7 +13,7 @@ target_sources(opengl_ht
 
 )
 
-target_include_directories(opengl_ht
+target_include_directories(demo_opengl
 
 	PRIVATE
 		"../Dependencies/imgui/examples/libs/gl3w/"
@@ -22,7 +22,7 @@ target_include_directories(opengl_ht
 		"../Dependencies/stb/"
 )
 
-target_link_libraries(opengl_ht
+target_link_libraries(demo_opengl
 
 	PRIVATE
 		glfw

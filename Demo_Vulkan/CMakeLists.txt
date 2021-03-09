@@ -1,17 +1,17 @@
 cmake_minimum_required (VERSION 3.13)
 
-add_executable (vulkan_ht)
+add_executable (demo_vulkan)
 
-set_property(TARGET vulkan_ht PROPERTY CXX_STANDARD 17)
+set_property(TARGET demo_vulkan PROPERTY CXX_STANDARD 17)
 
-target_sources(vulkan_ht
+target_sources(demo_vulkan
 
 	PRIVATE
 
 		"main.cpp"
 )
 
-target_include_directories(vulkan_ht
+target_include_directories(demo_vulkan
 
 	PRIVATE
 	    "$ENV{VK_SDK_PATH}/Include"
@@ -19,7 +19,7 @@ target_include_directories(vulkan_ht
 		"../Dependencies/glm/"
 )
 
-target_link_directories(vulkan_ht
+target_link_directories(demo_vulkan
 
 	PRIVATE
 
@@ -27,7 +27,7 @@ target_link_directories(vulkan_ht
 
 )
 
-target_link_libraries(vulkan_ht
+target_link_libraries(demo_vulkan
 
 	PRIVATE
 
