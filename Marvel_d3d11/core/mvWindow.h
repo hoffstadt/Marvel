@@ -1,6 +1,8 @@
 #pragma once
 #include "mvMarvelWin.h"
-#include <GLFW/glfw3.h>
+#include <optional>
+#include <vector>
+
 
 namespace Marvel {
 
@@ -9,23 +11,32 @@ namespace Marvel {
 
 	public:
 
+		static std::optional<int> ProcessMessages();
+
+	public:
+
 		mvWindow(const char* name, int width, int height);
 		~mvWindow();
 
-		void processEvents();
-
-		GLFWwindow* getHandle() const { return m_handle; }
-		HWND getWin32Handle() const;
-		bool isRunning() const { return m_running; }
-
+		HWND getHandle() const { return m_hWnd; }
 
 	private:
 
-		int         m_width;
-		int         m_height;
-		GLFWwindow* m_handle;
-		bool        m_running;
+		static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	private:
+
+		static constexpr const char* s_wndClassName = "Marvel Window";
+
+		int       m_width;
+		int       m_height;
+		HWND      m_hWnd;
+		HINSTANCE m_hInst;
 
 	};
+
 
 }

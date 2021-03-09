@@ -47,7 +47,6 @@ target_include_directories(marvel_d3d11
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
 		"../Dependencies/stb/"
-		"../Dependencies/glfw/include/"
 
 )
 
@@ -55,5 +54,4 @@ target_link_libraries(marvel_d3d11
 	PRIVATE
 		d3d11
 		d3dcompiler
-		glfw
 )
