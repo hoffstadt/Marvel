@@ -129,7 +129,7 @@ int main()
 	while (!glfwWindowShouldClose(g_window))
 	{
 		
-		// clear
+		// clear render target
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// bind the Vertex Array Object to be drawn
@@ -138,10 +138,10 @@ int main()
 		// draw
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
 
-		// Swap front and back buffers
+		// swap front and back buffers
 		glfwSwapBuffers(g_window);
 
-		// Poll for and process events
+		// poll for and process events
 		glfwPollEvents();
 	}
 
