@@ -4,10 +4,11 @@ This repo is the working location of the eventual [Dear PyGui](https://github.co
 This project is still early and parts of it are being ported over from earlier prototypes.
 
 ### Hello Triangle
-* Directx11_ht - D3D11 Hello Triangle
-* OpenGL_ht - OpenGL Hello Triangle
-* Vulkan_ht - Vulkan Hello Triangle
-* WebGL_ht - WebGL Hello Triangle
+* Demo_Directx11 - D3D11 Hello Triangle
+* Demo_Directx12 - D3D12 Hello Triangle
+* Demo_OpenGL - OpenGL Hello Triangle
+* Demo_Vulkan - Vulkan Hello Triangle
+* Demo_WebGL - WebGL Hello Triangle
 
 ### 3D Engine
 * Marvel_d3d11 - Directx 11 3D Engine
@@ -17,7 +18,7 @@ This project is still early and parts of it are being ported over from earlier p
 ### Progress
 | Step | WebGL | OpenGL | Directx 11 | Directx 12 | Vulkan | Metal |
 |---------|-------|--------|------------|------------|--------|-------|
-| Windows Support | - | ✅ | ✅  | | ✅ |
+| Windows Support | - | ✅ | ✅  | ✅ | ✅ |
 | Linux Support |
 | Apple Support |
 | Swap Chain Created | - | - | ✅ | | ✅ | |
