@@ -13,14 +13,14 @@ namespace Marvel {
 	{
 
 		mvVertexLayout vl;
-		vl.Append(ElementType::Position2D);
+		vl.append(ElementType::Position2D);
 
-		mvDynamicVertexBuffer dvertexBuffer(vl);
-
-		dvertexBuffer.EmplaceBack(std::array{ -0.5f,  0.5f });
-		dvertexBuffer.EmplaceBack(std::array{  0.5f,  0.5f });
-		dvertexBuffer.EmplaceBack(std::array{  0.5f, -0.5f });
-		dvertexBuffer.EmplaceBack(std::array{ -0.5f, -0.5f });
+		std::vector<float> vertexBuffder = {
+			-0.5f,  0.5f,
+			 0.5f,  0.5f,
+			 0.5f, -0.5f,
+			-0.5f, -0.5f
+		};
 
 		auto shader = std::make_shared<mvShader>(graphics, "vs_simple.glsl", "ps_simple.glsl");
 
@@ -28,7 +28,7 @@ namespace Marvel {
 		m_layout = std::make_unique<mvInputLayout>(graphics, vl);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_unique<mvVertexBuffer>(graphics, dvertexBuffer);
+		m_vertexBuffer = std::make_unique<mvVertexBuffer>(graphics, vertexBuffder);
 
 		// create index buffer
 		m_indexBuffer = std::make_unique<mvIndexBuffer>(graphics,

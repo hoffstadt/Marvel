@@ -10,7 +10,7 @@ namespace Marvel
 
 	public:
 
-		mvVertexBuffer(mvGraphics& graphics, const mvDynamicVertexBuffer& vbuf);
+		mvVertexBuffer(mvGraphics& graphics, const std::vector<float>& vbuf);
 
 		void bind  (mvGraphics& graphics) override;
 		void unbind(mvGraphics& graphics) override;

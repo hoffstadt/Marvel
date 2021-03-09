@@ -5,12 +5,12 @@
 namespace Marvel
 {
 
-	mvVertexBuffer::mvVertexBuffer(mvGraphics& graphics, const mvDynamicVertexBuffer& vbuf)
+	mvVertexBuffer::mvVertexBuffer(mvGraphics& graphics, const std::vector<float>& vbuf)
 	{
 
 		glGenBuffers(1, &m_buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-		glBufferData(GL_ARRAY_BUFFER, vbuf.SizeBytes(), vbuf.GetData(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vbuf.size()*sizeof(float), vbuf.data(), GL_STATIC_DRAW);
 	}
 
 	void mvVertexBuffer::bind(mvGraphics& gfx)

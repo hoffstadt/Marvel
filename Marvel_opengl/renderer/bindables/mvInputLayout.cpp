@@ -14,19 +14,18 @@ namespace Marvel {
 
 	void mvInputLayout::init(mvShader* shader)
 	{
-		int offset = 0;
-		for (size_t i = 0; i < m_layout.GetElementCount(); i++)
+
+		for (size_t i = 0; i < m_layout.getElementCount(); i++)
 		{
-			const auto& element = m_layout.ResolveByIndex(i);
+			const auto& element = m_layout.getElements()[i];
 
-			
-			glVertexAttribPointer(i, 2, element.GetGLType(), element.Normalized(),
-				m_layout.Size(), (void*)offset);
+			glVertexAttribPointer(i, 
+				element.getItemCount(), 
+				element.getGLType(), 
+				element.isNormalized(),
+				m_layout.getSize(), 
+				(void*)element.getOffset());
 			glEnableVertexAttribArray(i);
-			
-			//glBindAttribLocation(shader->getProgram(), i, element.GetSemantic());
-
-			offset += mvVertexElement::SizeOf(element.GetType());
 
 		}
 	}

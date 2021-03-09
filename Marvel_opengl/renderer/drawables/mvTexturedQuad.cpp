@@ -14,30 +14,15 @@ namespace Marvel {
 	{
 
 		mvVertexLayout vl;
-		vl.Append(ElementType::Position2D);
-		vl.Append(ElementType::Texture2D);
+		vl.append(ElementType::Position2D);
+		vl.append(ElementType::Texture2D);
 
-		mvDynamicVertexBuffer dvertexBuffer(vl);
-
-		dvertexBuffer.EmplaceBack(
-			std::array{ -0.5f,  0.5f },
-			std::array{  0.0f,  1.0f }
-		);
-
-		dvertexBuffer.EmplaceBack(
-			std::array{ 0.5f,  0.5f },
-			std::array{ 1.0f,  1.0f }
-		);
-
-		dvertexBuffer.EmplaceBack(
-			std::array{ 0.5f, -0.5f },
-			std::array{ 1.0f,  0.0f }
-		);
-
-		dvertexBuffer.EmplaceBack(
-			std::array{ -0.5f, -0.5f },
-			std::array{  0.0f,  0.0f }
-		);
+		std::vector<float> vertexBuffder = {
+			-0.5f,  0.5f, 0.0f, 1.0f, 
+			 0.5f,  0.5f, 1.0f, 1.0f,
+			 0.5f, -0.5f, 1.0f, 0.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f
+		};
 
 		auto texture = std::make_shared<mvTexture>(graphics, path);
 		auto shader = std::make_shared<mvShader>(graphics, "vs_texture.glsl", "ps_texture.glsl");
@@ -46,7 +31,7 @@ namespace Marvel {
 		m_layout = std::make_unique<mvInputLayout>(graphics, vl);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_unique<mvVertexBuffer>(graphics, dvertexBuffer);
+		m_vertexBuffer = std::make_unique<mvVertexBuffer>(graphics, vertexBuffder);
 
 		// create index buffer
 		m_indexBuffer = std::make_unique<mvIndexBuffer>(graphics,
