@@ -1,17 +1,52 @@
 ﻿cmake_minimum_required (VERSION 3.13)
 
-project ("GraphicsAPIs")
+project ("Marvel")
+
+set(MV_VULKAN ${MV_VULKAN})
+set(MV_D3D11 ${MV_D3D11})
+set(MV_D3D12 ${MV_D3D12})
+set(MV_OPENGL ${MV_OPENGL})
+set(MV_DEMOS ${MV_OPENGL})
 
 # various settings
 set(GLFW_BUILD_DOCS OFF)
 add_definitions(-D_USE_MATH_DEFINES)
-add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
 
-add_subdirectory ("Marvel_d3d11")
-add_subdirectory ("Marvel_opengl")
-add_subdirectory ("Demo_Directx11")
-add_subdirectory ("Demo_Directx12")
-add_subdirectory ("Demo_Vulkan")
-add_subdirectory ("Demo_OpenGL")
+if(MV_VULKAN)
+	add_subdirectory ("Marvel_vulkan")
+	if(MV_DEMOS)
+		add_subdirectory ("Demo_Vulkan")
+	endif()
+endif()
+
+if(MV_OPENGL)
+	add_subdirectory ("Marvel_opengl")
+	if(MV_DEMOS)
+		add_subdirectory ("Demo_OpenGL")
+	endif()
+endif()
+
+
 add_subdirectory ("Dependencies/glfw")
 add_subdirectory ("Dependencies/glm")
+
+if(WIN32)
+
+	add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
+
+	if(MV_D3D11)
+		add_subdirectory ("Marvel_d3d11")
+		
+		if(MV_DEMOS)
+			add_subdirectory ("Demo_Directx11")
+		endif()
+
+	endif()
+	
+	if(MV_D3D11)
+		if(MV_DEMOS)
+			add_subdirectory ("Demo_Directx12")
+		endif()
+	endif()
+
+endif()
