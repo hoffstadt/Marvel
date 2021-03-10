@@ -57,6 +57,7 @@ namespace Marvel {
 		void createGraphicsPipeline();
 		void createFramebuffers();
 		void createCommandPool();
+		void createVertexBuffer();
 		void createCommandBuffers();
 		void createSyncObjects();
 
@@ -69,6 +70,7 @@ namespace Marvel {
 		bool isDeviceSuitable(VkPhysicalDevice device);
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	private:
 
@@ -96,6 +98,8 @@ namespace Marvel {
 		std::vector<VkSemaphore>           m_renderFinishedSemaphores;
 		std::vector<VkFence>               m_inFlightFences;
 		std::vector<VkFence>               m_imagesInFlight;
+		VkBuffer                           m_vertexBuffer;
+		VkDeviceMemory                     m_vertexBufferMemory;
 
 		const std::vector<const char*> m_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 		const std::vector<const char*> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
