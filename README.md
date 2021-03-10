@@ -31,7 +31,7 @@ This project is still early and parts of it are being ported over from earlier p
 | Vertex Buffer Layout System | ✅ | ✅ | ✅ |
 | Textures | ✅ | ✅ | ✅ |
 | Constant Buffer System | ✅ | ✅ | ✅ |
-| Camera System | ✅ | ✅ | ✅ |
+| Camera System | ✅ | ✅ |
 | Dynamic Lighting | ✅ |
 | Environment Map |
 | Alpha Blending |
