@@ -60,6 +60,6 @@ git clone --recursive https://github.com/hoffstadt/Marvel
 4. In Visual Studio, use _Open a local folder_ to open _Marvel_ folder. This will use CMakeLists.txt as the project file.
 5. Run _Build All_.
 
-## Gallery
+## Gallery (from older prototypes)
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_1.png)
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_2.png)
