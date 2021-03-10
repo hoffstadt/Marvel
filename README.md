@@ -1,4 +1,7 @@
 ## Marvel
+
+[![build status](https://github.com/hoffstadt/Marvel/workflows/Windows%20Builds/badge.svg?branch=master)](https://github.com/hoffstadt/Marvel/actions?workflow=Windows%20Builds)
+
 This repo is the working location of the eventual [Dear PyGui](https://github.com/hoffstadt/DearPyGui) 3D Engine. It also contains several single file examples of creating a triangle with various graphics APIs. These were collected and modified from various sources as a starting point.
 
 This project is still early and parts of it are being ported over from earlier prototypes.
