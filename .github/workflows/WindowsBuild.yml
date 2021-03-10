@@ -1,0 +1,35 @@
+name: Windows Builds
+
+on:
+  push: {}
+  pull_request: {}
+    
+jobs:
+
+  build-windows:
+    
+    runs-on: windows-2019
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Retrieve submodules
+      shell: cmd
+      run: git submodule update --init --recursive
+
+    - name: Install Dependencies
+      shell: powershell
+      run: |
+          Invoke-WebRequest -Uri "https://github.com/ocornut/imgui/files/3789205/vulkan-sdk-1.1.121.2.zip" -OutFile vulkan-sdk-1.1.121.2.zip
+          Expand-Archive -Path vulkan-sdk-1.1.121.2.zip
+          echo "VK_SDK_PATH=$(pwd)\vulkan-sdk-1.1.121.2\" >>${env:GITHUB_ENV}
+          
+    - name: Build Apps
+      shell: cmd
+      run: |
+        mkdir cmake-build-debug
+        cd cmake-build-debug
+        cmake .. -DMV_VULKAN=ON -DMV_D3D11=ON -DMV_D3D12=ON -DMV_OPENGL=ON -DMV_DEMOS=ON
+        cmake --build cmake-build-debug --config Debug
