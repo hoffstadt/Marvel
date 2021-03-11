@@ -2,7 +2,9 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <vector>
+#include <array>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -10,32 +12,27 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
-#include <optional>
 #include <set>
+
+#include "mvDevice.h"
+#include "mvSwapChain.h"
+#include "mvRenderPass.h"
+#include "mvPipeline.h"
+#include "mvCommandPool.h"
+#include "mvSurface.h"
+#include "mvVertexBuffer.h"
 
 namespace Marvel {
 
 	class mvGraphics
 	{
 
-		struct QueueFamilyIndices 
-		{
+	public:
 
-			std::optional<uint32_t> graphicsFamily;
-			std::optional<uint32_t> presentFamily;
-
-			bool isComplete()
-			{
-				return graphicsFamily.has_value() && presentFamily.has_value();
-			}
-		};
-
-		struct SwapChainSupportDetails 
-		{
-			VkSurfaceCapabilitiesKHR capabilities;
-			std::vector<VkSurfaceFormatKHR> formats;
-			std::vector<VkPresentModeKHR> presentModes;
-		};
+		static bool                            CheckValidationLayerSupport();
+		static const std::vector<const char*>& GetValidationLayers        ();
+		static bool                            UseValidationLayers        () { return true; }
+		static constexpr int                   GetMaxFramesInFlight       () { return 2; }
 
 	public:
 
@@ -44,68 +41,68 @@ namespace Marvel {
 		void drawFrame();
 		void cleanup();
 
-	private:
-
-		void createInstance();
-		void setupDebugMessenger();
-		void createSurface();
-		void pickPhysicalDevice();
-		void createLogicalDevice();
-		void createSwapChain();
-		void createImageViews();
-		void createRenderPass();
-		void createGraphicsPipeline();
-		void createFramebuffers();
-		void createCommandPool();
-		void createVertexBuffer();
-		void createCommandBuffers();
-		void createSyncObjects();
-
-		// cleanup
-		void cleanupSwapChain();
-
-		// helpers
-		bool checkValidationLayerSupport();
-		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-		bool isDeviceSuitable(VkPhysicalDevice device);
-		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		GLFWwindow*    getWindow     () { return m_window; }
+		VkInstance     getInstance   () { return m_instance; }
+		mvDevice&      getDevice     () { return m_device; }
+		mvSurface      getSurface    () { return m_surface; }
+		mvSwapChain&   getSwapChain  () { return m_swapChain; }
+		mvRenderPass&  getRenderPass () { return m_renderPass; }
+		mvPipeline&    getPipeline   () { return m_pipeline; }
+		mvCommandPool& getCommandPool() { return m_commandPool; }
 
 	private:
 
-		GLFWwindow*                        m_window;
-		VkInstance                         m_instance;
-		VkDebugUtilsMessengerCreateInfoEXT m_debugCreateInfo = {};
-		VkDebugUtilsMessengerEXT           m_debugMessenger;
-		VkPhysicalDevice                   m_physicalDevice = VK_NULL_HANDLE;
-		VkSurfaceKHR                       m_surface;
-		VkDevice                           m_device;
-		VkQueue                            m_graphicsQueue;
-		VkQueue                            m_presentQueue;
-		VkSwapchainKHR                     m_swapChain;
-		std::vector<VkImage>               m_swapChainImages;
-		std::vector<VkImageView>           m_swapChainImageViews;
-		VkFormat                           m_swapChainImageFormat;
-		VkExtent2D                         m_swapChainExtent;
-		VkPipelineLayout                   m_pipelineLayout;
-		VkPipeline                         m_graphicsPipeline;
-		VkRenderPass                       m_renderPass;
-		std::vector<VkFramebuffer>         m_swapChainFramebuffers;
-		VkCommandPool                      m_commandPool;
-		std::vector<VkCommandBuffer>       m_commandBuffers;
-		std::vector<VkSemaphore>           m_imageAvailableSemaphores;
-		std::vector<VkSemaphore>           m_renderFinishedSemaphores;
-		std::vector<VkFence>               m_inFlightFences;
-		std::vector<VkFence>               m_imagesInFlight;
-		VkBuffer                           m_vertexBuffer;
-		VkDeviceMemory                     m_vertexBufferMemory;
+		GLFWwindow*              m_window;
+		VkInstance               m_instance;
+		VkDebugUtilsMessengerEXT m_debugMessenger;
+		mvDevice                 m_device;
+		mvSwapChain              m_swapChain;
+		mvRenderPass             m_renderPass;
+		mvPipeline               m_pipeline;
+		mvCommandPool            m_commandPool;
+		mvSurface                m_surface;
 
-		const std::vector<const char*> m_validationLayers = {"VK_LAYER_KHRONOS_validation"};
-		const std::vector<const char*> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-		const bool                     m_enableValidationLayers = true;
-		const int                      MAX_FRAMES_IN_FLIGHT = 2;
+		// temp
+		mvVertexBuffer           m_vertexBuffer;
 
+		std::vector<VkSemaphore> m_imageAvailableSemaphores;
+		std::vector<VkSemaphore> m_renderFinishedSemaphores;
+		std::vector<VkFence>     m_inFlightFences;
+		std::vector<VkFence>     m_imagesInFlight;
+
+	};
+
+	struct Vertex 
+	{
+
+		glm::vec2 pos;
+		glm::vec3 color;
+
+		static VkVertexInputBindingDescription getBindingDescription()
+		{
+			VkVertexInputBindingDescription bindingDescription{};
+			bindingDescription.binding = 0;
+			bindingDescription.stride = sizeof(Vertex);
+			bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+			return bindingDescription;
+		}
+
+		static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
+		{
+			std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+
+			attributeDescriptions[0].binding = 0;
+			attributeDescriptions[0].location = 0;
+			attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+			attributeDescriptions[0].offset = offsetof(Vertex, pos);
+
+			attributeDescriptions[1].binding = 0;
+			attributeDescriptions[1].location = 1;
+			attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+			attributeDescriptions[1].offset = offsetof(Vertex, color);
+
+			return attributeDescriptions;
+		}
 	};
 
 }
