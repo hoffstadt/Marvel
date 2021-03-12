@@ -5,7 +5,7 @@ namespace Marvel {
 
 	mvPointLight::mvPointLight(mvGraphics& graphics, glm::vec3 pos)
 		:
-		m_sphere(graphics, 1),
+		m_sphere(graphics, 0.25, { 1.0f, 1.0f, 1.0f }, 1),
 		m_cbuf(graphics, 1u)
 	{
 		m_cbData = {
@@ -58,6 +58,13 @@ namespace Marvel {
 		dataCopy.pos = view * pos;
 		m_cbuf.update(graphics, dataCopy);
 		m_cbuf.bind(graphics);
+	}
+
+	void mvPointLight::setPosition(float x, float y, float z)
+	{
+		m_cbData.pos.x = x;
+		m_cbData.pos.y = y;
+		m_cbData.pos.z = z;
 	}
 
 }

@@ -29,16 +29,24 @@ int main()
     Marvel::mvPointLight light(graphics);
 
     // create textured quad
-    mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
-    tquad.setPosition(0.0f, 0.0f, 5.0f);
+    //mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
+    //tquad.setPosition(0.0f, 0.0f, 5.0f);
 
-    // create solid sphere phong
-    mvSolidSphere sphere1(graphics, 0);
-    sphere1.setPosition(2.0f, 0.0f, 5.0f);
+    // create solid spheres (phong shading)
+
+    std::vector<mvSolidSphere> spheres; 
+    spheres.reserve(24);
+    for (int i = -3; i < 3; i++)
+    {
+        for (int j = -2; j < 2; j++)
+        {
+            spheres.emplace_back(graphics, 0.5, glm::vec3{ 0.0f, 1.0f, 0.0f }, 0);
+            spheres.back().setPosition(i * 2, j * 2, 15);
+        }
+    }
 
     // create solid sphere
-    mvSolidSphere sphere2(graphics, 2);
-    sphere2.setPosition(-2.0f, 0.0f, 5.0f);
+    mvSolidSphere sphere1(graphics, 5, { 1.0f, 0.0f, 0.0f }, 2);
 
     // create camera
     mvCamera camera(graphics);
@@ -105,6 +113,7 @@ int main()
         }
 
         imManager.beginFrame();
+        ImGui::ShowMetricsWindow();
 
         graphics.getTarget()->clear(graphics);
         graphics.getTarget()->bindAsBuffer(graphics);
@@ -113,18 +122,21 @@ int main()
         camera.bind(graphics);
 
         // bind light
+        auto now = timer.now();
+        light.setPosition(6 * cos(now), 2 * sin(now), 15 - 5 * sin(now));
         light.bind(graphics, camera.getMatrix());
         light.show_imgui_windows();
         light.getSphere()->draw(graphics);
         
-        tquad.draw(graphics);
-        tquad.show_imgui_windows("Textured Quad");
+        //tquad.draw(graphics);
+        //tquad.show_imgui_windows("Textured Quad");
         
+        sphere1.setPosition(10 * sin(now), 10 * cos(now*0.5f), 25);
         sphere1.draw(graphics);
-        sphere1.show_imgui_windows("Phong Shaded Sphere");
+        sphere1.show_imgui_windows("Flat Shaded Sphere");
         
-        sphere2.draw(graphics);
-        sphere2.show_imgui_windows("Flat Shaded Sphere");
+        for (auto& sphere : spheres)
+            sphere.draw(graphics);
 
         imManager.endFrame();
 

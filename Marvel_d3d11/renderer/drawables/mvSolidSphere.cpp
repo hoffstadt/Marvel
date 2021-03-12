@@ -6,7 +6,7 @@
 
 namespace Marvel {
 
-	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, int simple)
+	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, float radius, glm::vec3 color, int simple)
 	{
 
 		// create topology
@@ -20,9 +20,6 @@ namespace Marvel {
 		std::vector<float> verticies;
 		std::vector<unsigned short> indicies;
 		std::vector<float> normals;
-		float radius = 1.0f;
-		if (simple == 1)
-			radius = 0.5f;
 		Sphere sphere(radius);
 
 		verticies = sphere.vertices;
@@ -65,7 +62,7 @@ namespace Marvel {
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_flat.hlsl"));
 			addBindable(new mvGeometryShader(graphics, "../../../Marvel_d3d11/shaders/gs_flat.hlsl"));
 			addBindable(new mvTransformConstantBuffer(graphics));
-			m_material = new mvMaterial(graphics);
+			m_material = new mvMaterial(graphics, color);
 			addBindable(m_material);
 		}
 		else
@@ -77,7 +74,7 @@ namespace Marvel {
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_phong.hlsl"));
 			addBindable(new mvNullGeometryShader(graphics));
 			addBindable(new mvTransformConstantBuffer(graphics));
-			m_material = new mvMaterial(graphics);
+			m_material = new mvMaterial(graphics, color);
 			addBindable(m_material);
 		}
 

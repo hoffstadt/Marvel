@@ -14,6 +14,7 @@ namespace Marvel {
 
 		void show_imgui_windows();
 		void bind(mvGraphics& graphics, glm::mat4 view);
+		void setPosition(float x, float y, float z);
 
 		mvSolidSphere* getSphere();
 

@@ -7,6 +7,7 @@ namespace Marvel {
 	mvTimer::mvTimer()
 	{
 		m_last = steady_clock::now();
+		m_start = steady_clock::now();
 	}
 
 	float mvTimer::mark()
@@ -20,6 +21,12 @@ namespace Marvel {
 	float mvTimer::peek() const
 	{
 		return duration<float>(steady_clock::now() - m_last).count();
+	}
+
+	float mvTimer::now() const
+	{
+		const duration<float> totalTime = steady_clock::now() - m_start;
+		return totalTime.count();
 	}
 
 }
