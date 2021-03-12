@@ -22,8 +22,10 @@ target_sources(marvel_d3d11
 		"renderer/mvImGuiManager.cpp"
 		"renderer/mvProjection.cpp"
 		"renderer/mvCamera.cpp"
+		"renderer/mvPointLight.cpp"
 
 		"renderer/bindables/mvTopology.cpp"
+		"renderer/bindables/mvGeometryShader.cpp"
 		"renderer/bindables/mvPixelShader.cpp"
 		"renderer/bindables/mvVertexShader.cpp"
 		"renderer/bindables/mvIndexBuffer.cpp"
@@ -33,6 +35,7 @@ target_sources(marvel_d3d11
 		"renderer/bindables/mvSampler.cpp"
 		"renderer/bindables/mvRenderTarget.cpp"
 		"renderer/bindables/mvTransformConstantBuffer.cpp"
+		"renderer/bindables/mvNullGeometryShader.cpp"
 
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"

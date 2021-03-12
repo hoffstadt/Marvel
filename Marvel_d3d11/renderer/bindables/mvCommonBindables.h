@@ -2,6 +2,7 @@
 
 #include "mvPixelShader.h"
 #include "mvVertexShader.h"
+#include "mvGeometryShader.h"
 #include "mvIndexBuffer.h"
 #include "mvTopology.h"
 #include "mvVertexBuffer.h"
@@ -11,3 +12,4 @@
 #include "mvSampler.h"
 #include "mvRenderTarget.h"
 #include "mvTransformConstantBuffer.h"
+#include "mvNullGeometryShader.h"

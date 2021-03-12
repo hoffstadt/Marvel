@@ -6,6 +6,7 @@
 #include "mvCommonDrawables.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
+#include "mvPointLight.h"
 
 using namespace Marvel;
 
@@ -24,12 +25,20 @@ int main()
     // create imgui manager
     mvImGuiManager imManager(window.getHandle(), graphics);
 
+    // create point light
+    Marvel::mvPointLight light(graphics);
+
     // create textured quad
     mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
     tquad.setPosition(0.0f, 0.0f, 10.0f);
 
+    // create solid sphere phong
+    mvSolidSphere sphere1(graphics, 0);
+    sphere1.setPosition(2.0f, 0.0f, 5.0f);
+
     // create solid sphere
-    mvSolidSphere sphere1(graphics, 1);
+    mvSolidSphere sphere2(graphics, 2);
+    sphere2.setPosition(-2.0f, 0.0f, 5.0f);
 
     // create camera
     mvCamera camera(graphics);
@@ -97,15 +106,20 @@ int main()
 
         imManager.beginFrame();
 
-        // bind camera
-        camera.bind(graphics);
-
         graphics.getTarget()->clear(graphics);
         graphics.getTarget()->bindAsBuffer(graphics);
 
-        tquad.draw(graphics);
+        // bind camera
+        camera.bind(graphics);
 
+        // bind light
+        light.bind(graphics, camera.getMatrix());
+        light.show_imgui_windows();
+
+        light.getSphere()->draw(graphics);
+        tquad.draw(graphics);
         sphere1.draw(graphics);
+        sphere2.draw(graphics);
 
         imManager.endFrame();
 

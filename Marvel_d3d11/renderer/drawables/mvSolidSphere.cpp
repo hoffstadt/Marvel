@@ -53,8 +53,7 @@ namespace Marvel {
 			addBindable(vshader);
 			addBindable(new mvInputLayout(graphics, vl, *vshader));
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_shader.hlsl"));
-			//addBindable(new mvNullGeometryShader(graphics));
-			//addBindable(new mvGeometryShader(graphics, "../../Shaders/gs_flat.hlsl"));
+			addBindable(new mvNullGeometryShader(graphics));
 			addBindable(new mvTransformConstantBuffer(graphics));
 		}
 		else if(simple == 2)
@@ -64,7 +63,7 @@ namespace Marvel {
 			addBindable(vshader);
 			addBindable(new mvInputLayout(graphics, vl, *vshader));
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_flat.hlsl"));
-			//addBindable(new mvGeometryShader(graphics, "../../Shaders/gs_flat.hlsl"));
+			addBindable(new mvGeometryShader(graphics, "../../../Marvel_d3d11/shaders/gs_flat.hlsl"));
 			addBindable(new mvTransformConstantBuffer(graphics));
 		}
 		else
@@ -74,8 +73,7 @@ namespace Marvel {
 			addBindable(vshader);
 			addBindable(new mvInputLayout(graphics, vl, *vshader));
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_phong.hlsl"));
-			//addBindable(new mvNullGeometryShader(graphics));
-			//addBindable(new mvGeometryShader(graphics, "../../Shaders/gs_flat.hlsl"));
+			addBindable(new mvNullGeometryShader(graphics));
 			addBindable(new mvTransformConstantBuffer(graphics));
 		}
 
