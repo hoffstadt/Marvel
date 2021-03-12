@@ -115,11 +115,16 @@ int main()
         // bind light
         light.bind(graphics, camera.getMatrix());
         light.show_imgui_windows();
-
         light.getSphere()->draw(graphics);
+        
         tquad.draw(graphics);
+        tquad.show_imgui_windows("Textured Quad");
+        
         sphere1.draw(graphics);
+        sphere1.show_imgui_windows("Phong Shaded Sphere");
+        
         sphere2.draw(graphics);
+        sphere2.show_imgui_windows("Flat Shaded Sphere");
 
         imManager.endFrame();
 

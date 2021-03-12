@@ -65,6 +65,8 @@ namespace Marvel {
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_flat.hlsl"));
 			addBindable(new mvGeometryShader(graphics, "../../../Marvel_d3d11/shaders/gs_flat.hlsl"));
 			addBindable(new mvTransformConstantBuffer(graphics));
+			m_material = new mvMaterial(graphics);
+			addBindable(m_material);
 		}
 		else
 		{
@@ -75,16 +77,36 @@ namespace Marvel {
 			addBindable(new mvPixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_phong.hlsl"));
 			addBindable(new mvNullGeometryShader(graphics));
 			addBindable(new mvTransformConstantBuffer(graphics));
+			m_material = new mvMaterial(graphics);
+			addBindable(m_material);
 		}
 
 	}
 
 	glm::mat4 mvSolidSphere::getTransform() const
 	{
-		return glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f }) *
-			glm::rotate(m_yangle, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
+		return glm::translate(glm::vec3{ m_x, m_y, m_z }) *
 			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
-			glm::translate(glm::vec3{ m_x, m_y, m_z });
+			glm::rotate(m_yangle, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
+			glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f });
+	}
+
+	void mvSolidSphere::show_imgui_windows(const char* name)
+	{
+		if (ImGui::Begin(name))
+		{
+			ImGui::SliderFloat("X-Pos", &m_x, -50.0f, 50.0f);
+			ImGui::SliderFloat("Y-Pos", &m_y, -50.0f, 50.0f);
+			ImGui::SliderFloat("Z-Pos", &m_z, -50.0f, 50.0f);
+			ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
+			ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
+			ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
+			ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
+			ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
+			ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
+			ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
+		}
+		ImGui::End();
 	}
 
 	void mvSolidSphere::setPosition(float x, float y, float z)

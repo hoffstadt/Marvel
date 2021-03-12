@@ -9,13 +9,13 @@ cbuffer mvPointLightCBuf : register(b1)
     float attQuad;
 };
 
-//cbuffer ObjectCBuf : register(b2)
-//{
-//    float3 materialColor;
-//    float3 specularColor;
-//    float specularWeight;
-//    float specularGloss;
-//};
+cbuffer ObjectCBuf : register(b2)
+{
+    float3 materialColor;
+    float3 specularColor;
+    float specularWeight;
+    float specularGloss;
+};
 
 float3 MapNormal(
     const in float3 tan,

@@ -17,6 +17,7 @@ namespace Marvel {
 
 		glm::mat4 getTransform() const override;
 
+		void show_imgui_windows(const char* name);
 		void setPosition(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 
@@ -28,6 +29,7 @@ namespace Marvel {
 		float m_xangle = 0.0f;
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
+		mvMaterial* m_material;
 
 	};
 

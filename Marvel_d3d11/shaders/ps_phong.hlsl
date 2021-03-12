@@ -6,11 +6,6 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
     float3 diffuse;
     float3 specular;
     
-    float3 materialColor = { 1.0f, 0.0f, 0.0f };
-    float3 specularColor = { 1.0f, 1.0f, 1.0f };
-    float specularWeight = 1.0f;
-    float specularGloss = 15.0f;
-    
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
 	// fragment to light vector data

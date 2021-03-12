@@ -21,11 +21,6 @@ void main(triangle VS_Output gin[3], inout TriangleStream<GeoOut> triStream)
     float3 diffuse;
     float3 specular;
     
-    float3 materialColor = { 1.0f, 0.0f, 0.0f };
-    float3 specularColor = { 1.0f, 1.0f, 1.0f };
-    float specularWeight = 1.0f;
-    float specularGloss = 15.0f;
-    
     // normalize the mesh normal
     gin[0].viewNormal = normalize(gin[0].viewNormal);
 	// fragment to light vector data
