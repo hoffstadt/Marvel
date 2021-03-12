@@ -28,6 +28,9 @@ int main()
     mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
     tquad.setPosition(0.0f, 0.0f, 10.0f);
 
+    // create solid sphere
+    mvSolidSphere sphere1(graphics, 1);
+
     // create camera
     mvCamera camera(graphics);
 
@@ -101,6 +104,8 @@ int main()
         graphics.getTarget()->bindAsBuffer(graphics);
 
         tquad.draw(graphics);
+
+        sphere1.draw(graphics);
 
         imManager.endFrame();
 

@@ -1,8 +1,15 @@
+#include "transform.hlsli"
 
-float4 main(float2 pos : Position) : SV_POSITION
+struct VS_Output
 {
+    float4 n : Normal;
+    float4 pos : SV_POSITION;
+};
 
-    float4 position = float4(pos, 0.0f, 1.0f);
-
-    return position;
+VS_Output main(float3 pos : Position, float4 n : Normal)
+{
+    VS_Output output;
+    output.pos = mul(float4(pos, 1.0f), modelViewProj);
+    output.n = n;
+    return output;
 }

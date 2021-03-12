@@ -15,7 +15,7 @@ target_sources(marvel_d3d11
 		"core/mvMouse.cpp"
 		"core/mvTimer.cpp"
 
-		"geometry/mvSphere.cpp"
+		"geometry/Sphere.cpp"
 
 		"renderer/mvGraphics.cpp"
 		"renderer/mvVertexLayout.cpp"
@@ -36,6 +36,7 @@ target_sources(marvel_d3d11
 
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"
+		"renderer/drawables/mvSolidSphere.cpp"
 
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
