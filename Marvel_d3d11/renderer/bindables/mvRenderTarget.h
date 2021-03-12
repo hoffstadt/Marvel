@@ -16,6 +16,8 @@ namespace Marvel {
 		mvRenderTarget(mvGraphics& graphics, int width, int height);
 		mvRenderTarget(mvGraphics& graphics, ID3D11Texture2D* texture);
 
+		~mvRenderTarget();
+
 		void bind(mvGraphics& graphics) override {}
 		void mvRenderTarget::bindAsBuffer(mvGraphics& graphics);
 
@@ -26,10 +28,11 @@ namespace Marvel {
 
 	private:
 
-		UINT                             m_width;
-		UINT                             m_height;
-		mvComPtr<ID3D11RenderTargetView> m_target;
+		UINT                               m_width;
+		UINT                               m_height;
+		mvComPtr<ID3D11RenderTargetView>   m_target;
 		mvComPtr<ID3D11ShaderResourceView> m_shaderResource;
+		mvDepthStencil*                    m_depthStencil;
 
 	};
 

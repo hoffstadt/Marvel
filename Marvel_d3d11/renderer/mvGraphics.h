@@ -18,16 +18,16 @@ namespace Marvel {
 
 		void drawIndexed(UINT count);
 
-		ID3D11Device*        getDevice     ();
-		ID3D11DeviceContext* getContext    ();
-		IDXGISwapChain*      getSwapChain  ();
-		ID3D11Texture2D*     getFrameBuffer();
-		mvRenderTarget*      getTarget     ();
+		ID3D11Device*        getDevice      ();
+		ID3D11DeviceContext* getContext     ();
+		IDXGISwapChain*      getSwapChain   ();
+		ID3D11Texture2D*     getFrameBuffer ();
+		mvRenderTarget*      getTarget      ();
+		glm::mat4            getProjection  () const;
+		glm::mat4            getCamera      () const;
 
 		void      setProjection    (glm::mat4 proj);
 		void      setCamera        (glm::mat4 cam);
-		glm::mat4 getProjection    () const;
-		glm::mat4 getCamera        () const;
 
 	private:
 

@@ -24,6 +24,7 @@ target_sources(marvel_d3d11
 		"renderer/mvCamera.cpp"
 		"renderer/mvPointLight.cpp"
 
+		"renderer/bindables/mvDepthStencil.cpp"
 		"renderer/bindables/mvTopology.cpp"
 		"renderer/bindables/mvGeometryShader.cpp"
 		"renderer/bindables/mvPixelShader.cpp"

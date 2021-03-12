@@ -30,7 +30,7 @@ int main()
 
     // create textured quad
     mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
-    tquad.setPosition(0.0f, 0.0f, 10.0f);
+    tquad.setPosition(0.0f, 0.0f, 5.0f);
 
     // create solid sphere phong
     mvSolidSphere sphere1(graphics, 0);

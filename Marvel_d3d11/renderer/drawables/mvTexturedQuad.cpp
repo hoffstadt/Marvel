@@ -16,14 +16,15 @@ namespace Marvel {
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
+		vl.append(ElementType::Normal);
 		vl.append(ElementType::Texture2D);
 
 		// create vertex buffer
 		m_vertexBuffer = new mvVertexBuffer(graphics, std::vector<float>{
-			-0.5f,  0.5f, 1.0f, 0.f, 0.f,
-			 0.5f, -0.5f, 1.0f, 1.f, 1.f,
-			-0.5f, -0.5f, 1.0f, 0.f, 1.f,
-			 0.5f,  0.5f, 1.0f, 1.f, 0.f
+			-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.f, 0.f,
+			 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 1.f, 1.f,
+			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.f, 1.f,
+			 0.5f,  0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 1.f, 0.f
 		}, vl);
 
 		// create index buffer

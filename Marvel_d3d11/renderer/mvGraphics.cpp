@@ -1,6 +1,6 @@
 #include "mvGraphics.h"
 #include <assert.h>
-#include "mvRenderTarget.h"
+#include "mvCommonBindables.h"
 
 namespace Marvel {
 
@@ -45,11 +45,13 @@ namespace Marvel {
         assert(SUCCEEDED(hResult));
 
         m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
+        
 	}
 
     mvGraphics::~mvGraphics()
     {
         delete m_target;
+        m_target = nullptr;
     }
 
     void mvGraphics::drawIndexed(UINT count)
