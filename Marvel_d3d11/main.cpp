@@ -1,9 +1,11 @@
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
+#include "mvMath.h"
 #include "mvWindow.h"
 #include "mvGraphics.h"
 #include "mvImGuiManager.h"
 #include "mvCommonBindables.h"
+#include "mvCommonDrawables.h"
+#include "mvCamera.h"
+#include "mvTimer.h"
 
 using namespace Marvel;
 
@@ -22,87 +24,83 @@ int main()
     // create imgui manager
     mvImGuiManager imManager(window.getHandle(), graphics);
 
-    // Create Vertex Shader
-    mvVertexShader vertexShader(graphics, "../../../Marvel_d3d11/shaders/vs_texture.hlsl");
+    // create textured quad
+    mvTexturedQuad tquad(graphics, "../../../Resources/SpriteMapExample.png");
+    tquad.setPosition(0.0f, 0.0f, 10.0f);
 
-    // Create Pixel Shader
-    mvPixelShader pixelShader(graphics, "../../../Marvel_d3d11/shaders/ps_texture.hlsl");
+    // create camera
+    mvCamera camera(graphics);
 
-    // Create Topology
-    mvTopology topology(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    mvVertexLayout vl;
-    vl.append(ElementType::Position2D);
-    vl.append(ElementType::Texture2D);
-
-    // create vertex buffer
-    mvVertexBuffer vertexBuffer(graphics, 
-        {
-            -0.5f, 0.5f, 0.0f, 0.0f,
-            0.5f, -0.5f, 1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f, 1.0f,
-            0.5f, 0.5f, 1.0f, 0.0f
-        }, vl);
-
-    // create input layout
-    mvInputLayout inputLayout(graphics, vl, vertexShader);
-
-    // create Index Buffer
-    mvIndexBuffer indexBuffer(graphics,
-        std::vector<unsigned short>{
-            0, 1, 2,
-            0, 3, 1
-            }
-    );
-
-    // create sampler
-    mvSampler sampler(graphics);
-
-    // create texture
-    mvTexture texture(graphics, "../../../Resources/SpriteMapExample.png");
-
-    // create constant buffer
-    struct Constants // needs to be 16 bit aligned
-    {
-        DirectX::XMFLOAT4 color;
-    };
-
-    Constants cbuffer;
-    cbuffer.color = { 1.0f, 0.0f, 0.0f, 1.0f };
-    mvPixelConstantBuffer<Constants> pixelConstBuffer(graphics, cbuffer);
+    // timer
+    Marvel::mvTimer timer;
 
     // Main Loop
-    bool isRunning = true;
-    while (isRunning)
+    while (true)
     {
         // process all messages pending, but to not block for new messages
         if (const auto ecode = mvWindow::ProcessMessages())
             break;
 
+        const auto dt = timer.mark() * 1.0f;
+
+        while (const auto e = window.kbd.readKey())
+        {
+            if (!e->isPress())
+                continue;
+
+            switch (e->getCode())
+            {
+            case VK_ESCAPE:
+                if (window.cursorEnabled())
+                {
+                    window.disableCursor();
+                    window.mouse.enableRaw();
+                }
+                else
+                {
+                    window.enableCursor();
+                    window.mouse.disableRaw();
+                }
+                break;
+            }
+        }
+
+        if (!window.cursorEnabled())
+        {
+            if (window.kbd.keyIsPressed('W'))
+                camera.translate(0.0f, 0.0f, dt );
+
+            if (window.kbd.keyIsPressed('A'))
+                camera.translate(-dt, 0.0f, 0.0f);
+
+            if (window.kbd.keyIsPressed('S'))
+                camera.translate(0.0f, 0.0f, -dt);
+
+            if (window.kbd.keyIsPressed('D'))
+                camera.translate(dt, 0.0f, 0.0f);
+
+            if (window.kbd.keyIsPressed('R'))
+                camera.translate(0.0f, dt, 0.0f);
+
+            if (window.kbd.keyIsPressed('F'))
+                camera.translate(0.0f, -dt, 0.0f);
+        }
+
+        while (const auto delta = window.mouse.readRawDelta())
+        {
+            if (!window.cursorEnabled())
+                camera.rotate((float)delta->x, (float)delta->y);
+        }
+
         imManager.beginFrame();
 
-        pixelConstBuffer.update(graphics, cbuffer);
+        // bind camera
+        camera.bind(graphics);
+
         graphics.getTarget()->clear(graphics);
         graphics.getTarget()->bindAsBuffer(graphics);
 
-        
-
-        // imgui controls
-        ImGui::Begin("Settings");
-        ImGui::ColorEdit4("Color", (float*)&cbuffer);
-        ImGui::End();
-
-        texture.bind(graphics);
-        sampler.bind(graphics);
-        pixelConstBuffer.bind(graphics);
-        inputLayout.bind(graphics);
-        topology.bind(graphics);
-        indexBuffer.bind(graphics);
-        vertexBuffer.bind(graphics);
-        vertexShader.bind(graphics);
-        pixelShader.bind(graphics);
-
-        graphics.getContext()->DrawIndexed(indexBuffer.getCount(), 0u, 0u);
+        tquad.draw(graphics);
 
         imManager.endFrame();
 
@@ -110,5 +108,4 @@ int main()
 
     }
 
-    return 0;
 }

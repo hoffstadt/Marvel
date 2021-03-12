@@ -52,6 +52,21 @@ namespace Marvel {
         delete m_target;
     }
 
+    void mvGraphics::drawIndexed(UINT count)
+    {
+        m_deviceContext->DrawIndexed(count, 0u, 0u);
+    }
+
+    void mvGraphics::setProjection(glm::mat4 proj)
+    {
+        m_projection = proj;
+    }
+
+    void mvGraphics::setCamera(glm::mat4 cam)
+    {
+        m_camera = cam;
+    }
+
     ID3D11Device* mvGraphics::getDevice() 
     { 
         return m_device.Get(); 
@@ -75,6 +90,16 @@ namespace Marvel {
     mvRenderTarget* mvGraphics::getTarget() 
     { 
         return m_target; 
+    }
+
+    glm::mat4 mvGraphics::getProjection() const
+    {
+        return m_projection;
+    }
+
+    glm::mat4 mvGraphics::getCamera() const
+    {
+        return m_camera;
     }
 
 }

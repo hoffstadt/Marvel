@@ -9,7 +9,7 @@ namespace Marvel {
 	mvVertexShader::mvVertexShader(mvGraphics& graphics, const char* path)
 	{
         mvComPtr<ID3DBlob> shaderCompileErrorsBlob;
-        HRESULT hResult = D3DCompileFromFile(ToWide(path).c_str(), nullptr, nullptr, "main", "vs_5_0", 0, 0,
+        HRESULT hResult = D3DCompileFromFile(ToWide(path).c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0,
             m_blob.GetAddressOf(), shaderCompileErrorsBlob.GetAddressOf());
         if (FAILED(hResult))
         {

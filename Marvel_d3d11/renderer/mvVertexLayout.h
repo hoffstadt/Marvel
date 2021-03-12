@@ -11,7 +11,10 @@ namespace Marvel {
 	enum class ElementType
 	{
 		Position2D,
-		Texture2D
+		Position3D,
+		Texture2D,
+		Color,
+		Normal
 	};
 
 	//-----------------------------------------------------------------------------
@@ -26,12 +29,12 @@ namespace Marvel {
 
 		mvVertexElement(ElementType type);
 
-		DXGI_FORMAT getFormat() const;
-		int    getItemCount() const;
-		bool   isNormalized() const;
-		size_t getSize() const;
-		size_t getOffset() const;
-		const char* getSemantic() const;
+		DXGI_FORMAT getFormat   () const;
+		int         getItemCount() const;
+		bool        isNormalized() const;
+		size_t      getSize     () const;
+		size_t      getOffset   () const;
+		const char* getSemantic () const;
 
 	private:
 

@@ -15,12 +15,36 @@ namespace Marvel {
 			m_semantic = "Position";
 			break;
 
+		case ElementType::Position3D:
+			m_format = DXGI_FORMAT_R32G32B32_FLOAT;
+			m_itemCount = 3;
+			m_normalize = false;
+			m_size = sizeof(float) * 3;
+			m_semantic = "Position";
+			break;
+
 		case ElementType::Texture2D:
 			m_format = DXGI_FORMAT_R32G32_FLOAT;
 			m_itemCount = 2;
 			m_normalize = false;
 			m_size = sizeof(float) * 2;
 			m_semantic = "Texcoord";
+			break;
+
+		case ElementType::Color:
+			m_format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			m_itemCount = 4;
+			m_normalize = false;
+			m_size = sizeof(float) * 4;
+			m_semantic = "Color";
+			break;
+
+		case ElementType::Normal:
+			m_format = DXGI_FORMAT_R32G32B32_FLOAT;
+			m_itemCount = 3;
+			m_normalize = false;
+			m_size = sizeof(float) * 3;
+			m_semantic = "Normal";
 			break;
 
 		}
@@ -89,7 +113,8 @@ namespace Marvel {
 				element.getSemantic(),
 				0,
 				element.getFormat(),
-				0, 0,
+				0, 
+				D3D11_APPEND_ALIGNED_ELEMENT,
 				D3D11_INPUT_PER_VERTEX_DATA,
 				0
 				});

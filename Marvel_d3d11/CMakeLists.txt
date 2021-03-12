@@ -8,11 +8,20 @@ target_sources(marvel_d3d11
 	PRIVATE
 
 		"main.cpp"
+
 		"core/mvWindow.cpp"
 		"core/mvMarvelUtils.cpp"
+		"core/mvKeyboard.cpp"
+		"core/mvMouse.cpp"
+		"core/mvTimer.cpp"
+
+		"geometry/mvSphere.cpp"
+
 		"renderer/mvGraphics.cpp"
 		"renderer/mvVertexLayout.cpp"
 		"renderer/mvImGuiManager.cpp"
+		"renderer/mvProjection.cpp"
+		"renderer/mvCamera.cpp"
 
 		"renderer/bindables/mvTopology.cpp"
 		"renderer/bindables/mvPixelShader.cpp"
@@ -23,6 +32,10 @@ target_sources(marvel_d3d11
 		"renderer/bindables/mvTexture.cpp"
 		"renderer/bindables/mvSampler.cpp"
 		"renderer/bindables/mvRenderTarget.cpp"
+		"renderer/bindables/mvTransformConstantBuffer.cpp"
+
+		"renderer/drawables/mvDrawable.cpp"
+		"renderer/drawables/mvTexturedQuad.cpp"
 
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
@@ -42,11 +55,14 @@ target_include_directories(marvel_d3d11
 		"core"
 		"shaders"
 		"renderer"
+		"geometry"
 		"renderer/bindables"
+		"renderer/drawables"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
 		"../Dependencies/stb/"
+		"../Dependencies/glm/"
 
 )
 
