@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mvBindableRegistry.h"
 #include "mvPixelShader.h"
 #include "mvVertexShader.h"
 #include "mvGeometryShader.h"

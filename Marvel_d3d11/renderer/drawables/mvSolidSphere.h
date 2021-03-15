@@ -1,11 +1,12 @@
 #pragma once
 #include "mvDrawable.h"
+#include <memory>
+#include "mvMaterial.h"
 
 namespace Marvel {
 
 	// forward declarations
 	class mvGraphics;
-	class mvMaterial;
 
 	class mvSolidSphere : public mvDrawable
 	{
@@ -29,7 +30,7 @@ namespace Marvel {
 		float m_xangle = 0.0f;
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
-		mvMaterial* m_material = nullptr;
+		std::shared_ptr<mvMaterial> m_material = nullptr;
 
 	};
 

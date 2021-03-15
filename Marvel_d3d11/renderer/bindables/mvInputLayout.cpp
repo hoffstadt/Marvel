@@ -3,13 +3,13 @@
 
 namespace Marvel {
 
-	mvInputLayout::mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader& vertexShader)
+	mvInputLayout::mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader* vertexShader)
 		:
 		m_layout(std::move(vertexLayout))
 	{
 
 		const auto d3dLayout = m_layout.getD3DLayout();
-		const auto pBytecode = vertexShader.getBlob();
+		const auto pBytecode = vertexShader->getBlob();
 
 		HRESULT hResult = graphics.getDevice()->CreateInputLayout(d3dLayout.data(),
 			(UINT)d3dLayout.size(),

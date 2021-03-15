@@ -2,9 +2,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <assert.h>
-//#include "mvMarvelWin.h"
 #include "mvComPtr.h"
-//#include "mvMarvelUtils.h"
 #include "mvBindable.h"
 #include "mvGraphics.h"
 

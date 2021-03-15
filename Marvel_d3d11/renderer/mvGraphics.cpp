@@ -45,6 +45,8 @@ namespace Marvel {
         assert(SUCCEEDED(hResult));
 
         m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
+
+        mvBindableRegistry::Initialize(*this);
         
 	}
 

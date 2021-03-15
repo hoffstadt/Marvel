@@ -23,7 +23,10 @@ target_sources(marvel_d3d11
 		"renderer/mvProjection.cpp"
 		"renderer/mvCamera.cpp"
 		"renderer/mvPointLight.cpp"
+		"renderer/mvNode.cpp"
+		"renderer/mvModel.cpp"
 
+		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvMaterial.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
 		"renderer/bindables/mvTopology.cpp"
@@ -42,6 +45,7 @@ target_sources(marvel_d3d11
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"
 		"renderer/drawables/mvSolidSphere.cpp"
+		"renderer/drawables/mvMesh.cpp"
 
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"

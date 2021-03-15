@@ -1,0 +1,47 @@
+# Blender MTL File: 'GoblinX.blend'
+# Material Count: 4
+
+newmtl GoblinEye
+Ns 30.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.850000 0.850000 0.850000
+Ks 0.800000 0.800000 0.800000
+Ke 0.0 0.0 0.0
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Textures\GoblinEye.jpg
+
+newmtl GoblinIris
+Ns 80.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.200000 0.200000 0.200000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Textures\GoblinEye.jpg
+
+newmtl Gold
+Ns 3.25
+Ka 1.000000 1.000000 1.000000
+Kd 0.819608 0.576471 0.274510
+Ks 1.000000 0.972549 0.423529
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 3
+
+newmtl SkinGoblinA
+Ns 3.100000
+Ka 1.000000 1.000000 1.000000
+Kd 0.208109 0.208109 0.208109
+Ks 0.300000 0.300000 0.300000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Textures\MDif.png
+map_Ks Textures\MSpec.tif
+map_Kn Textures\MNorm.tif

@@ -12,7 +12,7 @@ namespace Marvel {
 
 	public:
 
-		mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader& vertexShader);
+		mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader* vertexShader);
 
 		void bind(mvGraphics& graphics) override;
 
