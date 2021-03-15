@@ -8,8 +8,11 @@ set(MV_D3D12 ${MV_D3D12})
 set(MV_OPENGL ${MV_OPENGL})
 set(MV_DEMOS ${MV_OPENGL})
 
-# various settings
+# various settings for third party libs
 set(GLFW_BUILD_DOCS OFF)
+set(BUILD_SHARED_LIBS OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 add_definitions(-D_USE_MATH_DEFINES)
 
 if(MV_VULKAN)
@@ -29,6 +32,7 @@ endif()
 
 add_subdirectory ("Dependencies/glfw")
 add_subdirectory ("Dependencies/glm")
+add_subdirectory ("Dependencies/assimp")
 
 if(WIN32)
 
