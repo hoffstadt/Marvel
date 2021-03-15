@@ -23,8 +23,8 @@ This project is still early and parts of it are being ported over from earlier p
 | Step | WebGL | OpenGL | Directx 11 | Directx 12 | Vulkan | Metal |
 |---------|-------|--------|------------|------------|--------|-------|
 | Windows Support | - | ✅ | ✅  | ✅ | ✅ |
-| Linux Support |
-| Apple Support |
+| Linux Support | - | | - | - |
+| Apple Support | - | | - | - |
 | Swap Chain Created | - | - | ✅ | | ✅ | |
 | Pipeline Abstraction | ✅ | ✅ | ✅ |
 | Bindable System | ✅ | ✅ | ✅ |
@@ -32,13 +32,13 @@ This project is still early and parts of it are being ported over from earlier p
 | Textures | ✅ | ✅ | ✅ |
 | Constant Buffer System | ✅ | ✅ | ✅ |
 | Camera System | ✅ | ✅ |
-| Dynamic Lighting | ✅ |
+| Dynamic Lighting | ✅ | | ✅ |
 | Environment Map |
 | Alpha Blending |
 | Normal Mapping |
 | Material System |
-| Scene Graph System |
-| Model Loading |
+| Scene Graph System | | | ✅ |
+| Model Loading | | | ✅ |
 | Outline Effect |
 | Shadows|
 
