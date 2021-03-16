@@ -15,6 +15,10 @@ set(ASSIMP_BUILD_TESTS OFF)
 set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 add_definitions(-D_USE_MATH_DEFINES)
 
+add_subdirectory ("Dependencies/glfw")
+add_subdirectory ("Dependencies/glm")
+add_subdirectory ("Dependencies/assimp")
+
 if(MV_VULKAN)
 	add_subdirectory ("Marvel_vulkan")
 	if(MV_DEMOS)
@@ -28,11 +32,6 @@ if(MV_OPENGL)
 		add_subdirectory ("Demo_OpenGL")
 	endif()
 endif()
-
-
-add_subdirectory ("Dependencies/glfw")
-add_subdirectory ("Dependencies/glm")
-add_subdirectory ("Dependencies/assimp")
 
 if(WIN32)
 
