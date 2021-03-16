@@ -8,8 +8,10 @@
 
 namespace Marvel {
 
-    mvTexture::mvTexture(mvGraphics& graphics, const std::string& path)
+    mvTexture::mvTexture(mvGraphics& graphics, const std::string& path, UINT slot)
     {
+        m_slot = slot;
+
         // Load Image
         int texWidth, texHeight, texNumChannels;
         int texForceNumChannels = 4;
@@ -44,7 +46,7 @@ namespace Marvel {
 
     void mvTexture::bind(mvGraphics& graphics)
     {
-        graphics.getContext()->PSSetShaderResources(0, 1, m_textureView.GetAddressOf());
+        graphics.getContext()->PSSetShaderResources(m_slot, 1, m_textureView.GetAddressOf());
     }
 
 }

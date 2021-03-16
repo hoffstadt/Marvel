@@ -44,4 +44,4 @@ d 1.000000
 illum 2
 map_Kd Textures\MDif.png
 map_Ks Textures\MSpec.tif
-map_Kn Textures\MNorm.tif
+map_Kn Textures\MNorm.png

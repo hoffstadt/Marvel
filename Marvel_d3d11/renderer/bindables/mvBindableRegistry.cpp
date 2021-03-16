@@ -8,8 +8,8 @@ namespace Marvel {
 
 	void mvBindableRegistry::Initialize(mvGraphics& graphics)
 	{
-		m_bindables.try_emplace("vs_texture", std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_texture.hlsl"));
-		m_bindables.try_emplace("ps_texture", std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_texture.hlsl"));
+		m_bindables.try_emplace("vs_texture", std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_phong.hlsl"));
+		m_bindables.try_emplace("ps_texture", std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_phong.hlsl"));
 		m_bindables.try_emplace("gs_null", std::make_shared<mvNullGeometryShader>(graphics));
 		m_bindables.try_emplace("sampler", std::make_shared<mvSampler>(graphics));
 		m_bindables.try_emplace("transCBuf", std::make_shared<mvTransformConstantBuffer>(graphics));

@@ -14,7 +14,9 @@ namespace Marvel {
 		Position3D,
 		Texture2D,
 		Color,
-		Normal
+		Normal,
+		Tangent,
+		Bitangent
 	};
 
 	//-----------------------------------------------------------------------------

@@ -1,6 +1,12 @@
 #include "pointlight.hlsli"
 
-float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
+Texture2D tex : register(t0);
+Texture2D nmap : register(t2);
+
+SamplerState splr : register(s0);
+
+float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent,
+float2 tc : Texcoord) : SV_Target
 {
     
     float3 diffuse;
@@ -8,8 +14,13 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
     
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
+    
+    const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
+    viewNormal = lerp(viewNormal, mappedNormal, 1.0f);
+    //viewNormal = mappedNormal;
+    
 	// fragment to light vector data
-    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewPos);
+    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
 	// attenuation
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
 	// diffuse
@@ -17,9 +28,9 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
     // specular
     specular = Speculate(
         diffuseColor * diffuseIntensity * specularColor, specularWeight, viewNormal,
-        lv.vToL, viewPos, att, specularGloss
+        lv.vToL, viewFragPos, att, specularGloss
     );
 
 	// final color
-    return float4(saturate((diffuse + ambient) * materialColor + specular), 1.0f);
+    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
 }

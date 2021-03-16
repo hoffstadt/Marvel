@@ -34,6 +34,9 @@ namespace Marvel {
 		vertexLayout.append(ElementType::Position3D);
 		vertexLayout.append(ElementType::Normal);
 		vertexLayout.append(ElementType::Texture2D);
+		vertexLayout.append(ElementType::Tangent);
+		vertexLayout.append(ElementType::Bitangent);
+		
 
 		aiString texFileName;
 
@@ -46,6 +49,10 @@ namespace Marvel {
 			addBindable(m_material);
 			addBindable(mvBindableRegistry::GetBindable("sampler"));
 			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str()));
+		}
+		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
+		{
+			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str(), 2));
 		}
 		else
 		{
@@ -68,6 +75,12 @@ namespace Marvel {
 			verticies.push_back(mesh.mNormals[i].z);
 			verticies.push_back(mesh.mTextureCoords[0][i].x);
 			verticies.push_back(mesh.mTextureCoords[0][i].y);
+			verticies.push_back(mesh.mTangents[i].x);
+			verticies.push_back(mesh.mTangents[i].y);
+			verticies.push_back(mesh.mTangents[i].z);
+			verticies.push_back(mesh.mBitangents[i].x);
+			verticies.push_back(mesh.mBitangents[i].y);
+			verticies.push_back(mesh.mBitangents[i].z);
 		}
 
 		for (int i = 0; i < mesh.mNumFaces; i++)

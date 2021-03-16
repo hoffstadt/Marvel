@@ -11,7 +11,7 @@ namespace Marvel {
 
 	public:
 
-		mvTexture(mvGraphics& graphics, const std::string& path);
+		mvTexture(mvGraphics& graphics, const std::string& path, UINT slot = 0);
 
 		void bind(mvGraphics& graphics) override;
 
@@ -19,6 +19,7 @@ namespace Marvel {
 
 		mvComPtr<ID3D11Texture2D>          m_texture;
 		mvComPtr<ID3D11ShaderResourceView> m_textureView;
+		UINT                               m_slot = 0u;
 
 	};
 

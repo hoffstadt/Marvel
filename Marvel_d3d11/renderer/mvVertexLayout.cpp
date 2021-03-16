@@ -47,6 +47,22 @@ namespace Marvel {
 			m_semantic = "Normal";
 			break;
 
+		case ElementType::Tangent:
+			m_format = DXGI_FORMAT_R32G32B32_FLOAT;
+			m_itemCount = 3;
+			m_normalize = false;
+			m_size = sizeof(float) * 3;
+			m_semantic = "Tangent";
+			break;
+
+		case ElementType::Bitangent:
+			m_format = DXGI_FORMAT_R32G32B32_FLOAT;
+			m_itemCount = 3;
+			m_normalize = false;
+			m_size = sizeof(float) * 3;
+			m_semantic = "Bitangent";
+			break;
+
 		}
 	}
 
