@@ -147,7 +147,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     //-----------------------------------------------------------------------------
     {
         mvComPtr<ID3DBlob> shaderCompileErrorsBlob;
-        HRESULT hResult = D3DCompileFromFile(L"../../../Demo_Directx11/shaders/shaders.hlsl", 
+        HRESULT hResult = D3DCompileFromFile(L"../../Demo_Directx11/shaders/shaders.hlsl", 
             nullptr, nullptr, "vs_main", "vs_5_0", 0, 0, g_vsBlob.GetAddressOf(), shaderCompileErrorsBlob.GetAddressOf());
         if (FAILED(hResult))
         {
@@ -171,7 +171,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     {
         mvComPtr<ID3DBlob> psBlob;
         mvComPtr<ID3DBlob> shaderCompileErrorsBlob;
-        HRESULT hResult = D3DCompileFromFile(L"../../../Demo_Directx11/shaders/shaders.hlsl", 
+        HRESULT hResult = D3DCompileFromFile(L"../../Demo_Directx11/shaders/shaders.hlsl", 
             nullptr, nullptr, "ps_main", "ps_5_0", 0, 0, psBlob.GetAddressOf(), shaderCompileErrorsBlob.GetAddressOf());
         if (FAILED(hResult))
         {
