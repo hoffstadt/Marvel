@@ -50,5 +50,6 @@ target_link_libraries(marvel_opengl
 
 	PRIVATE
 		glfw
-		opengl32
+		$<$<PLATFORM_ID:Linux>:GL>
+		$<$<PLATFORM_ID:Windows>:opengl32>
 )

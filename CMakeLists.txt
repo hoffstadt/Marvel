@@ -51,5 +51,8 @@ if(WIN32)
 			add_subdirectory ("Demo_Directx12")
 		endif()
 	endif()
-
+elseif(APPLE)
+	# apple specifics
+else() # linux
+	add_definitions(-DGLFW_EXPOSE_NATIVE_X11)
 endif()

@@ -46,7 +46,7 @@ namespace Marvel
 
 		mvUniformVector(mvGraphics& graphics, const T& data, int slot)
 			:
-			mvUniform(graphics, data, slot)
+			mvUniform<T>(graphics, data, slot)
 		{
 		}
 
@@ -86,7 +86,7 @@ namespace Marvel
 
 		mvUniform4Matrix(mvGraphics& graphics, const T& data, int slot)
 			:
-			mvUniform(graphics, data, slot)
+			mvUniform<T>(graphics, data, slot)
 		{
 		}
 
