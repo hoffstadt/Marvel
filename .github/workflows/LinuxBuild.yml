@@ -20,7 +20,8 @@ jobs:
 
     - name: Build Apps
       run: |
-        sudo apt install libxrandr
+        sudo apt-get update
+        sudo apt-get install libxrandr-dev
         mkdir cmake-build-debug
         cd cmake-build-debug
         cmake .. -DMV_OPENGL=ON -DMV_DEMOS=ON
