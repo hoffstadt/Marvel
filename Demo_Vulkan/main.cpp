@@ -399,8 +399,8 @@ int main() {
     //-----------------------------------------------------------------------------
     // Create Graphics Pipeline
     //-----------------------------------------------------------------------------
-    auto vertShaderCode = readFile("../../../Demo_Vulkan/shaders/vert.spv");
-    auto fragShaderCode = readFile("../../../Demo_Vulkan/shaders/frag.spv");
+    auto vertShaderCode = readFile("../../Demo_Vulkan/shaders/vert.spv");
+    auto fragShaderCode = readFile("../../Demo_Vulkan/shaders/frag.spv");
 
     auto createShaderModule = [](const std::vector<char>& code) {
 

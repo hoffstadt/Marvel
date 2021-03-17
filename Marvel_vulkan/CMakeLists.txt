@@ -44,6 +44,7 @@ target_link_libraries(marvel_vulkan
 
 	PRIVATE
 
-		vulkan-1
+		$<$<PLATFORM_ID:Linux>:vulkan>
+		$<$<PLATFORM_ID:Windows>:vulkan-1>
 		glfw
 )

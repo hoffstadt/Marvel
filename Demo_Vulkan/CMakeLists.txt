@@ -30,7 +30,7 @@ target_link_directories(demo_vulkan
 target_link_libraries(demo_vulkan
 
 	PRIVATE
-
-		vulkan-1
+		$<$<PLATFORM_ID:Linux>:vulkan>
+		$<$<PLATFORM_ID:Windows>:vulkan-1>
 		glfw
 )
