@@ -7,27 +7,34 @@ namespace Marvel {
 
 	mvTransformConstantBuffer::mvTransformConstantBuffer(mvGraphics& graphics)
 	{
-		m_buf = new mvVertexConstantBuffer<Transforms>(graphics);
-	}
+		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
+		auto& root = layout.getRoot();
+		root->add(Matrix, std::string("model"));
+		root->add(Matrix, std::string("modelView"));
+		root->add(Matrix, std::string("modelViewProject"));
+		root->finalize(0);
 
-	mvTransformConstantBuffer::~mvTransformConstantBuffer()
-	{
-		delete m_buf;
-		m_buf = nullptr;
+		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferRaw->getElement("model").set(glm::identity<glm::mat4>());
+		m_bufferRaw->getElement("modelView").set(glm::identity<glm::mat4>());
+		m_bufferRaw->getElement("modelViewProject").set(glm::identity<glm::mat4>());
+
+		m_buf = std::make_unique<mvVertexConstantBuffer>(graphics, *root.get(), 0, m_bufferRaw.get());
+		
 	}
 
 	void mvTransformConstantBuffer::bind(mvGraphics& graphics)
 	{
-		m_buf->update(graphics, getTransforms(graphics));
-		m_buf->bind(graphics);
-	}
-
-	mvTransformConstantBuffer::Transforms mvTransformConstantBuffer::getTransforms(mvGraphics& graphics)
-	{
 		auto model = m_parent->getTransform();
 		auto modelView = graphics.getCamera() * model;
 		auto modelViewProj = graphics.getProjection() * modelView;
-		return{ glm::transpose(model), glm::transpose(modelView), glm::transpose(modelViewProj) };
+
+		m_bufferRaw->getElement("model").set(glm::transpose(model));
+		m_bufferRaw->getElement("modelView").set(glm::transpose(modelView));
+		m_bufferRaw->getElement("modelViewProject").set(glm::transpose(modelViewProj));
+
+		m_buf->update(graphics, *m_bufferRaw);
+		m_buf->bind(graphics);
 	}
 
 }

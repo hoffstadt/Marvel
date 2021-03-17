@@ -44,7 +44,7 @@ namespace Marvel {
 		addBindable(std::make_shared<mvSampler>(graphics));
 		addBindable(std::make_shared<mvTexture>(graphics, path));
 		m_material = std::make_shared<mvMaterial>(graphics, glm::vec3{ 1.0f, 1.0f, 1.0f });
-		m_material->m_cbData.specularWeight = 0.0f;
+		//m_material->m_cbData.specularWeight = 0.0f;
 		addBindable(m_material);
 
 	}
@@ -86,10 +86,10 @@ namespace Marvel {
 			ImGui::SliderAngle("X-Angle", &m_xangle, -180.0f, 180.0f);
 			ImGui::SliderAngle("Y-Angle", &m_yangle, -180.0f, 180.0f);
 			ImGui::SliderAngle("Z-Angle", &m_zangle, -180.0f, 180.0f);
-			ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
-			ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
-			ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
-			ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
+			//ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
+			//ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
+			//ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
+			//ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
 		}
 		ImGui::End();
 	}

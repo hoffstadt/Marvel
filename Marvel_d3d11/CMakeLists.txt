@@ -25,6 +25,7 @@ target_sources(marvel_d3d11
 		"renderer/mvPointLight.cpp"
 		"renderer/mvNode.cpp"
 		"renderer/mvModel.cpp"
+		"renderer/mvBuffer.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvMaterial.cpp"
@@ -71,7 +72,7 @@ target_include_directories(marvel_d3d11
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/assimp/include"
+		"../Dependencies/assimp/include/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
 

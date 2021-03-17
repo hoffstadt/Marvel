@@ -20,22 +20,9 @@ namespace Marvel {
 
 	private:
 
-		struct mvPointLightCBuf
-		{
-			alignas(16) glm::vec3 pos;
-			alignas(16) glm::vec3 ambient;
-			alignas(16) glm::vec3 diffuseColor;
-			float diffuseIntensity;
-			float attConst;
-			float attLin;
-			float attQuad;
-		};
-
-	private:
-
-		mvSolidSphere                            m_sphere;
-		mvPointLightCBuf                         m_cbData;
-		mvGlobalConstantBuffer<mvPointLightCBuf> m_cbuf;
+		mvSolidSphere                          m_sphere;
+		std::unique_ptr<mvPixelConstantBuffer> m_buf;
+		std::unique_ptr<mvBuffer>              m_bufferRaw;
 
 	};
 

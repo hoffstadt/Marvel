@@ -12,14 +12,6 @@ namespace Marvel {
 
 	public:
 
-		struct Material
-		{
-			alignas(16) glm::vec3 materialColor;
-			alignas(16) glm::vec3 specularColor;
-			float specularWeight;
-			float specularGloss;
-		};
-
 		mvMaterial(mvGraphics& graphics, glm::vec3 materialColor = { 1.0f, 1.0f, 1.0f });
 
 		void bind(mvGraphics& graphics) override;
@@ -27,8 +19,8 @@ namespace Marvel {
 
 	public:
 
-		Material m_cbData;
-		mvGlobalConstantBuffer<Material> m_buf;
+		std::unique_ptr<mvPixelConstantBuffer> m_buf;
+		std::unique_ptr<mvBuffer>              m_bufferRaw;
 
 	};
 

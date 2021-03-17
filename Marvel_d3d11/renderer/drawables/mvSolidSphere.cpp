@@ -101,10 +101,10 @@ namespace Marvel {
 			ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
 			ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
 			ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
-			ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
-			ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
-			ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
-			ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
+			//ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
+			//ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
+			//ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
+			//ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
 		}
 		ImGui::End();
 	}

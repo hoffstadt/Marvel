@@ -44,8 +44,8 @@ namespace Marvel {
 		{
 
 			m_material = std::make_shared<mvMaterial>(graphics, glm::vec3{ 1.0f, 1.0f, 1.0f });
-			m_material->m_cbData.specularWeight = 0.0f;
-			m_material->m_cbData.specularGloss = 75.0f;
+			//m_material->m_cbData.specularWeight = 0.0f;
+			//m_material->m_cbData.specularGloss = 75.0f;
 			addBindable(m_material);
 			addBindable(mvBindableRegistry::GetBindable("sampler"));
 			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str()));
@@ -149,10 +149,10 @@ namespace Marvel {
 			dcheck(ImGui::SliderAngle("X-rotation", &tf.xRot, -180.0f, 180.0f));
 			dcheck(ImGui::SliderAngle("Y-rotation", &tf.yRot, -180.0f, 180.0f));
 			dcheck(ImGui::SliderAngle("Z-rotation", &tf.zRot, -180.0f, 180.0f));
-			ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
-			ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
-			ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
-			ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
+			//ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
+			//ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
+			//ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
+			//ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
 
 			if (dirty)
 			{

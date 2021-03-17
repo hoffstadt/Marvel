@@ -20,23 +20,14 @@ namespace Marvel {
 
 	public:
 
-		struct Transforms
-		{
-			glm::mat4 model = glm::identity<glm::mat4>();
-			glm::mat4 modelView = glm::identity<glm::mat4>();
-			glm::mat4 modelViewProj = glm::identity<glm::mat4>();
-		};
-
 		mvTransformConstantBuffer(mvGraphics& graphics);
-		~mvTransformConstantBuffer();
 
 		void bind(mvGraphics& graphics) override;
 
-		Transforms getTransforms(mvGraphics& graphics);
-
 	private:
 
-		mvVertexConstantBuffer<Transforms>* m_buf;
+		std::unique_ptr<mvVertexConstantBuffer> m_buf;
+		std::unique_ptr<mvBuffer>               m_bufferRaw;
 
 	};
 
