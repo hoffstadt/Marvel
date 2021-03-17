@@ -26,7 +26,6 @@ target_link_libraries(demo_opengl
 
 	PRIVATE
 		glfw
-		GL
 		$<$<PLATFORM_ID:Linux>:GL>
 		$<$<PLATFORM_ID:Windows>:opengl32>
 )
