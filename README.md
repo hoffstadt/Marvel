@@ -1,6 +1,7 @@
 ## Marvel
 
 [![build status](https://github.com/hoffstadt/Marvel/workflows/Windows%20Builds/badge.svg?branch=master)](https://github.com/hoffstadt/Marvel/actions?workflow=Windows%20Builds)
+[![build status](https://github.com/hoffstadt/Marvel/workflows/Linux%20Builds/badge.svg?branch=master)](https://github.com/hoffstadt/Marvel/actions?workflow=Linux%20Builds)
 
 This repo is the working location of the eventual [Dear PyGui](https://github.com/hoffstadt/DearPyGui) 3D Engine. It also contains several single file examples of creating a triangle with various graphics APIs. These were collected and modified from various sources as a starting point.
 
@@ -23,7 +24,7 @@ This project is still early and parts of it are being ported over from earlier p
 | Step | WebGL | OpenGL | Directx 11 | Directx 12 | Vulkan | Metal |
 |---------|-------|--------|------------|------------|--------|-------|
 | Windows Support | - | ✅ | ✅  | ✅ | ✅ |
-| Linux Support | - | | - | - |
+| Linux Support | - | ✅ | - | - | ✅ | - |
 | Apple Support | - | | - | - |
 | Swap Chain Created | - | - | ✅ | | ✅ | |
 | Pipeline Abstraction | ✅ | ✅ | ✅ |
@@ -60,6 +61,6 @@ git clone --recursive https://github.com/hoffstadt/Marvel
 4. In Visual Studio, use _Open a local folder_ to open _Marvel_ folder. This will use CMakeLists.txt as the project file.
 5. Run _Build All_.
 
-## Gallery (from older prototypes)
+## Gallery
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_1.png)
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_2.png)
