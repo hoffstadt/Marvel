@@ -20,14 +20,14 @@ jobs:
 
     - name: Build Apps
       run: |
-        sudo apt-get update
-        sudo apt-get install vulkan-tools
-        sudo apt-get install libvulkan-dev
-        sudo apt-get install vulkan-validationlayers-dev spirv-tools
-        sudo apt-get install libxi-dev
-        sudo apt-get install libxcursor-dev
-        sudo apt-get install libxinerama-dev
-        sudo apt-get install libxrandr-dev
+        sudo apt update
+        sudo apt install vulkan-tools
+        sudo apt install libvulkan-dev
+        sudo apt install vulkan-validationlayers-dev spirv-tools
+        sudo apt install libxi-dev
+        sudo apt install libxcursor-dev
+        sudo apt install libxinerama-dev
+        sudo apt install libxrandr-dev
         mkdir cmake-build-debug
         cd cmake-build-debug
         cmake .. -DMV_VULKAN=ON -DMV_OPENGL=ON -DMV_DEMOS=ON
