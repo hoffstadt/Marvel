@@ -15,9 +15,9 @@ namespace Marvel {
 		root->finalize(0);
 
 		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-		m_bufferRaw->getElement("model").set(glm::identity<glm::mat4>());
-		m_bufferRaw->getElement("modelView").set(glm::identity<glm::mat4>());
-		m_bufferRaw->getElement("modelViewProject").set(glm::identity<glm::mat4>());
+		m_bufferRaw->getElement("model") = glm::identity<glm::mat4>();
+		m_bufferRaw->getElement("modelView") = glm::identity<glm::mat4>();
+		m_bufferRaw->getElement("modelViewProject") = glm::identity<glm::mat4>();
 
 		m_buf = std::make_unique<mvVertexConstantBuffer>(graphics, *root.get(), 0, m_bufferRaw.get());
 		
@@ -29,9 +29,9 @@ namespace Marvel {
 		auto modelView = graphics.getCamera() * model;
 		auto modelViewProj = graphics.getProjection() * modelView;
 
-		m_bufferRaw->getElement("model").set(glm::transpose(model));
-		m_bufferRaw->getElement("modelView").set(glm::transpose(modelView));
-		m_bufferRaw->getElement("modelViewProject").set(glm::transpose(modelViewProj));
+		m_bufferRaw->getElement("model") = glm::transpose(model);
+		m_bufferRaw->getElement("modelView") = glm::transpose(modelView);
+		m_bufferRaw->getElement("modelViewProject") = glm::transpose(modelViewProj);
 
 		m_buf->update(graphics, *m_bufferRaw);
 		m_buf->bind(graphics);

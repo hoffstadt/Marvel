@@ -14,10 +14,10 @@ namespace Marvel {
 		root->finalize(0);
 
 		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-		m_bufferRaw->getElement("diffuseColor").set(materialColor);
-		m_bufferRaw->getElement("specularColor").set(glm::vec3{ 1.0f, 1.0f, 1.0f });
-		m_bufferRaw->getElement("specularWeight").set(1.0f);
-		m_bufferRaw->getElement("speculargloss").set(15.0f);
+		m_bufferRaw->getElement("diffuseColor") = materialColor;
+		m_bufferRaw->getElement("specularColor") = glm::vec3{ 1.0f, 1.0f, 1.0f };
+		m_bufferRaw->getElement("specularWeight") = 1.0f;
+		m_bufferRaw->getElement("speculargloss") = 15.0f;
 
 		m_buf = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 2, m_bufferRaw.get());
 	}

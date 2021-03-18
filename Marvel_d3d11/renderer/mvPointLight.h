@@ -21,8 +21,8 @@ namespace Marvel {
 	private:
 
 		mvSolidSphere                          m_sphere;
-		std::unique_ptr<mvPixelConstantBuffer> m_buf;
-		std::unique_ptr<mvBuffer>              m_bufferRaw;
+		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
+		std::unique_ptr<mvBuffer>              m_bufferData;
 
 	};
 

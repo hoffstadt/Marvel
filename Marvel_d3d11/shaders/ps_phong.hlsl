@@ -1,6 +1,7 @@
 #include "pointlight.hlsli"
 
 Texture2D tex : register(t0);
+Texture2D spec : register(t1);
 Texture2D nmap : register(t2);
 
 SamplerState splr : register(s0);
@@ -17,19 +18,27 @@ float2 tc : Texcoord) : SV_Target
     
     const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
     viewNormal = lerp(viewNormal, mappedNormal, 1.0f);
-    //viewNormal = mappedNormal;
     
 	// fragment to light vector data
     const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+    
+    // specular parameter determination (mapped or uniform)
+    float3 specularReflectionColor;
+    float specularPower = specularGloss;
+    const float4 specularSample = spec.Sample(splr, tc);
+    specularReflectionColor = specularSample.rgb;
+    //specularPower = pow(2.0f, specularSample.a * 13.0f);
+    
 	// attenuation
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+    
 	// diffuse
     diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
+    
     // specular
     specular = Speculate(
-        diffuseColor * diffuseIntensity * specularColor, specularWeight, viewNormal,
-        lv.vToL, viewFragPos, att, specularGloss
-    );
+        diffuseColor * diffuseIntensity * specularReflectionColor, specularWeight, viewNormal,
+        lv.vToL, viewFragPos, att, specularPower);
 
 	// final color
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);

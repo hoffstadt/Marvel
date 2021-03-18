@@ -83,12 +83,6 @@ namespace Marvel {
 		mvBufferElement(const mvBufferLayoutEntry* entry, char* bytes, size_t offset);
 
 		template<typename T>
-		void set(const T& value)
-		{
-			*this = value;
-		}
-
-		template<typename T>
 		operator T& () const
 		{
 			return *reinterpret_cast<T*>(m_bytes + m_offset + m_entry->getBeginningOffset());

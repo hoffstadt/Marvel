@@ -43,5 +43,5 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd Textures\MDif.png
-map_Ks Textures\MSpec.tif
+map_Ks Textures\MSpec.png
 map_Kn Textures\MNorm.png

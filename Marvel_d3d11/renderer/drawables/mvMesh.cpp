@@ -50,6 +50,10 @@ namespace Marvel {
 			addBindable(mvBindableRegistry::GetBindable("sampler"));
 			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str()));
 		}
+		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
+		{
+			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str(), 1));
+		}
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
 			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str(), 2));
@@ -61,7 +65,7 @@ namespace Marvel {
 		}
 
 		std::vector<float> verticies;
-		verticies.reserve(mesh.mNumVertices * 8);
+		verticies.reserve(mesh.mNumVertices * 14);
 		std::vector<unsigned short> indicies;
 		indicies.reserve(mesh.mNumFaces * 3);
 

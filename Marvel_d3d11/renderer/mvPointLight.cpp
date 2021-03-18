@@ -19,44 +19,52 @@ namespace Marvel {
 		root->add(Float, std::string("attQuad"));
 		root->finalize(0);
 
-		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-		m_bufferRaw->getElement("pos").set(pos);
-		m_bufferRaw->getElement("ambient").set(glm::vec3{0.05f, 0.05f, 0.05f});
-		m_bufferRaw->getElement("diffuseColor").set(glm::vec3{1.0f, 1.0f, 1.0f});
-		m_bufferRaw->getElement("diffuseIntensity").set(1.0f);
-		m_bufferRaw->getElement("attConst").set(1.0f);
-		m_bufferRaw->getElement("attLin").set(0.045f);
-		m_bufferRaw->getElement("attQuad").set(0.0075f);
+		m_bufferData = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferData->getElement("pos") = pos;
+		m_bufferData->getElement("ambient") = glm::vec3{0.05f, 0.05f, 0.05f};
+		m_bufferData->getElement("diffuseColor") = glm::vec3{1.0f, 1.0f, 1.0f};
+		m_bufferData->getElement("diffuseIntensity") = 1.0f;
+		m_bufferData->getElement("attConst") = 1.0f;
+		m_bufferData->getElement("attLin") = 0.045f;
+		m_bufferData->getElement("attQuad") = 0.0075f;
 
-		m_buf = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 1, m_bufferRaw.get());
+		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 1, m_bufferData.get());
 		m_sphere.setPosition(pos.x, pos.y, pos.z);
 
 	}
 
 	void mvPointLight::show_imgui_windows()
 	{
-		//if (ImGui::Begin("Light"))
-		//{
 
-		//	ImGui::Text("Position");
-		//	ImGui::SliderFloat("X", &m_bufferRaw->getElement("pos").x, -60.0f, 60.0f, "%.1f");
-		//	ImGui::SliderFloat("Y", &m_cbData.pos.y, -60.0f, 60.0f, "%.1f");
-		//	ImGui::SliderFloat("Z", &m_cbData.pos.z, -60.0f, 60.0f, "%.1f");
+		glm::vec3& pos = m_bufferData->getElement("pos");
+		glm::vec3& ambient = m_bufferData->getElement("ambient");
+		glm::vec3& diffuseColor = m_bufferData->getElement("diffuseColor");
+		float& diffuseIntensity = m_bufferData->getElement("diffuseIntensity");
+		float& attConst = m_bufferData->getElement("attConst");
+		float& attLin = m_bufferData->getElement("attLin");
+		float& attQuad = m_bufferData->getElement("attQuad");
 
+		if (ImGui::Begin("Light"))
+		{
 
-		//	ImGui::Text("Intensity/Color");
-		//	ImGui::SliderFloat("Intensity", &m_cbData.diffuseIntensity, 0.01f, 2.0f, "%.2f");
-		//	ImGui::ColorEdit3("Diffuse Color", &m_cbData.diffuseColor.x);
-		//	ImGui::ColorEdit3("Ambient", &m_cbData.ambient.x);
+			ImGui::Text("Position");
+			ImGui::SliderFloat("X", &pos.x, -60.0f, 60.0f, "%.1f");
+			ImGui::SliderFloat("Y", &pos.y, -60.0f, 60.0f, "%.1f");
+			ImGui::SliderFloat("Z", &pos.z, -60.0f, 60.0f, "%.1f");
 
-		//	ImGui::Text("Falloff");
-		//	ImGui::SliderFloat("Constant", &m_cbData.attConst, 0.05f, 10.0f, "%.2f");
-		//	ImGui::SliderFloat("Linear", &m_cbData.attLin, 0.0001f, 4.0f, "%.4f");
-		//	ImGui::SliderFloat("Quadratic", &m_cbData.attQuad, 0.0000001f, 10.0f, "%.7f");
-		//}
-		//ImGui::End();
+			ImGui::Text("Intensity/Color");
+			ImGui::SliderFloat("Intensity", &diffuseIntensity, 0.01f, 2.0f, "%.2f");
+			ImGui::ColorEdit3("Diffuse Color", &diffuseColor.x);
+			ImGui::ColorEdit3("Ambient", &ambient.x);
 
-		//m_sphere.setPosition(m_cbData.pos.x, m_cbData.pos.y, m_cbData.pos.z);
+			ImGui::Text("Falloff");
+			ImGui::SliderFloat("Constant", &attConst, 0.05f, 10.0f, "%.2f");
+			ImGui::SliderFloat("Linear", &attLin, 0.0001f, 4.0f, "%.4f");
+			ImGui::SliderFloat("Quadratic", &attQuad, 0.0000001f, 10.0f, "%.7f");
+		}
+		ImGui::End();
+
+		m_sphere.setPosition(pos.x, pos.y, pos.z);
 
 	}
 
@@ -67,15 +75,16 @@ namespace Marvel {
 
 	void mvPointLight::bind(mvGraphics& graphics, glm::mat4 view)
 	{
-		m_buf->update(graphics, *m_bufferRaw);
-		m_buf->bind(graphics);
+		m_buffer->update(graphics, *m_bufferData);
+		m_buffer->bind(graphics);
 	}
 
 	void mvPointLight::setPosition(float x, float y, float z)
 	{
-		//m_cbData.pos.x = x;
-		//m_cbData.pos.y = y;
-		//m_cbData.pos.z = z;
+		glm::vec3& pos = m_bufferData->getElement("pos");
+		pos.x = x;
+		pos.y = y;
+		pos.z = z;
 	}
 
 }
