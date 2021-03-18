@@ -13,6 +13,7 @@ namespace Marvel {
 		Float3,
 		Matrix,
 		Struct,
+		Bool,
 		Empty
 	};
 
@@ -145,6 +146,13 @@ namespace Marvel {
 	{
 		using SysType = glm::mat4;
 		static constexpr size_t hlslSize = sizeof(SysType);
+		static constexpr bool valid = true;
+	};
+
+	template<> struct mvMap<Bool>
+	{
+		using SysType = bool;
+		static constexpr size_t hlslSize = 4u;
 		static constexpr bool valid = true;
 	};
 }

@@ -56,6 +56,10 @@ namespace Marvel {
 			m_offset = AdvanceIfCrossesBoundary(offset, mvMap<Matrix>::hlslSize);
 			return m_offset + mvMap<Matrix>::hlslSize;
 
+		case Bool:
+			m_offset = AdvanceIfCrossesBoundary(offset, mvMap<Bool>::hlslSize);
+			return m_offset + mvMap<Bool>::hlslSize;
+
 		case Struct:
 			return finalizeStruct(offset);
 
@@ -101,6 +105,9 @@ namespace Marvel {
 
 		case Matrix:
 			return m_offset + mvMap<Matrix>::hlslSize;
+
+		case Bool:
+			return m_offset + mvMap<Bool>::hlslSize;
 
 		case Struct:
 			return AdvanceToBoundary(m_entries.back().second.getEndingOffset());

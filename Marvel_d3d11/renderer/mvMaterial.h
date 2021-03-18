@@ -1,13 +1,14 @@
 #pragma once
-#include <filesystem>
 #include <memory>
-#include "mvDrawable.h"
-#include "mvMaterial.h"
+#include <filesystem>
+#include <vector>
+#include "mvBindable.h"
+#include "mvConstantBuffer.h"
+#include "mvStep.h"
 
 //-----------------------------------------------------------------------------
 // forward declarations
 //-----------------------------------------------------------------------------
-struct aiMesh;
 struct aiMaterial;
 
 namespace Marvel {
@@ -18,23 +19,21 @@ namespace Marvel {
 	class mvGraphics;
 
 	//-----------------------------------------------------------------------------
-	// mvMesh
+	// mvMaterial
 	//-----------------------------------------------------------------------------
-	class mvMesh : public mvDrawable
+	class mvMaterial
 	{
 
 	public:
 
-		mvMesh(mvGraphics& graphics, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
+		mvMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path);
 
-		void      submit            (glm::mat4 accumulatedTranform) const;
-		glm::mat4 getTransform      () const override;
-		void      show_imgui_windows(const char* name);
+		std::vector<mvStep> getSteps() const;
+
 
 	private:
 
-		mutable glm::mat4 m_transform;
-
+		std::vector<mvStep> m_steps;
 
 	};
 

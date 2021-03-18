@@ -33,20 +33,19 @@ namespace Marvel {
 				0, 3, 1
 			});
 
+		mvStep step;
 
 		// create vertex shader
 		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_texture.hlsl");
-		addBindable(vshader);
-		addBindable(std::make_shared<mvInputLayout>(graphics, vl,
+		step.addBindable(vshader);
+		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 			static_cast<mvVertexShader*>(vshader.get())));
-		addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_texture.hlsl"));
-		addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
-		addBindable(std::make_shared<mvSampler>(graphics));
-		addBindable(std::make_shared<mvTexture>(graphics, path));
-		m_material = std::make_shared<mvMaterial>(graphics, glm::vec3{ 1.0f, 1.0f, 1.0f });
-		//m_material->m_cbData.specularWeight = 0.0f;
-		addBindable(m_material);
+		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_texture.hlsl"));
+		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+		step.addBindable(std::make_shared<mvSampler>(graphics));
+		step.addBindable(std::make_shared<mvTexture>(graphics, path));
 
+		addStep(step);
 	}
 
 	glm::mat4 mvTexturedQuad::getTransform() const

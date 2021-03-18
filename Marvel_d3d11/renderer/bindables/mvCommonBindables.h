@@ -15,4 +15,3 @@
 #include "mvTransformConstantBuffer.h"
 #include "mvNullGeometryShader.h"
 #include "mvDepthStencil.h"
-#include "mvMaterial.h"

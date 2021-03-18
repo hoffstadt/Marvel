@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include "mvMath.h"
 #include "mvCommonBindables.h"
+#include "mvStep.h"
 
 namespace Marvel {
 
@@ -25,16 +26,16 @@ namespace Marvel {
 		virtual void      draw(mvGraphics& graphics) const;
 		virtual glm::mat4 getTransform() const = 0;
 
-		void addBindable(std::shared_ptr<mvBindable> bindable);
-		void bind(mvGraphics& graphics) const;
+		void bind         (mvGraphics& graphics) const;
 		UINT getIndexCount() const;
+		void addStep      (mvStep step);
 
 	protected:
 
-		std::shared_ptr<mvIndexBuffer>           m_indexBuffer;
-		std::shared_ptr<mvVertexBuffer>          m_vertexBuffer;
-		std::shared_ptr<mvTopology>              m_topology;
-		std::vector<std::shared_ptr<mvBindable>> m_bindables;
+		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
+		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
+		std::shared_ptr<mvTopology>     m_topology;
+		std::vector<mvStep>             m_steps;
 
 	};
 

@@ -6,22 +6,19 @@
 
 namespace Marvel {
 
-	void mvDrawable::addBindable(std::shared_ptr<mvBindable> bindable)
-	{
-		m_bindables.push_back(bindable);
-	}
-
 	void mvDrawable::bind(mvGraphics& graphics) const
 	{
 		m_indexBuffer->bind(graphics);
 		m_vertexBuffer->bind(graphics);
 		m_topology->bind(graphics);
 
-		for (auto& bindable : m_bindables)
-		{
-			bindable->setParent(this);
-			bindable->bind(graphics);
-		}
+		for (auto& step : m_steps)
+			step.bind(graphics, this);
+	}
+
+	void mvDrawable::addStep(mvStep step)
+	{
+		m_steps.push_back(std::move(step));
 	}
 
 	UINT mvDrawable::getIndexCount() const

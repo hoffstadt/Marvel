@@ -2,6 +2,7 @@
 #include "mvMarvelUtils.h"
 #include <imgui.h>
 #include "mvGraphics.h"
+#include "mvMaterial.h"
 #include "mvCommonBindables.h"
 #include "assimp/Importer.hpp"
 #include "assimp/Scene.h"
@@ -37,33 +38,6 @@ namespace Marvel {
 		vertexLayout.append(ElementType::Tangent);
 		vertexLayout.append(ElementType::Bitangent);
 		
-
-		aiString texFileName;
-
-		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
-		{
-
-			m_material = std::make_shared<mvMaterial>(graphics, glm::vec3{ 1.0f, 1.0f, 1.0f });
-			//m_material->m_cbData.specularWeight = 0.0f;
-			//m_material->m_cbData.specularGloss = 75.0f;
-			addBindable(m_material);
-			addBindable(mvBindableRegistry::GetBindable("sampler"));
-			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str()));
-		}
-		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
-		{
-			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str(), 1));
-		}
-		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
-		{
-			addBindable(std::make_shared<mvTexture>(graphics, rootPath + texFileName.C_Str(), 2));
-		}
-		else
-		{
-			m_material = std::make_shared<mvMaterial>(graphics, glm::vec3{ 1.0f, 1.0f, 1.0f });
-			addBindable(m_material);
-		}
-
 		std::vector<float> verticies;
 		verticies.reserve(mesh.mNumVertices * 14);
 		std::vector<unsigned short> indicies;
@@ -103,15 +77,12 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indicies);
 
-		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("vs_texture");
+		mvMaterial mat = mvMaterial(graphics, material, rootPath);
 
-		addBindable(vshader);
-		addBindable(std::make_shared<mvInputLayout>(graphics, vertexLayout, 
-			static_cast<mvVertexShader*>(vshader.get())));
-		addBindable(mvBindableRegistry::GetBindable("ps_texture"));
-		addBindable(mvBindableRegistry::GetBindable("gs_null"));
-		addBindable(mvBindableRegistry::GetBindable("transCBuf"));
+		auto steps = mat.getSteps();
+
+		for (auto& step : steps)
+			addStep(step);
 
 	}
 

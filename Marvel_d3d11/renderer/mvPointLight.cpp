@@ -28,7 +28,7 @@ namespace Marvel {
 		m_bufferData->getElement("attLin") = 0.045f;
 		m_bufferData->getElement("attQuad") = 0.0075f;
 
-		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 1, m_bufferData.get());
+		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 0, m_bufferData.get());
 		m_sphere.setPosition(pos.x, pos.y, pos.z);
 
 	}

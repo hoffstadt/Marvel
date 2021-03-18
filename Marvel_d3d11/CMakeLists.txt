@@ -26,9 +26,10 @@ target_sources(marvel_d3d11
 		"renderer/mvNode.cpp"
 		"renderer/mvModel.cpp"
 		"renderer/mvBuffer.cpp"
+		"renderer/mvStep.cpp"
+		"renderer/mvMaterial.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
-		"renderer/bindables/mvMaterial.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
 		"renderer/bindables/mvTopology.cpp"
 		"renderer/bindables/mvGeometryShader.cpp"
