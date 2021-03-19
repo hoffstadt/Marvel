@@ -23,7 +23,7 @@ float2 tc : Texcoord) : SV_Target
 {
     
     float3 diffuse;
-    float3 specular;
+    float3 specularReflected;
     
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
@@ -61,10 +61,10 @@ float2 tc : Texcoord) : SV_Target
     diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
     
     // specular
-    specular = Speculate(
+    specularReflected = Speculate(
         diffuseColor * diffuseIntensity * specularReflectionColor, specularWeight, viewNormal,
         lv.vToL, viewFragPos, att, specularPower);
 
 	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
+    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected), 1.0f);
 }

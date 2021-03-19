@@ -10,7 +10,7 @@ namespace Marvel {
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
 		auto& root = layout.getRoot();
-		root->add(Float3, std::string("pos"));
+		root->add(Float3, std::string("viewLightPos"));
 		root->add(Float3, std::string("ambient"));
 		root->add(Float3, std::string("diffuseColor"));
 		root->add(Float, std::string("diffuseIntensity"));
@@ -20,7 +20,7 @@ namespace Marvel {
 		root->finalize(0);
 
 		m_bufferData = std::make_unique<mvBuffer>(std::move(layout));
-		m_bufferData->getElement("pos") = pos;
+		m_bufferData->getElement("viewLightPos") = pos;
 		m_bufferData->getElement("ambient") = glm::vec3{0.05f, 0.05f, 0.05f};
 		m_bufferData->getElement("diffuseColor") = glm::vec3{1.0f, 1.0f, 1.0f};
 		m_bufferData->getElement("diffuseIntensity") = 1.0f;
@@ -36,7 +36,7 @@ namespace Marvel {
 	void mvPointLight::show_imgui_windows()
 	{
 
-		glm::vec3& pos = m_bufferData->getElement("pos");
+		glm::vec3& pos = m_bufferData->getElement("viewLightPos");
 		glm::vec3& ambient = m_bufferData->getElement("ambient");
 		glm::vec3& diffuseColor = m_bufferData->getElement("diffuseColor");
 		float& diffuseIntensity = m_bufferData->getElement("diffuseIntensity");
@@ -81,7 +81,7 @@ namespace Marvel {
 
 	void mvPointLight::setPosition(float x, float y, float z)
 	{
-		glm::vec3& pos = m_bufferData->getElement("pos");
+		glm::vec3& pos = m_bufferData->getElement("viewLightPos");
 		pos.x = x;
 		pos.y = y;
 		pos.z = z;

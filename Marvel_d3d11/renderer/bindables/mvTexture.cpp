@@ -24,22 +24,31 @@ namespace Marvel {
         D3D11_TEXTURE2D_DESC textureDesc = {};
         textureDesc.Width = texWidth;
         textureDesc.Height = texHeight;
-        textureDesc.MipLevels = 1;
+        textureDesc.MipLevels = 0;
         textureDesc.ArraySize = 1;
         textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        //textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
         textureDesc.SampleDesc.Count = 1;
         textureDesc.SampleDesc.Quality = 0;
-        textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+        textureDesc.CPUAccessFlags = 0;
+        textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
-        D3D11_SUBRESOURCE_DATA textureSubresourceData = {};
-        textureSubresourceData.pSysMem = testTextureBytes;
-        textureSubresourceData.SysMemPitch = texBytesPerRow;
+        graphics.getDevice()->CreateTexture2D(&textureDesc, nullptr, m_texture.GetAddressOf());
+
+        graphics.getContext()->UpdateSubresource(m_texture.Get(), 0u, nullptr, testTextureBytes, texBytesPerRow, 0u);
+
+        // create the resource view on the texture
+        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = textureDesc.Format;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = 1;
 
 
-        graphics.getDevice()->CreateTexture2D(&textureDesc, &textureSubresourceData, m_texture.GetAddressOf());
-        graphics.getDevice()->CreateShaderResourceView(m_texture.Get(), nullptr, m_textureView.GetAddressOf());
+        graphics.getDevice()->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_textureView.GetAddressOf());
+
+        graphics.getContext()->GenerateMips(m_textureView.Get());
 
         free(testTextureBytes);
     }
