@@ -57,17 +57,18 @@ int main()
         graphics.getTarget()->bindAsBuffer(graphics);
         graphics.getTarget()->clear(graphics);
         
-
         // bind camera
         camera.bind(graphics);
 
         // bind light
         light.bind(graphics, camera.getMatrix());
         light.show_imgui_windows();
-        light.getSphere()->draw(graphics);
+        
 
         model.submit();
         model.draw(graphics);
+
+        light.getSphere()->draw(graphics);
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(25, 25),

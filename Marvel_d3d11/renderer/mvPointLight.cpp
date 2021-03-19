@@ -75,8 +75,17 @@ namespace Marvel {
 
 	void mvPointLight::bind(mvGraphics& graphics, glm::mat4 view)
 	{
+		glm::vec3& pos = m_bufferData->getElement("viewLightPos");
+		glm::vec3 posCopy = pos;
+		glm::vec4 out = view * glm::vec4(pos, 1.0f);
+		pos.x = out.x;
+		pos.y = out.y;
+		pos.z = out.z;
+
 		m_buffer->update(graphics, *m_bufferData);
 		m_buffer->bind(graphics);
+
+		pos = posCopy;
 	}
 
 	void mvPointLight::setPosition(float x, float y, float z)
