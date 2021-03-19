@@ -72,7 +72,7 @@ namespace Marvel {
 	size_t mvBufferLayoutEntry::finalizeStruct(size_t offset)
 	{
 		assert(m_entries.size() != 0u);
-		m_offset = offset;
+		m_offset = AdvanceToBoundary(offset);
 		
 		auto current_offset = m_offset;
 		for (auto& entry : m_entries)

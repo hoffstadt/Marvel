@@ -12,8 +12,8 @@ namespace Marvel {
 		Float,
 		Float3,
 		Matrix,
-		Struct,
 		Bool,
+		Struct,
 		Empty
 	};
 

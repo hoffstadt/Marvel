@@ -29,7 +29,7 @@ namespace Marvel {
 		bufferRaw->getElement("useSpecularMap") = true;
 		bufferRaw->getElement("specularColor") = glm::vec3{ 1.0f, 1.0f, 1.0f };
 		bufferRaw->getElement("specularWeight") = 1.0f;
-		bufferRaw->getElement("speculargloss") = 15.0f;
+		bufferRaw->getElement("specularGloss") = 15.0f;
 		bufferRaw->getElement("useNormalMap") = true;
 		bufferRaw->getElement("normalMapWeight") = 1.0f;
 
