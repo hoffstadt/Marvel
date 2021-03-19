@@ -35,7 +35,8 @@ int main()
     mvCamera camera(graphics, {0.0f, 0.0f, -5.0f});
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
 
     // timer
     Marvel::mvTimer timer;
