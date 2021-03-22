@@ -17,3 +17,4 @@
 #include "mvDepthStencil.h"
 #include "mvBlender.h"
 #include "mvRasterizer.h"
+#include "mvCubeTexture.h"
