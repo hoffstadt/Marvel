@@ -48,33 +48,33 @@ namespace Marvel {
 		if (simple == 1)
 		{
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_shader.hlsl");
+			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_shader.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_shader.hlsl"));
+			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_shader.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
 		else if(simple == 2)
 		{
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_flat.hlsl");
+			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_flat.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_flat.hlsl"));
-			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel_d3d11/shaders/gs_flat.hlsl"));
+			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_flat.hlsl"));
+			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
 		else
 		{
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_phong.hlsl");
+			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_phong.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_phong.hlsl"));
+			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_phong.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}

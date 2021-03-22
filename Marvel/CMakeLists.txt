@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 3.13)
 
-add_executable(marvel_d3d11)
-set_property(TARGET marvel_d3d11 PROPERTY CXX_STANDARD 17)
+add_executable(marvel)
+set_property(TARGET marvel PROPERTY CXX_STANDARD 17)
 
-target_sources(marvel_d3d11
+target_sources(marvel
 
 	PRIVATE
 
@@ -63,7 +63,7 @@ target_sources(marvel_d3d11
 		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp"
 )
 
-target_include_directories(marvel_d3d11
+target_include_directories(marvel
 
 	PRIVATE
 
@@ -82,7 +82,7 @@ target_include_directories(marvel_d3d11
 
 )
 
-target_link_libraries(marvel_d3d11
+target_link_libraries(marvel
 	PRIVATE
 		d3d11
 		d3dcompiler

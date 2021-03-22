@@ -36,11 +36,11 @@ namespace Marvel {
 		mvStep step;
 
 		// create vertex shader
-		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel_d3d11/shaders/vs_texture.hlsl");
+		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_texture.hlsl");
 		step.addBindable(vshader);
 		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel_d3d11/shaders/ps_texture.hlsl"));
+		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_texture.hlsl"));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		step.addBindable(std::make_shared<mvSampler>(graphics));
 		step.addBindable(std::make_shared<mvTexture>(graphics, path));
