@@ -3,6 +3,7 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "Sphere.h"
+#include "mvTechnique.h"
 
 namespace Marvel {
 
@@ -79,7 +80,10 @@ namespace Marvel {
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
 
-		addStep(step);
+
+		mvTechnique technique;
+		technique.addStep(step);
+		addTechnique(technique);
 
 	}
 

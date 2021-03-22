@@ -28,6 +28,9 @@ target_sources(marvel
 		"renderer/mvBuffer.cpp"
 		"renderer/mvStep.cpp"
 		"renderer/mvMaterial.cpp"
+		"renderer/mvStep.cpp"
+		"renderer/mvTechnique.cpp"
+		"renderer/mvJob.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"

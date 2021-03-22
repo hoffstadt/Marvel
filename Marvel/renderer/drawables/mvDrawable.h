@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include "mvMath.h"
 #include "mvCommonBindables.h"
-#include "mvStep.h"
+#include "mvTechnique.h"
 
 namespace Marvel {
 
@@ -28,14 +28,14 @@ namespace Marvel {
 
 		void bind         (mvGraphics& graphics) const;
 		UINT getIndexCount() const;
-		void addStep      (mvStep step);
+		void addTechnique (mvTechnique technique);
 
 	protected:
 
 		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
 		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
 		std::shared_ptr<mvTopology>     m_topology;
-		std::vector<mvStep>             m_steps;
+		std::vector<mvTechnique>        m_techniques;
 
 	};
 

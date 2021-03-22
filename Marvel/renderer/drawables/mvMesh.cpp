@@ -7,6 +7,7 @@
 #include "assimp/Importer.hpp"
 #include "assimp/Scene.h"
 #include "assimp/postprocess.h"
+#include "mvTechnique.h"
 
 namespace Marvel {
 
@@ -81,8 +82,12 @@ namespace Marvel {
 
 		auto steps = mat.getSteps();
 
+		
+		mvTechnique technique;
 		for (auto& step : steps)
-			addStep(step);
+			technique.addStep(step);
+		
+		addTechnique(technique);
 
 	}
 

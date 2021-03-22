@@ -11,14 +11,11 @@ namespace Marvel {
 		m_indexBuffer->bind(graphics);
 		m_vertexBuffer->bind(graphics);
 		m_topology->bind(graphics);
-
-		for (auto& step : m_steps)
-			step.bind(graphics, this);
 	}
 
-	void mvDrawable::addStep(mvStep step)
+	void mvDrawable::addTechnique(mvTechnique technique)
 	{
-		m_steps.push_back(std::move(step));
+		m_techniques.push_back(std::move(technique));
 	}
 
 	UINT mvDrawable::getIndexCount() const
