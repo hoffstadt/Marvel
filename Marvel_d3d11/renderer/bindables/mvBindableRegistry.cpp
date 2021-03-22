@@ -13,6 +13,7 @@ namespace Marvel {
 		m_bindables.try_emplace("gs_null", std::make_shared<mvNullGeometryShader>(graphics));
 		m_bindables.try_emplace("sampler", std::make_shared<mvSampler>(graphics));
 		m_bindables.try_emplace("transCBuf", std::make_shared<mvTransformConstantBuffer>(graphics));
+		m_bindables.try_emplace("blender", std::make_shared<mvBlender>(graphics, true));
 	}
 
 	std::shared_ptr<mvBindable> mvBindableRegistry::GetBindable(const std::string& ID)

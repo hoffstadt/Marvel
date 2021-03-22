@@ -25,6 +25,14 @@ float2 tc : Texcoord) : SV_Target
     float3 diffuse;
     float3 specularReflected;
     
+    // alpha test
+    float4 dtex = tex.Sample(splr, tc);
+    clip(dtex.a < 0.1f ? -1 : 1);
+    
+    // flip normal if backface
+    if(dot(viewNormal, viewFragPos) >= 0.0f)
+        viewNormal = -viewNormal;
+    
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
   
@@ -42,17 +50,12 @@ float2 tc : Texcoord) : SV_Target
     float specularPower = specularGloss;
     const float4 specularSample = spec.Sample(splr, tc);
     if (useSpecularMap)
-    {
         specularReflectionColor = specularSample.rgb;
-    }
     else
-    {
         specularReflectionColor = specularColor;
-    }
+    
     if (useGlossAlpha)
-    {
         specularPower = pow(2.0f, specularSample.a * 13.0f);
-    }
     
 	// attenuation
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
@@ -66,5 +69,5 @@ float2 tc : Texcoord) : SV_Target
         lv.vToL, viewFragPos, att, specularPower);
 
 	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected), 1.0f);
+    return float4(saturate((diffuse + ambient) * dtex.rgb + specularReflected), dtex.a);
 }

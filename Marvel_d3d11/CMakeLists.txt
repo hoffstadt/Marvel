@@ -43,6 +43,8 @@ target_sources(marvel_d3d11
 		"renderer/bindables/mvRenderTarget.cpp"
 		"renderer/bindables/mvTransformConstantBuffer.cpp"
 		"renderer/bindables/mvNullGeometryShader.cpp"
+		"renderer/bindables/mvBlender.cpp"
+		"renderer/bindables/mvRasterizer.cpp"
 
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"

@@ -5,7 +5,7 @@ namespace Marvel {
 
 	mvPointLight::mvPointLight(mvGraphics& graphics, glm::vec3 pos)
 		:
-		m_sphere(graphics, 0.25, { 1.0f, 1.0f, 1.0f }, 1)
+		m_sphere(graphics, 0.5f, { 1.0f, 1.0f, 1.0f }, 1)
 	{
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));

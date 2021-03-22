@@ -71,6 +71,8 @@ namespace Marvel {
 		step.addBindable(mvBindableRegistry::GetBindable("ps_texture"));
 		step.addBindable(mvBindableRegistry::GetBindable("gs_null"));
 		step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
+		step.addBindable(mvBindableRegistry::GetBindable("blender"));
+		step.addBindable(std::make_shared<mvRasterizer>(graphics, true));
 
 		step.addBindable(buf);
 
