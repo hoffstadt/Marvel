@@ -31,6 +31,7 @@ target_sources(marvel
 		"renderer/mvStep.cpp"
 		"renderer/mvTechnique.cpp"
 		"renderer/mvJob.cpp"
+		"renderer/mvRenderGraph.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
@@ -44,11 +45,13 @@ target_sources(marvel
 		"renderer/bindables/mvTexture.cpp"
 		"renderer/bindables/mvSampler.cpp"
 		"renderer/bindables/mvRenderTarget.cpp"
+		"renderer/bindables/mvSkyBoxTransformConstantBuffer.cpp"
 		"renderer/bindables/mvTransformConstantBuffer.cpp"
 		"renderer/bindables/mvNullGeometryShader.cpp"
 		"renderer/bindables/mvBlender.cpp"
 		"renderer/bindables/mvRasterizer.cpp"
 		"renderer/bindables/mvCubeTexture.cpp"
+		"renderer/bindables/mvStencil.cpp"
 
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"

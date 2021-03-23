@@ -1,35 +1,33 @@
 #pragma once
 
-#include <array>
+#include <vector>
+#include <memory>
 #include "mvPass.h"
-#include "mvGraphics.h"
+#include "mvVertexBuffer.h"
+#include "mvIndexBuffer.h"
 
 namespace Marvel {
+
+	class mvGraphics;
 
 	class mvRenderGraph
 	{
 
 	public:
 
-		void addJob(mvJob job, size_t target)
-		{
-			m_passes[target].addJob(job);
-		}
+		mvRenderGraph(mvGraphics& graphics);
 
-		void execute(mvGraphics& graphics) const
-		{
-			m_passes[0].execute(graphics);
-		}
+		void addJob(mvJob job, size_t target);
 
-		void reset()
-		{
-			for (auto& pass : m_passes)
-				pass.reset();
-		}
+		void execute(mvGraphics& graphics) const;
+
+		void reset();
 
 	public:
 
-		std::array<mvPass, 1> m_passes;
+		std::vector<mvPass>             m_passes;
+		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
+		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
 
 	};
 

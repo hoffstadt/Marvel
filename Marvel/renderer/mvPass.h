@@ -2,6 +2,7 @@
 #include <vector>
 #include "mvGraphics.h"
 #include "mvJob.h"
+#include "mvBindable.h"
 
 namespace Marvel{
 
@@ -26,8 +27,14 @@ namespace Marvel{
 			m_jobs.clear();
 		}
 
-	private:
+		void addBindable(std::shared_ptr<mvBindable> bindable)
+		{
+			m_bindables.push_back(bindable);
+		}
 
-		std::vector<mvJob> m_jobs;
+	public:
+
+		std::vector<mvJob>                       m_jobs;
+		std::vector<std::shared_ptr<mvBindable>> m_bindables;
 	};
 }

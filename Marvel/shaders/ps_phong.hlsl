@@ -30,8 +30,8 @@ float2 tc : Texcoord) : SV_Target
     clip(dtex.a < 0.1f ? -1 : 1);
     
     // flip normal if backface
-    if(dot(viewNormal, viewFragPos) >= 0.0f)
-        viewNormal = -viewNormal;
+    //if(dot(viewNormal, viewFragPos) >= 0.0f)
+        //viewNormal = -viewNormal;
     
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);

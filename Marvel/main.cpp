@@ -30,19 +30,19 @@ int main()
     mvImGuiManager imManager(window.getHandle(), graphics);
 
     // create render graph
-    mvRenderGraph graph;
+    mvRenderGraph graph(graphics);
 
     // create point light
-    mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
-    //mvPointLight light(graphics, {2.5f, 0.0f, -2.5f});
+    //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
+    mvPointLight light(graphics, {2.5f, 0.0f, -2.5f});
 
     // create camera
-    mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f);
-    //mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f });
+    //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f);
+    mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f });
 
     // create model
-    //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
+    mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
 
     // timer
     Marvel::mvTimer timer;
