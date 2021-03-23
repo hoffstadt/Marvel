@@ -54,8 +54,9 @@ namespace Marvel {
 			hasTexture = true;
 			shaderCode += "Spc";
 			m_layout.append(ElementType::Texture2D);
-			step.addBindable(std::make_shared<mvTexture>(graphics, path + texFileName.C_Str(), 1));
-			hasGlossAlpha = false;
+			auto texture = std::make_shared<mvTexture>(graphics, path + texFileName.C_Str(), 1);
+			step.addBindable(texture);
+			hasGlossAlpha = texture->hasAlpha();
 
 			root->add(Bool, std::string("useGlossAlpha"));
 			root->add(Bool, std::string("useSpecularMap"));
@@ -111,14 +112,12 @@ namespace Marvel {
 		buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
 
 		// create vertex shader
-		std::string vshaderFile = std::string("../../Marvel/shaders/") + shaderCode + std::string("_VS.hlsl");
-		std::string pshaderFile = std::string("../../Marvel/shaders/") + shaderCode + std::string("_PS.hlsl");
-		auto vshader = std::make_shared<mvVertexShader>(graphics, vshaderFile.c_str());
+		auto vshader = mvBindableRegistry::GetBindable(shaderCode + "_VS");
 
 		step.addBindable(vshader);
 		step.addBindable(std::make_shared<mvInputLayout>(graphics, m_layout,
 			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(std::make_shared<mvPixelShader>(graphics, pshaderFile.c_str()));
+		step.addBindable(mvBindableRegistry::GetBindable(shaderCode + "_PS"));
 		step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		step.addBindable(mvBindableRegistry::GetBindable("blender"));
 

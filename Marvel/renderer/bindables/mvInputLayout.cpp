@@ -5,7 +5,7 @@ namespace Marvel {
 
 	mvInputLayout::mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader* vertexShader)
 		:
-		m_layout(std::move(vertexLayout))
+		m_layout(vertexLayout)
 	{
 
 		const auto d3dLayout = m_layout.getD3DLayout();

@@ -37,11 +37,11 @@ namespace Marvel {
 		mvStep step("Lambertian");
 
 		// create vertex shader
-		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_texture.hlsl");
+		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/PhongDif_VS.hlsl");
 		step.addBindable(vshader);
 		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_texture.hlsl"));
+		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/PhongDif_PS.hlsl"));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		step.addBindable(std::make_shared<mvSampler>(graphics));
 		step.addBindable(std::make_shared<mvTexture>(graphics, path));
@@ -53,10 +53,6 @@ namespace Marvel {
 
 	glm::mat4 mvTexturedQuad::getTransform() const
 	{
-		//return glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f }) *
-		//	glm::rotate(m_yangle, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
-		//	glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
-		//	glm::translate(glm::vec3{ m_x, m_y, m_z });
 
 		return glm::translate(glm::vec3{ m_x, m_y, m_z }) * 
 			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *

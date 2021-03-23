@@ -48,12 +48,25 @@ namespace Marvel {
 
 		if (simple == 1)
 		{
+			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
+			auto& root = layout.getRoot();
+			root->add(Float3, std::string("materialColor"));
+			root->finalize(0);
+
+			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+
+			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
+
+			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+
+			step.addBindable(buf);
+
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_shader.hlsl");
+			auto vshader = mvBindableRegistry::GetBindable("Solid_VS");
 			step.addBindable(vshader);
 			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_shader.hlsl"));
+			step.addBindable(mvBindableRegistry::GetBindable("Solid_PS"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
@@ -66,18 +79,37 @@ namespace Marvel {
 				static_cast<mvVertexShader*>(vshader.get())));
 			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_flat.hlsl"));
 			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}
 		else
 		{
+			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
+			auto& root = layout.getRoot();
+			root->add(Float3, std::string("materialColor"));
+			root->add(Float3, std::string("specularColor"));
+			root->add(Float, std::string("specularWeight"));
+			root->add(Float, std::string("specularGloss"));
+			root->finalize(0);
+
+			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+
+			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
+			bufferRaw->getElement("specularColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
+			bufferRaw->getElement("specularWeight").setIfExists(1.0f);
+			bufferRaw->getElement("specularGloss").setIfExists(8.0f);
+
+			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+
+			step.addBindable(buf);
+
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_phong.hlsl");
+			auto vshader = mvBindableRegistry::GetBindable("Phong_VS");
 			step.addBindable(vshader);
 			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_phong.hlsl"));
+			step.addBindable(mvBindableRegistry::GetBindable("Phong_PS"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}
 
 
