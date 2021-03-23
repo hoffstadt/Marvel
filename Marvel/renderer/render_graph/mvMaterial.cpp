@@ -56,7 +56,8 @@ namespace Marvel {
 			m_layout.append(ElementType::Texture2D);
 			auto texture = std::make_shared<mvTexture>(graphics, path + texFileName.C_Str(), 1);
 			step.addBindable(texture);
-			hasGlossAlpha = texture->hasAlpha();
+			//hasGlossAlpha = texture->hasAlpha();
+			hasGlossAlpha = false;
 
 			root->add(Bool, std::string("useGlossAlpha"));
 			root->add(Bool, std::string("useSpecularMap"));
