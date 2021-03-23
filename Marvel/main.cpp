@@ -8,6 +8,7 @@
 #include "mvTimer.h"
 #include "mvPointLight.h"
 #include "mvModel.h"
+#include "mvRenderGraph.h"
 
 using namespace Marvel;
 
@@ -28,11 +29,16 @@ int main()
     // create imgui manager
     mvImGuiManager imManager(window.getHandle(), graphics);
 
+    // create render graph
+    mvRenderGraph graph;
+
     // create point light
     mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
+    //mvPointLight light(graphics, {2.5f, 0.0f, -2.5f});
 
     // create camera
     mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f);
+    //mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f });
 
     // create model
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
@@ -65,10 +71,10 @@ int main()
         light.show_imgui_windows();
         
 
-        model.submit();
-        model.draw(graphics);
+        model.submit(graph);
+        light.getSphere()->submit(graph);
 
-        light.getSphere()->draw(graphics);
+        graph.execute(graphics);
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(25, 25),
@@ -76,6 +82,8 @@ int main()
         imManager.endFrame();
 
         graphics.getSwapChain()->Present(1, 0);
+
+        graph.reset();
 
     }
 

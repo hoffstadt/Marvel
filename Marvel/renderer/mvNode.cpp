@@ -10,15 +10,15 @@ namespace Marvel {
 		m_appliedTransform = glm::identity<glm::mat4>();
 	}
 
-	void mvNode::submit(glm::mat4 accumulatedTransform) const
+	void mvNode::submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
 
 		for (const auto pm : m_meshes)
-			pm->submit(built);
+			pm->submit(graph, built);
 
 		for (const auto& pc : m_children)
-			pc->submit(built);
+			pc->submit(graph, built);
 	}
 
 	void mvNode::draw(mvGraphics& graphics) const

@@ -8,6 +8,7 @@ namespace Marvel {
 
 	class mvGraphics;
 	class mvDrawable;
+	class mvRenderGraph;
 
 	class mvTechnique
 	{
@@ -15,6 +16,8 @@ namespace Marvel {
 	public:
 
 		void addStep(mvStep step);
+		void submit(const mvDrawable& drawable) const;
+		void setPass(mvRenderGraph& graph) const;
 
 	private:
 

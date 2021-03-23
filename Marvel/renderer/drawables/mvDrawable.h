@@ -12,6 +12,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvDrawable
@@ -25,6 +26,8 @@ namespace Marvel {
 
 		virtual void      draw(mvGraphics& graphics) const;
 		virtual glm::mat4 getTransform() const = 0;
+
+		void submit(mvRenderGraph& graph) const;
 
 		void bind         (mvGraphics& graphics) const;
 		UINT getIndexCount() const;

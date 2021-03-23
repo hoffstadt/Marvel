@@ -16,6 +16,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvMesh
@@ -27,7 +28,7 @@ namespace Marvel {
 
 		mvMesh(mvGraphics& graphics, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
 
-		void      submit            (glm::mat4 accumulatedTranform) const;
+		void      submit            (mvRenderGraph& graph, glm::mat4 accumulatedTranform) const;
 		glm::mat4 getTransform      () const override;
 		void      show_imgui_windows(const char* name);
 

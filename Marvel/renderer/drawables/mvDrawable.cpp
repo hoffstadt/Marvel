@@ -3,6 +3,7 @@
 #include "mvIndexBuffer.h"
 #include "mvVertexBuffer.h"
 #include "mvTopology.h"
+#include "mvRenderGraph.h"
 
 namespace Marvel {
 
@@ -27,6 +28,15 @@ namespace Marvel {
 	{
 		bind(graphics);
 		graphics.drawIndexed(getIndexCount());
+	}
+
+	void mvDrawable::submit(mvRenderGraph& graph) const
+	{
+		for (const auto& tech : m_techniques)
+		{
+			tech.setPass(graph);
+			tech.submit(*this);
+		}
 	}
 
 }
