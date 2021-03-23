@@ -10,6 +10,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvNode
@@ -21,7 +22,7 @@ namespace Marvel {
 
 		mvNode(std::vector<std::shared_ptr<mvMesh>> meshPtrs, const glm::mat4& transform);
 
-		void             submit             (glm::mat4 accumulatedTransform) const;
+		void             submit             (mvRenderGraph& graph, glm::mat4 accumulatedTransform) const;
 		void             draw               (mvGraphics& graphics) const;
 		void             setAppliedTransform(glm::mat4 transform);
 		const glm::mat4& getAppliedTransform() const;

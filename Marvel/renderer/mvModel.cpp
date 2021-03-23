@@ -29,9 +29,9 @@ namespace Marvel {
 		m_root.reset(parseNode(*pScene->mRootNode));
 	}
 
-	void mvModel::submit() const
+	void mvModel::submit(mvRenderGraph& graph) const
 	{
-		m_root->submit(glm::identity<glm::mat4>());
+		m_root->submit(graph, glm::identity<glm::mat4>());
 	}
 
 	void mvModel::draw(mvGraphics& graphics) const

@@ -14,6 +14,11 @@ struct aiNode;
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
+	// forward declarations
+	//-----------------------------------------------------------------------------
+	class mvRenderGraph;
+
+	//-----------------------------------------------------------------------------
 	// mvModel
 	//-----------------------------------------------------------------------------
 	class mvModel
@@ -21,7 +26,7 @@ namespace Marvel {
 	public:
 		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
-		void submit          () const;
+		void submit          (mvRenderGraph& graph) const;
 		void draw            (mvGraphics& graphics) const;
 		void setRootTransform(glm::mat4 tf);
 

@@ -7,6 +7,7 @@
 #include "assimp/Importer.hpp"
 #include "assimp/Scene.h"
 #include "assimp/postprocess.h"
+#include "mvTechnique.h"
 
 namespace Marvel {
 
@@ -81,14 +82,19 @@ namespace Marvel {
 
 		auto steps = mat.getSteps();
 
+		
+		mvTechnique technique;
 		for (auto& step : steps)
-			addStep(step);
+			technique.addStep(step);
+		
+		addTechnique(technique);
 
 	}
 
-	void mvMesh::submit(glm::mat4 accumulatedTranform) const
+	void mvMesh::submit(mvRenderGraph& graph, glm::mat4 accumulatedTranform) const
 	{
 		m_transform = accumulatedTranform;
+		mvDrawable::submit(graph);
 	}
 
 	glm::mat4 mvMesh::getTransform() const

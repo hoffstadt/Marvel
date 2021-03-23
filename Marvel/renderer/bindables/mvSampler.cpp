@@ -5,18 +5,26 @@
 
 namespace Marvel {
 
-    mvSampler::mvSampler(mvGraphics& graphics)
+    mvSampler::mvSampler(mvGraphics& graphics, mvSampler::Type type, bool reflect, UINT slot)
+		:
+		m_type(type),
+		m_reflect(reflect),
+		m_slot(slot)
     {
         // Create Sampler State
-        D3D11_SAMPLER_DESC samplerDesc = {};
-        samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-        samplerDesc.MipLODBias = 0.0f;
-        samplerDesc.MinLOD = 0.0f;
-        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-        samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+		D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
+		samplerDesc.Filter = [type]() {
+			switch (type)
+			{
+			case Type::Anisotropic: return D3D11_FILTER_ANISOTROPIC;
+			case Type::Point: return D3D11_FILTER_MIN_MAG_MIP_POINT;
+			default:
+			case Type::Bilinear: return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+			}
+		}();
+		samplerDesc.AddressU = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
 
 
         HRESULT hResult = graphics.getDevice()->CreateSamplerState(&samplerDesc, m_samplerState.GetAddressOf());
@@ -25,7 +33,7 @@ namespace Marvel {
 
     void mvSampler::bind(mvGraphics& graphics)
     {
-        graphics.getContext()->PSSetSamplers(0, 1, m_samplerState.GetAddressOf());
+        graphics.getContext()->PSSetSamplers(m_slot, 1, m_samplerState.GetAddressOf());
     }
 
 }

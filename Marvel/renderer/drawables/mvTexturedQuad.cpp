@@ -1,5 +1,6 @@
 #include "mvTexturedQuad.h"
 #include "mvGraphics.h"
+#include "mvTechnique.h"
 #include "mvCommonBindables.h"
 #include <imgui.h>
 
@@ -45,7 +46,9 @@ namespace Marvel {
 		step.addBindable(std::make_shared<mvSampler>(graphics));
 		step.addBindable(std::make_shared<mvTexture>(graphics, path));
 
-		addStep(step);
+		mvTechnique technique;
+		technique.addStep(step);
+		addTechnique(technique);
 	}
 
 	glm::mat4 mvTexturedQuad::getTransform() const
