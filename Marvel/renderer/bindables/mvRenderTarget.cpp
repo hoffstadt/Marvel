@@ -43,7 +43,7 @@ namespace Marvel {
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		hResult = graphics.getDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, m_shaderResource.GetAddressOf());
 
-		m_depthStencil = new mvDepthStencil(graphics, width, height);
+		m_depthStencil = std::make_shared<mvDepthStencil>(graphics, width, height);
 
 		assert(SUCCEEDED(hResult));
 	}
@@ -60,13 +60,7 @@ namespace Marvel {
 		HRESULT hResult = graphics.getDevice()->CreateRenderTargetView(texture, 0, m_target.GetAddressOf());
 		assert(SUCCEEDED(hResult));
 
-		m_depthStencil = new mvDepthStencil(graphics, m_width, m_height);
-	}
-
-	mvRenderTarget::~mvRenderTarget()
-	{
-		delete m_depthStencil;
-		m_depthStencil = nullptr;
+		m_depthStencil = std::make_shared<mvDepthStencil>(graphics, m_width, m_height);
 	}
 
 	void mvRenderTarget::clear(mvGraphics& graphics)

@@ -26,12 +26,12 @@ target_sources(marvel
 		"renderer/mvNode.cpp"
 		"renderer/mvModel.cpp"
 		"renderer/mvBuffer.cpp"
-		"renderer/mvStep.cpp"
-		"renderer/mvMaterial.cpp"
-		"renderer/mvStep.cpp"
-		"renderer/mvTechnique.cpp"
-		"renderer/mvJob.cpp"
-		"renderer/mvRenderGraph.cpp"
+
+		"renderer/render_graph/mvMaterial.cpp"
+		"renderer/render_graph/mvStep.cpp"
+		"renderer/render_graph/mvTechnique.cpp"
+		"renderer/render_graph/mvJob.cpp"
+		"renderer/render_graph/mvRenderGraph.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
@@ -57,6 +57,10 @@ target_sources(marvel
 		"renderer/drawables/mvTexturedQuad.cpp"
 		"renderer/drawables/mvSolidSphere.cpp"
 		"renderer/drawables/mvMesh.cpp"
+		
+		"renderer/passes/mvPass.cpp"
+		"renderer/passes/mvLambertianPass.cpp"
+		"renderer/passes/mvSkyboxPass.cpp"
 
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
@@ -79,6 +83,8 @@ target_include_directories(marvel
 		"geometry"
 		"renderer/bindables"
 		"renderer/drawables"
+		"renderer/passes"
+		"renderer/render_graph"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"

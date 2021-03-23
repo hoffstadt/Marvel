@@ -34,7 +34,7 @@ namespace Marvel {
 				0, 3, 1
 			});
 
-		mvStep step;
+		mvStep step("Lambertian");
 
 		// create vertex shader
 		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_texture.hlsl");

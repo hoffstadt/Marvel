@@ -34,6 +34,12 @@ namespace Marvel {
 		m_root->submit(graph, glm::identity<glm::mat4>());
 	}
 
+	void mvModel::linkTechniques(mvRenderGraph& graph)
+	{
+		for (auto& mesh : m_meshes)
+			mesh->linkTechniques(graph);
+	}
+
 	void mvModel::draw(mvGraphics& graphics) const
 	{
 		m_root->draw(graphics);

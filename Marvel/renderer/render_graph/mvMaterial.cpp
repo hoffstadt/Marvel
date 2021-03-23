@@ -43,7 +43,7 @@ namespace Marvel {
 		vertexLayout.append(ElementType::Tangent);
 		vertexLayout.append(ElementType::Bitangent);
 
-		mvStep step;
+		mvStep step("Lambertian");
 
 		aiString texFileName;
 

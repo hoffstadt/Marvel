@@ -6,7 +6,7 @@
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
-	// Forward Declarations
+	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
@@ -28,7 +28,7 @@ namespace Marvel {
 	private:
 
 		mvComPtr<ID3D11GeometryShader> m_geometryShader;
-		mvComPtr<ID3DBlob>           m_blob;
+		mvComPtr<ID3DBlob>             m_blob;
 
 	};
 

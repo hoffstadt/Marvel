@@ -1,7 +1,9 @@
 #pragma once
-#include <d3d11.h>
-#include "mvComPtr.h"
-#include "mvBindable.h"
+
+#include <memory>
+#include "mvPass.h"
+#include "mvVertexBuffer.h"
+#include "mvIndexBuffer.h"
 
 namespace Marvel {
 
@@ -11,23 +13,21 @@ namespace Marvel {
 	class mvGraphics;
 
 	//-----------------------------------------------------------------------------
-	// mvVertexShader
+	// mvLambertianPass
 	//-----------------------------------------------------------------------------
-	class mvVertexShader : public mvBindable
+	class mvSkyboxPass : public mvPass
 	{
 
 	public:
 
-		mvVertexShader(mvGraphics& graphics, const char* path);
+		mvSkyboxPass(mvGraphics& graphics);
 
-		void bind(mvGraphics& graphics) override;
-
-		ID3DBlob* getBlob();
+		void execute(mvGraphics& graphics) const override;
 
 	private:
 
-		mvComPtr<ID3D11VertexShader> m_vertexShader;
-		mvComPtr<ID3DBlob>           m_blob;
+		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
+		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
 
 	};
 

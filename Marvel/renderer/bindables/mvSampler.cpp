@@ -16,10 +16,17 @@ namespace Marvel {
 		samplerDesc.Filter = [type]() {
 			switch (type)
 			{
-			case Type::Anisotropic: return D3D11_FILTER_ANISOTROPIC;
-			case Type::Point: return D3D11_FILTER_MIN_MAG_MIP_POINT;
+			case Type::Anisotropic: 
+				return D3D11_FILTER_ANISOTROPIC;
+
+			case Type::Point: 
+				return D3D11_FILTER_MIN_MAG_MIP_POINT;
+
+			case Type::Bilinear: 
+				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+
 			default:
-			case Type::Bilinear: return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			}
 		}();
 		samplerDesc.AddressU = reflect ? D3D11_TEXTURE_ADDRESS_MIRROR : D3D11_TEXTURE_ADDRESS_WRAP;

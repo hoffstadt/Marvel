@@ -17,7 +17,7 @@ namespace Marvel {
 
 		void addStep(mvStep step);
 		void submit(const mvDrawable& drawable) const;
-		void setPass(mvRenderGraph& graph) const;
+		void link  (mvRenderGraph& graph);
 
 	private:
 

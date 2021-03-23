@@ -33,10 +33,13 @@ namespace Marvel {
 	void mvDrawable::submit(mvRenderGraph& graph) const
 	{
 		for (const auto& tech : m_techniques)
-		{
-			tech.setPass(graph);
 			tech.submit(*this);
-		}
+	}
+
+	void mvDrawable::linkTechniques(mvRenderGraph& graph)
+	{
+		for (auto& tech : m_techniques)
+			tech.link(graph);
 	}
 
 }

@@ -9,7 +9,6 @@ namespace Marvel {
     mvPixelShader::mvPixelShader(mvGraphics& graphics, const char* path)
     {
 
-
         Marvel::mvComPtr<ID3DBlob> shaderCompileErrorsBlob;
         HRESULT hResult = D3DCompileFromFile(ToWide(path).c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", 0, 0,
             m_blob.GetAddressOf(), shaderCompileErrorsBlob.GetAddressOf());

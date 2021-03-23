@@ -32,6 +32,7 @@ namespace Marvel {
 		void bind         (mvGraphics& graphics) const;
 		UINT getIndexCount() const;
 		void addTechnique (mvTechnique technique);
+		void linkTechniques(mvRenderGraph& graph);
 
 	protected:
 

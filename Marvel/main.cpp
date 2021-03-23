@@ -44,6 +44,9 @@ int main()
     mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
 
+    model.linkTechniques(graph);
+    light.linkTechniques(graph);
+
     // timer
     Marvel::mvTimer timer;
 
@@ -72,7 +75,7 @@ int main()
         
 
         model.submit(graph);
-        light.getSphere()->submit(graph);
+        light.submit(graph);
 
         graph.execute(graphics);
 

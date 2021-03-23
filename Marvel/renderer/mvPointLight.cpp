@@ -1,11 +1,12 @@
 #include "mvPointLight.h"
 #include <imgui.h>
+#include "mvGraphics.h"
 
 namespace Marvel {
 
 	mvPointLight::mvPointLight(mvGraphics& graphics, glm::vec3 pos)
 		:
-		m_sphere(graphics, 0.5f, { 1.0f, 1.0f, 1.0f }, 1)
+		m_mesh(graphics, 0.5f, { 1.0f, 1.0f, 1.0f }, 1)
 	{
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
@@ -29,7 +30,7 @@ namespace Marvel {
 		m_bufferData->getElement("attQuad") = 0.0075f;
 
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 0, m_bufferData.get());
-		m_sphere.setPosition(pos.x, pos.y, pos.z);
+		m_mesh.setPosition(pos.x, pos.y, pos.z);
 
 	}
 
@@ -64,13 +65,13 @@ namespace Marvel {
 		}
 		ImGui::End();
 
-		m_sphere.setPosition(pos.x, pos.y, pos.z);
+		m_mesh.setPosition(pos.x, pos.y, pos.z);
 
 	}
 
-	mvSolidSphere* mvPointLight::getSphere()
+	void mvPointLight::submit(mvRenderGraph& graph)
 	{
-		return &m_sphere;
+		m_mesh.submit(graph);
 	}
 
 	void mvPointLight::bind(mvGraphics& graphics, glm::mat4 view)
@@ -94,6 +95,11 @@ namespace Marvel {
 		pos.x = x;
 		pos.y = y;
 		pos.z = z;
+	}
+
+	void mvPointLight::linkTechniques(mvRenderGraph& graph)
+	{
+		m_mesh.linkTechniques(graph);
 	}
 
 }

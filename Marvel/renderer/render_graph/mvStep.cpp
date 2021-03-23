@@ -2,12 +2,18 @@
 #include "mvDrawable.h"
 #include "mvPass.h"
 #include "mvJob.h"
+#include "mvRenderGraph.h"
 
 namespace Marvel {
 
-	void mvStep::setPass(mvPass* pass) const
+	mvStep::mvStep(const std::string& targetPass)
 	{
-		m_pass = pass;
+		m_targetPass = targetPass;
+	}
+
+	void mvStep::link(mvRenderGraph& graph)
+	{
+		m_pass = graph.getPass(m_targetPass);
 	}
 
 	void mvStep::addBindable(std::shared_ptr<mvBindable> bindable)
@@ -26,6 +32,7 @@ namespace Marvel {
 
 	void mvStep::submit(const mvDrawable& drawable) const
 	{
+		assert(m_pass != nullptr);
 		m_pass->addJob(mvJob(this, &drawable));
 	}
 

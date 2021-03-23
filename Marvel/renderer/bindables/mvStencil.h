@@ -26,6 +26,7 @@ namespace Marvel{
 		void bind(mvGraphics& graphics) override;
 
 	private:
+
 		Mode                              m_mode;
 		mvComPtr<ID3D11DepthStencilState> m_stencil;
 	};

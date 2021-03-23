@@ -9,7 +9,7 @@
 namespace Marvel{
 	
 	//-----------------------------------------------------------------------------
-	// Forward Declarations
+	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
@@ -25,7 +25,8 @@ namespace Marvel{
 		
 		void bind(mvGraphics& graphics) override;
 
-	protected:
+	private:
+
 		mvComPtr<ID3D11BlendState> m_blender;
 		bool                       m_blending;
 	};

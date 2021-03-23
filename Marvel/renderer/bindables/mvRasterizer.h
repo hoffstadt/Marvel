@@ -7,7 +7,7 @@
 namespace Marvel{
 
 	//-----------------------------------------------------------------------------
-	// Forward Declarations
+	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
@@ -26,6 +26,6 @@ namespace Marvel{
 	protected:
 
 		mvComPtr<ID3D11RasterizerState> m_rasterizer;
-		bool m_twoSided;
+		bool                            m_twoSided;
 	};
 }

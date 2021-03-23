@@ -30,10 +30,6 @@ namespace Marvel
 
     void mvIndexBuffer::bind(mvGraphics& graphics)
     {
-        // for ints
-        //graphics.getContext()->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-        // for shorts
         graphics.getContext()->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
     }
 

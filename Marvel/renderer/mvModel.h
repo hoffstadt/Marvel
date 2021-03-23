@@ -27,6 +27,7 @@ namespace Marvel {
 		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
 		void submit          (mvRenderGraph& graph) const;
+		void linkTechniques  (mvRenderGraph& graph);
 		void draw            (mvGraphics& graphics) const;
 		void setRootTransform(glm::mat4 tf);
 
@@ -36,7 +37,7 @@ namespace Marvel {
 
 	private:
 
-		std::shared_ptr<mvNode> m_root;
+		std::shared_ptr<mvNode>              m_root;
 		std::vector<std::shared_ptr<mvMesh>> m_meshes;
 	};
 }

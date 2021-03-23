@@ -4,14 +4,14 @@
 #include "mvComPtr.h"
 
 //-----------------------------------------------------------------------------
-// Forward Declarations
+// forward declarations
 //-----------------------------------------------------------------------------
 struct ID3D11DepthStencilView;
 
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
-	// Forward Declarations
+	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 
@@ -27,13 +27,12 @@ namespace Marvel {
 
 		void bind(mvGraphics& graphics) override {}
 
-		void clear(mvGraphics& graphics);
-
+		void                    clear              (mvGraphics& graphics);
 		ID3D11DepthStencilView* getDepthStencilView();
 
 	private:
 
-		mvComPtr<ID3D11DepthStencilView>   m_DSV;
+		mvComPtr<ID3D11DepthStencilView> m_DSV;
 
 	};
 

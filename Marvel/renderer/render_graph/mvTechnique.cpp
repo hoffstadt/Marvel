@@ -14,10 +14,10 @@ namespace Marvel {
 			step.submit(drawable);
 	}
 
-	void mvTechnique::setPass(mvRenderGraph& graph) const
+	void mvTechnique::link(mvRenderGraph& graph)
 	{
 		for (auto& step : m_steps)
-			step.setPass(&graph.m_passes[0]);
+			step.link(graph);
 	}
 
 }
