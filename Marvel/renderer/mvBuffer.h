@@ -37,6 +37,7 @@ namespace Marvel {
 		size_t getBeginningOffset() const;
 		size_t getEndingOffset   () const;
 		size_t getSizeInBytes    () const;
+		bool   exists            () const;
 
 	public:
 
@@ -93,6 +94,19 @@ namespace Marvel {
 		T& operator=(const T& rhs) const
 		{
 			return static_cast<T&>(*this) = rhs;
+		}
+
+		bool exists() const;
+
+		template<typename S>
+		bool setIfExists(const S& val)
+		{
+			if (exists())
+			{
+				*this = val;
+				return true;
+			}
+			return false;
 		}
 
 	public:

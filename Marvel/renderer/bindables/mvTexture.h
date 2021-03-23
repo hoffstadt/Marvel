@@ -14,12 +14,14 @@ namespace Marvel {
 		mvTexture(mvGraphics& graphics, const std::string& path, UINT slot = 0);
 
 		void bind(mvGraphics& graphics) override;
+		bool hasAlpha() const;
 
 	private:
 
 		mvComPtr<ID3D11Texture2D>          m_texture;
 		mvComPtr<ID3D11ShaderResourceView> m_textureView;
 		UINT                               m_slot = 0u;
+		bool                               m_alpha = false;
 
 	};
 

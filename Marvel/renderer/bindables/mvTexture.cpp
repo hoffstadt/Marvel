@@ -20,6 +20,9 @@ namespace Marvel {
         assert(testTextureBytes);
         int texBytesPerRow = 4 * texWidth;
 
+        if (texNumChannels > 3)
+            m_alpha = true;
+
         // Create Texture
         D3D11_TEXTURE2D_DESC textureDesc = {};
         textureDesc.Width = texWidth;
@@ -58,4 +61,8 @@ namespace Marvel {
         graphics.getContext()->PSSetShaderResources(m_slot, 1, m_textureView.GetAddressOf());
     }
 
+    bool mvTexture::hasAlpha() const
+    {
+        return m_alpha;
+    }
 }

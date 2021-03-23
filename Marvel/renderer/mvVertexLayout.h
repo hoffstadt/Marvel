@@ -37,6 +37,7 @@ namespace Marvel {
 		size_t      getSize     () const;
 		size_t      getOffset   () const;
 		const char* getSemantic () const;
+		ElementType getType     () const;
 
 	private:
 
@@ -46,6 +47,7 @@ namespace Marvel {
 		size_t      m_offset = 0;
 		DXGI_FORMAT m_format = DXGI_FORMAT_R32G32_FLOAT;
 		std::string m_semantic;
+		ElementType m_type;
 
 	};
 
@@ -57,12 +59,12 @@ namespace Marvel {
 
 	public:
 
-		void append(ElementType type);
-
-		const size_t getElementCount() const;
-		const size_t getSize() const;
-		const std::vector<mvVertexElement>& getElements() const;
-		std::vector<D3D11_INPUT_ELEMENT_DESC> getD3DLayout() const;
+		void                                  append         (ElementType type);
+		bool                                  hasElement     (ElementType type) const;
+		const size_t                          getElementCount() const;
+		const size_t                          getSize        () const;
+		const std::vector<mvVertexElement>&   getElements    () const;
+		std::vector<D3D11_INPUT_ELEMENT_DESC> getD3DLayout   () const;
 
 	private:
 

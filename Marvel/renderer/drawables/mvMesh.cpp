@@ -31,35 +31,54 @@ namespace Marvel {
 		// create topology
 		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		mvMaterial mat = mvMaterial(graphics, material, rootPath);
+
 		// create vertex layout
-		Marvel::mvVertexLayout vertexLayout;
-		vertexLayout.append(ElementType::Position3D);
-		vertexLayout.append(ElementType::Normal);
-		vertexLayout.append(ElementType::Texture2D);
-		vertexLayout.append(ElementType::Tangent);
-		vertexLayout.append(ElementType::Bitangent);
+		const Marvel::mvVertexLayout& vertexLayout = mat.getLayout();
 		
 		std::vector<float> verticies;
 		verticies.reserve(mesh.mNumVertices * 14);
 		std::vector<unsigned short> indicies;
 		indicies.reserve(mesh.mNumFaces * 3);
 
+
+		// this is nasty and requires the layout order to be correct. 
+		// a more robust system is needed.
 		for (int i = 0; i < mesh.mNumVertices; i++)
 		{
-			verticies.push_back(mesh.mVertices[i].x * scale);
-			verticies.push_back(mesh.mVertices[i].y * scale);
-			verticies.push_back(mesh.mVertices[i].z * scale);
-			verticies.push_back(mesh.mNormals[i].x);
-			verticies.push_back(mesh.mNormals[i].y);
-			verticies.push_back(mesh.mNormals[i].z);
-			verticies.push_back(mesh.mTextureCoords[0][i].x);
-			verticies.push_back(mesh.mTextureCoords[0][i].y);
-			verticies.push_back(mesh.mTangents[i].x);
-			verticies.push_back(mesh.mTangents[i].y);
-			verticies.push_back(mesh.mTangents[i].z);
-			verticies.push_back(mesh.mBitangents[i].x);
-			verticies.push_back(mesh.mBitangents[i].y);
-			verticies.push_back(mesh.mBitangents[i].z);
+			if (vertexLayout.hasElement(ElementType::Position3D))
+			{
+				verticies.push_back(mesh.mVertices[i].x * scale);
+				verticies.push_back(mesh.mVertices[i].y * scale);
+				verticies.push_back(mesh.mVertices[i].z * scale);
+			}
+
+			if (vertexLayout.hasElement(ElementType::Normal))
+			{
+				verticies.push_back(mesh.mNormals[i].x);
+				verticies.push_back(mesh.mNormals[i].y);
+				verticies.push_back(mesh.mNormals[i].z);
+			}
+
+			if (vertexLayout.hasElement(ElementType::Texture2D))
+			{
+				verticies.push_back(mesh.mTextureCoords[0][i].x);
+				verticies.push_back(mesh.mTextureCoords[0][i].y);
+			}
+
+			if (vertexLayout.hasElement(ElementType::Tangent))
+			{
+				verticies.push_back(mesh.mTangents[i].x);
+				verticies.push_back(mesh.mTangents[i].y);
+				verticies.push_back(mesh.mTangents[i].z);
+			}
+
+			if (vertexLayout.hasElement(ElementType::Bitangent))
+			{
+				verticies.push_back(mesh.mBitangents[i].x);
+				verticies.push_back(mesh.mBitangents[i].y);
+				verticies.push_back(mesh.mBitangents[i].z);
+			}
 		}
 
 		for (int i = 0; i < mesh.mNumFaces; i++)
@@ -78,16 +97,10 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indicies);
 
-		mvMaterial mat = mvMaterial(graphics, material, rootPath);
+		auto techniques = mat.getTechniques();
 
-		auto steps = mat.getSteps();
-
-		
-		mvTechnique technique;
-		for (auto& step : steps)
-			technique.addStep(step);
-		
-		addTechnique(technique);
+		for (auto& tech : techniques)
+			addTechnique(tech);
 
 	}
 

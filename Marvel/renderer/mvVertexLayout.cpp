@@ -4,6 +4,7 @@ namespace Marvel {
 
 	mvVertexElement::mvVertexElement(ElementType type)
 	{
+		m_type = type;
 		switch (type)
 		{
 
@@ -66,6 +67,11 @@ namespace Marvel {
 		}
 	}
 
+	ElementType mvVertexElement::getType() const
+	{
+		return m_type;
+	}
+
 	DXGI_FORMAT mvVertexElement::getFormat() const
 	{
 		return m_format;
@@ -93,6 +99,11 @@ namespace Marvel {
 
 	void mvVertexLayout::append(ElementType type)
 	{
+		for (const auto& element : m_elements)
+		{
+			if (element.getType() == type)
+				return;
+		}
 		m_elements.emplace_back(type);
 		m_elements.back().m_offset = m_stride;
 		m_stride += m_elements.back().getSize();
@@ -137,5 +148,16 @@ namespace Marvel {
 		}
 
 		return std::move(layout);
+	}
+
+	bool mvVertexLayout::hasElement(ElementType type) const
+	{
+		for (const auto& element : m_elements)
+		{
+			if (element.getType() == type)
+				return true;
+		}
+
+		return false;
 	}
 }

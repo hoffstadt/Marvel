@@ -4,7 +4,8 @@
 #include <vector>
 #include "mvBindable.h"
 #include "mvConstantBuffer.h"
-#include "mvStep.h"
+#include "mvTechnique.h"
+#include "mvVertexLayout.h"
 
 //-----------------------------------------------------------------------------
 // forward declarations
@@ -28,12 +29,13 @@ namespace Marvel {
 
 		mvMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path);
 
-		std::vector<mvStep> getSteps() const;
-
+		std::vector<mvTechnique> getTechniques() const;
+		const mvVertexLayout&    getLayout() const;
 
 	private:
 
-		std::vector<mvStep> m_steps;
+		std::vector<mvTechnique> m_techniques;
+		mvVertexLayout           m_layout;
 
 	};
 

@@ -123,6 +123,11 @@ namespace Marvel {
 		return getEndingOffset() - getBeginningOffset();
 	}
 
+	bool mvBufferLayoutEntry::exists() const
+	{
+		return m_type != Empty;
+	}
+
 	mvBufferLayout::mvBufferLayout(std::shared_ptr<mvBufferLayoutEntry> root)
 		:
 		m_root(std::move(root))
@@ -147,6 +152,11 @@ namespace Marvel {
 		m_entry(entry)
 	{
 
+	}
+
+	bool mvBufferElement::exists() const
+	{
+		return m_entry->exists();
 	}
 
 	mvBuffer::mvBuffer(mvBufferLayout&& layout)
