@@ -16,12 +16,13 @@ namespace Marvel {
 		return mod;
 	}
 
-	mvCamera::mvCamera(mvGraphics& graphics, glm::vec3 homePos, float homePitch, float homeYaw)
+	mvCamera::mvCamera(mvGraphics& graphics, glm::vec3 homePos, float homePitch, float homeYaw,
+		float width, float height)
 		:
 		m_pos(homePos),
 		m_pitch(homePitch),
 		m_yaw(homeYaw),
-		m_proj(graphics, 1500.0f, 835.0f, 0.5f, 400.0f)
+		m_proj(graphics, width, height, 0.5f, 400.0f)
 	{
 
 	}

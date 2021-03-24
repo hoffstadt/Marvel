@@ -20,7 +20,7 @@ namespace Marvel {
 
 		mvPointLight(mvGraphics& graphics, glm::vec3 pos = { 0.0f,0.0f,0.5f });
 
-		void show_imgui_windows();
+		void show_imgui_windows(const char* id);
 		void bind          (mvGraphics& graphics, glm::mat4 view);
 		void setPosition   (float x, float y, float z);
 		void linkTechniques(mvRenderGraph& graph);

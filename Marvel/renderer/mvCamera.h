@@ -18,7 +18,7 @@ namespace Marvel {
 	public:
 
 		mvCamera(mvGraphics& graphics, glm::vec3 homePos = { 0.0f,0.0f, 0.0f },
-			float homePitch = 0.0f, float homeYaw = 0.0f);
+			float homePitch = 0.0f, float homeYaw = 0.0f, float width = 1.0f, float height = 9.0f/16.0f);
 
 		glm::mat4 getMatrix() const;
 

@@ -34,7 +34,7 @@ namespace Marvel {
 
 	}
 
-	void mvPointLight::show_imgui_windows()
+	void mvPointLight::show_imgui_windows(const char* id)
 	{
 
 		glm::vec3& pos = m_bufferData->getElement("viewLightPos");
@@ -45,7 +45,7 @@ namespace Marvel {
 		float& attLin = m_bufferData->getElement("attLin");
 		float& attQuad = m_bufferData->getElement("attQuad");
 
-		if (ImGui::Begin("Light"))
+		if (ImGui::Begin(id))
 		{
 
 			ImGui::Text("Position");
