@@ -1,13 +1,11 @@
 cmake_minimum_required (VERSION 3.13)
 
-add_executable(marvel)
+add_library(marvel)
 set_property(TARGET marvel PROPERTY CXX_STANDARD 17)
 
 target_sources(marvel
 
 	PRIVATE
-
-		"main.cpp"
 
 		"core/mvWindow.cpp"
 		"core/mvMarvelUtils.cpp"

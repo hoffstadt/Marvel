@@ -39,6 +39,7 @@ if(WIN32)
 
 	if(MV_D3D11)
 		add_subdirectory ("Marvel")
+		add_subdirectory ("Sandbox")
 		
 		if(MV_DEMOS)
 			add_subdirectory ("Demo_Directx11")
