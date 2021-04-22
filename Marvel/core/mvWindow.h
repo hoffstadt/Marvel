@@ -24,6 +24,12 @@ namespace Marvel {
 		void disableCursor();
 		bool cursorEnabled() const { return m_cursorEnabled; }
 
+		int getClientWidth() const { return m_width; }
+		int getClientHeight() const { return m_height; }
+
+		bool wantsResize() const { return m_resized; }
+		void setResizedFlag(bool value) { m_resized = value; }
+
 	public:
 
 		mvKeyboard kbd;
@@ -51,6 +57,7 @@ namespace Marvel {
 		HWND              m_hWnd;
 		HINSTANCE         m_hInst;
 		std::vector<BYTE> m_rawBuffer;
+		bool              m_resized = false;
 
 	};
 

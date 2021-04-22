@@ -26,6 +26,8 @@ namespace Marvel {
 		void rotate     (float dx, float dy);
 		void translate  (float dx, float dy, float dz);
 
+		void updateProjection(int width, int height);
+
 	private:
 
 		glm::vec3    m_pos;

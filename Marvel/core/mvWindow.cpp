@@ -34,12 +34,12 @@ namespace Marvel {
 		wr.right = width + wr.left;
 		wr.top = 100;
 		wr.bottom = height + wr.top;
-		AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+		AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_OVERLAPPED | WS_THICKFRAME, FALSE);
 
 		// create window & get hWnd
 		m_hWnd = CreateWindow(
 			s_wndClassName, name,
-			WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+			WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_OVERLAPPED | WS_THICKFRAME,
 			0, 0, wr.right - wr.left, wr.bottom - wr.top,
 			nullptr, nullptr, m_hInst, this
 		);
@@ -121,6 +121,39 @@ namespace Marvel {
 
 		switch (msg)
 		{
+
+		case WM_SIZE:
+
+			if (wParam != SIZE_MINIMIZED)
+			{
+				RECT rect;
+				RECT crect;
+				int awidth = 0;
+				int aheight = 0;
+				int cwidth = 0;
+				int cheight = 0;
+				if (GetWindowRect(hWnd, &rect))
+				{
+					awidth = rect.right - rect.left;
+					aheight = rect.bottom - rect.top;
+				}
+
+				if (GetClientRect(hWnd, &crect))
+				{
+					cwidth = crect.right - crect.left;
+					cheight = crect.bottom - crect.top;
+				}
+
+				// I believe this are only used for the error logger
+				//m_width = (UINT)LOWORD(lParam);
+				//m_height = (UINT)HIWORD(lParam);
+				m_width = cwidth;
+				m_height = cheight;
+			
+				m_resized = true;
+				
+			}
+			return 0;
 
 		case WM_DESTROY:
 		{

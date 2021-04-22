@@ -20,6 +20,8 @@ namespace Marvel {
 
 		glm::mat4 getMatrix() const;
 
+		void update(int width, int height);
+
 	private:
 
 		float m_width;

@@ -24,6 +24,8 @@ namespace Marvel {
 
 		void drawIndexed(UINT count);
 
+		void resize(int width, int height);
+
 		ID3D11Device*        getDevice      ();
 		ID3D11DeviceContext* getContext     ();
 		IDXGISwapChain*      getSwapChain   ();

@@ -56,6 +56,26 @@ namespace Marvel {
         m_target = nullptr;
     }
 
+    void mvGraphics::resize(int width, int height)
+    {
+        if (m_device)
+        {
+            delete m_target;
+            m_target = nullptr;
+
+            m_deviceContext->OMSetRenderTargets(0, 0, 0);
+            m_frameBuffer->Release();
+
+           m_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+
+           // Create Framebuffer Render Target
+           m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
+
+            m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
+
+        }
+    }
+
     void mvGraphics::drawIndexed(UINT count)
     {
         m_deviceContext->DrawIndexed(count, 0u, 0u);

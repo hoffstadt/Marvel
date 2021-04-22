@@ -70,6 +70,13 @@ namespace Marvel {
 		m_depthStencil->clear(graphics);
 	}
 
+	void mvRenderTarget::reset()
+	{
+		m_target->Release();
+		m_shaderResource->Release();
+		m_depthStencil->getDepthStencilView()->Release();
+	}
+
 	void mvRenderTarget::bindAsBuffer(mvGraphics& graphics)
 	{
 		graphics.getContext()->OMSetRenderTargets(1, m_target.GetAddressOf(), m_depthStencil->getDepthStencilView());
@@ -89,6 +96,11 @@ namespace Marvel {
 	ID3D11RenderTargetView* mvRenderTarget::getTarget()
 	{
 		return m_target.Get();
+	}
+
+	mvComPtr<ID3D11RenderTargetView> mvRenderTarget::getTargetCom()
+	{
+		return m_target;
 	}
 
 	ID3D11ShaderResourceView* mvRenderTarget::getShaderResource()

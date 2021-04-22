@@ -26,8 +26,10 @@ namespace Marvel {
 
 		void bindAsBuffer(mvGraphics& graphics);
 		void clear       (mvGraphics& graphics);
+		void reset();
 
 		ID3D11RenderTargetView*   getTarget();
+		mvComPtr<ID3D11RenderTargetView> getTargetCom();
 		ID3D11ShaderResourceView* getShaderResource();
 
 	private:

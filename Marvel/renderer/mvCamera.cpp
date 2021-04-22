@@ -27,6 +27,11 @@ namespace Marvel {
 
 	}
 
+	void mvCamera::updateProjection(int width, int height)
+	{
+		m_proj.update(width, height);
+	}
+
 	glm::mat4 mvCamera::getMatrix() const
 	{
 

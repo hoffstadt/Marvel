@@ -1,3 +1,4 @@
+#include <imgui_impl_dx11.h>
 #include "mvMath.h"
 #include "mvWindow.h"
 #include "mvGraphics.h"
@@ -37,8 +38,8 @@ int main()
     mvPointLight light(graphics, {2.0f, 0.0f, -1.3f});
 
     // create camera
-    //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, 1850.0f, 900.0f);
-    mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, 1850.0f, 900.0f);
+    //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
+    mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, width, height);
 
     // create model
     //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
@@ -57,11 +58,16 @@ int main()
         if (const auto ecode = mvWindow::ProcessMessages())
             break;
 
+        if (window.wantsResize())
+        {
+            graphics.resize(window.getClientWidth(), window.getClientHeight());
+            camera.updateProjection(window.getClientWidth(), window.getClientHeight());
+            window.setResizedFlag(false);
+        }
+
         const auto dt = timer.mark() * 1.0f;
 
         HandleEvents(window, dt, camera);
-
-        imManager.beginFrame();
 
         graphics.getTarget()->bindAsBuffer(graphics);
         graphics.getTarget()->clear(graphics);
@@ -72,10 +78,10 @@ int main()
         model.submit(graph);
         light.submit(graph);
 
-        light.submit(graph);
-
         graph.execute(graphics);
         graph.reset();
+
+        imManager.beginFrame();
 
         light.show_imgui_windows("Light 1");
 
@@ -85,8 +91,6 @@ int main()
         imManager.endFrame();
 
         graphics.getSwapChain()->Present(1, 0);
-
-        
 
     }
 
