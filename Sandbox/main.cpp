@@ -45,8 +45,11 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
     mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
 
+    mvPointCloud cloud(graphics, { 0.0f, 1.0f, 0.0f});
+
     model.linkTechniques(graph);
     light.linkTechniques(graph);
+    cloud.linkTechniques(graph);
 
     // timer
     Marvel::mvTimer timer;
@@ -77,6 +80,7 @@ int main()
         
         model.submit(graph);
         light.submit(graph);
+        cloud.submit(graph);
 
         graph.execute(graphics);
         graph.reset();
@@ -84,6 +88,7 @@ int main()
         imManager.beginFrame();
 
         light.show_imgui_windows("Light 1");
+        cloud.show_imgui_windows("Cloud");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),

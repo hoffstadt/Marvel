@@ -10,9 +10,15 @@ namespace Marvel
 
 	public:
 
-		mvVertexBuffer(mvGraphics& gfx, const std::vector<float>& vbuf, const mvVertexLayout& layout);
+		mvVertexBuffer(mvGraphics& gfx, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic = false);
 
 		void bind (mvGraphics& gfx) override;
+
+		void update(mvGraphics& graphics);
+
+		bool isDynamic() const;
+
+		std::vector<float>& getData();
 
 		const mvVertexLayout& GetLayout() const;
 
@@ -21,6 +27,9 @@ namespace Marvel
 		UINT                   m_stride;
 		mvComPtr<ID3D11Buffer> m_vertexBuffer;
 		mvVertexLayout         m_layout;
+		std::vector<float>     m_data;
+		bool                   m_dynamic;
+		int                    m_buffersize;
 
 	};
 }

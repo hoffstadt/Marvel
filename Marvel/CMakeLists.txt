@@ -54,6 +54,7 @@ target_sources(marvel
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"
 		"renderer/drawables/mvSolidSphere.cpp"
+		"renderer/drawables/mvPointCloud.cpp"
 		"renderer/drawables/mvMesh.cpp"
 		
 		"renderer/passes/mvPass.cpp"
