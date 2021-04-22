@@ -33,15 +33,16 @@ int main()
     mvRenderGraph graph(graphics);
 
     // create point light
-    mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
+    //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
+    mvPointLight light(graphics, {2.0f, 0.0f, -1.3f});
 
     // create camera
-    mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, 1850.0f, 900.0f);
-    //mvCamera camera(graphics, { 0.0f, 5.0f, -5.0f }, 0.0f, 0.0f, 1.0f, 1.0f);
+    //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, 1850.0f, 900.0f);
+    mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, 1850.0f, 900.0f);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
-    //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
+    mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
 
     model.linkTechniques(graph);
     light.linkTechniques(graph);
