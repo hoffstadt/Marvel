@@ -58,6 +58,7 @@ namespace Marvel
         if (m_buffersize < m_data.size()*sizeof(unsigned short))
         {
             m_indexBuffer->Release();
+            m_indexBuffer = nullptr;
             m_buffersize = m_count*sizeof(unsigned short) + 10000;
             D3D11_BUFFER_DESC bufferDesc = {};
             bufferDesc.Usage = D3D11_USAGE_DYNAMIC;

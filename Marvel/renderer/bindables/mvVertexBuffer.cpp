@@ -19,7 +19,7 @@ namespace Marvel
 		{
 			bd.Usage = D3D11_USAGE_DYNAMIC;
 			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			m_buffersize = m_data.size() * sizeof(float) + 10000;
+			m_buffersize = m_data.size() * sizeof(float) + 5000;
 		}
 		else
 		{
@@ -49,7 +49,8 @@ namespace Marvel
 		if (m_buffersize < m_data.size()*sizeof(float))
 		{
 			m_vertexBuffer->Release();
-			m_buffersize = m_data.size() * sizeof(float) + 10000;
+			m_vertexBuffer = nullptr;
+			m_buffersize = m_data.size() * sizeof(float) + 5000;
 			D3D11_BUFFER_DESC bufferDesc = {};
 			bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 			bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

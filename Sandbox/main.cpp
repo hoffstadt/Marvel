@@ -45,7 +45,7 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
     mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
 
-    mvPointCloud cloud(graphics, { 0.0f, 1.0f, 0.0f});
+   mvPointCloud cloud(graphics, { 0.0f, 1.0f, 0.0f});
 
     model.linkTechniques(graph);
     light.linkTechniques(graph);
