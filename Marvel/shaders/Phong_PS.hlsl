@@ -17,16 +17,20 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal) : SV_Targ
     
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
+    
 	// fragment to light vector data
     const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+    
 	// attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+    const float att = Attenuate(attConst, attLin, attQuad, lv.dist);
+    
 	// diffuse
-    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
+    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dir, viewNormal);
+    
     // specular
     specular = Speculate(
         diffuseColor * diffuseIntensity * specularColor, specularWeight, viewNormal,
-        lv.vToL, viewFragPos, att, specularGloss
+        lv.vec, viewFragPos, att, specularGloss
     );
 
 	// final color

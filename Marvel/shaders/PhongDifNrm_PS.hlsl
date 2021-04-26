@@ -24,22 +24,27 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
 
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
+    
     // replace normal with mapped if normal mapping enabled
     if (useNormalMap)
     {
         const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
         viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
     }
+    
 	// fragment to light vector data
     const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+    
 	// attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+    const float att = Attenuate(attConst, attLin, attQuad, lv.dist);
+    
 	// diffuse
-    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dirToL, viewNormal);
+    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dir, viewNormal);
+    
     // specular
     specular = Speculate(
         diffuseColor * diffuseIntensity * specularColor, specularWeight, viewNormal,
-        lv.vToL, viewFragPos, att, specularGloss
+        lv.vec, viewFragPos, att, specularGloss
     );
 
 	// final color
