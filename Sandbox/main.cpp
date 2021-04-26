@@ -35,7 +35,8 @@ int main()
 
     // create point light
     //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
-    mvPointLight light(graphics, {2.0f, 0.0f, -1.3f});
+    mvPointLight light(graphics, {2.0f, 0.0f, -3.3f});
+    auto lightcamera = light.getCamera();
 
     // create camera
     //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
@@ -45,11 +46,11 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
     mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
 
-   mvPointCloud cloud(graphics, { 0.0f, 1.0f, 0.0f});
-
     model.linkTechniques(graph);
     light.linkTechniques(graph);
-    cloud.linkTechniques(graph);
+
+    // Light target
+    mvRenderTarget target1(graphics, 300, 300);
 
     // timer
     Marvel::mvTimer timer;
@@ -72,15 +73,28 @@ int main()
 
         HandleEvents(window, dt, camera);
 
-        graphics.getTarget()->bindAsBuffer(graphics);
-        graphics.getTarget()->clear(graphics);
- 
-        camera.bind(graphics);
-        light.bind(graphics, camera.getMatrix());
-        
+        // light pass
+        target1.bindAsBuffer(graphics);
+        target1.clear(graphics);
+
+        lightcamera->bind(graphics);
+        light.bind(graphics, lightcamera->getMatrix());
+
         model.submit(graph);
         light.submit(graph);
-        cloud.submit(graph);
+
+        graph.execute(graphics);
+        graph.reset();
+
+        // viewport pass
+        graphics.getTarget()->bindAsBuffer(graphics);
+        graphics.getTarget()->clear(graphics);
+
+        camera.bind(graphics);
+        light.bind(graphics, camera.getMatrix());
+
+        model.submit(graph);
+        light.submit(graph);
 
         graph.execute(graphics);
         graph.reset();
@@ -88,11 +102,19 @@ int main()
         imManager.beginFrame();
 
         light.show_imgui_windows("Light 1");
-        cloud.show_imgui_windows("Cloud");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
+        
+        //ImGui::SetNextWindowSize(ImVec2(300, 320));
+        if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            if (target1.getTarget())
+                ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
+        }
+        ImGui::End();
+
         imManager.endFrame();
 
         graphics.getSwapChain()->Present(1, 0);

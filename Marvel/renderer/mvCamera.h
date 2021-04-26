@@ -25,6 +25,7 @@ namespace Marvel {
 		void bind       (mvGraphics& graphics) const;
 		void rotate     (float dx, float dy);
 		void translate  (float dx, float dy, float dz);
+		void setPos(float x, float y, float z);
 
 		void updateProjection(int width, int height);
 

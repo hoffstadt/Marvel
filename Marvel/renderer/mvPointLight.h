@@ -1,6 +1,7 @@
 #pragma once
 #include "mvConstantBuffer.h"
 #include "mvSolidSphere.h"
+#include "mvCamera.h"
 
 namespace Marvel {
 
@@ -25,12 +26,14 @@ namespace Marvel {
 		void setPosition   (float x, float y, float z);
 		void linkTechniques(mvRenderGraph& graph);
 		void submit        (mvRenderGraph& graph);
+		std::shared_ptr<mvCamera> getCamera() const;
 
 	private:
 
 		mvSolidSphere                          m_mesh;
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 		std::unique_ptr<mvBuffer>              m_bufferData;
+		std::shared_ptr<mvCamera>              m_camera;
 
 	};
 

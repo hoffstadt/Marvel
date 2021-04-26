@@ -27,6 +27,13 @@ namespace Marvel {
 
 	}
 
+	void mvCamera::setPos(float x, float y, float z)
+	{
+		m_pos.x = x;
+		m_pos.y = y;
+		m_pos.z = z;
+	}
+
 	void mvCamera::updateProjection(int width, int height)
 	{
 		m_proj.update(width, height);

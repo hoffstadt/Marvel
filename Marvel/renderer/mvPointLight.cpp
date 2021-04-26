@@ -31,6 +31,7 @@ namespace Marvel {
 
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 0, m_bufferData.get());
 		m_mesh.setPosition(pos.x, pos.y, pos.z);
+		m_camera = std::make_shared<mvCamera>(graphics, pos, 0.0f, 0.0f, 300, 300);
 
 	}
 
@@ -66,6 +67,7 @@ namespace Marvel {
 		ImGui::End();
 
 		m_mesh.setPosition(pos.x, pos.y, pos.z);
+		m_camera->setPos(pos.x, pos.y, pos.z);
 
 	}
 
@@ -100,6 +102,12 @@ namespace Marvel {
 	void mvPointLight::linkTechniques(mvRenderGraph& graph)
 	{
 		m_mesh.linkTechniques(graph);
+	}
+
+
+	std::shared_ptr<mvCamera> mvPointLight::getCamera() const
+	{
+		return m_camera;
 	}
 
 }
