@@ -23,6 +23,7 @@ target_sources(marvel
 		"renderer/mvPointLight.cpp"
 		"renderer/mvNode.cpp"
 		"renderer/mvModel.cpp"
+		"renderer/mvModelProbe.cpp"
 		"renderer/mvBuffer.cpp"
 
 		"renderer/render_graph/mvMaterial.cpp"

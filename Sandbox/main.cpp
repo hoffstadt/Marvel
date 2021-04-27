@@ -10,6 +10,7 @@
 #include "mvPointLight.h"
 #include "mvModel.h"
 #include "mvRenderGraph.h"
+#include "mvModelProbe.h"
 
 using namespace Marvel;
 
@@ -103,6 +104,10 @@ int main()
         graph.reset();
 
         imManager.beginFrame();
+
+        // probes
+        static mvModelProbe probe("Model Probe");
+        probe.spawnWindow(model);
 
         light.show_imgui_windows("Light 1");
 

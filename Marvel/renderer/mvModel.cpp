@@ -26,12 +26,18 @@ namespace Marvel {
 				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
 		}
 
-		m_root.reset(parseNode(*pScene->mRootNode));
+		int id = 0;
+		m_root.reset(parseNode(id, *pScene->mRootNode));
 	}
 
 	void mvModel::submit(mvRenderGraph& graph) const
 	{
 		m_root->submit(graph, glm::identity<glm::mat4>());
+	}
+
+	void mvModel::accept(mvModelProbe& probe)
+	{
+		m_root->accept(probe);
 	}
 
 	void mvModel::linkTechniques(mvRenderGraph& graph)
@@ -50,7 +56,7 @@ namespace Marvel {
 		m_root->setAppliedTransform(tf);
 	}
 
-	mvNode* mvModel::parseNode(const aiNode& node)
+	mvNode* mvModel::parseNode(int& id, const aiNode& node)
 	{
 		const auto transform = reinterpret_cast<const glm::mat4*>(&node.mTransformation);
 
@@ -62,9 +68,9 @@ namespace Marvel {
 			curMeshPtrs.push_back(m_meshes.at(meshIdx));
 		}
 
-		mvNode* pNode = new mvNode(curMeshPtrs, *transform);
+		mvNode* pNode = new mvNode(node.mName.C_Str(), id++, curMeshPtrs, *transform);
 		for (size_t i = 0; i < node.mNumChildren; i++)
-			pNode->addChild(parseNode(*node.mChildren[i]));
+			pNode->addChild(parseNode(id, *node.mChildren[i]));
 
 		return pNode;
 	}

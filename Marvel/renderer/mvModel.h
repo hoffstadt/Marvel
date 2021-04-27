@@ -17,6 +17,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvRenderGraph;
+	class mvModelProbe;
 
 	//-----------------------------------------------------------------------------
 	// mvModel
@@ -30,10 +31,11 @@ namespace Marvel {
 		void linkTechniques  (mvRenderGraph& graph);
 		void draw            (mvGraphics& graphics) const;
 		void setRootTransform(glm::mat4 tf);
+		void accept          (mvModelProbe& probe);
 
 	private:
 
-		mvNode* parseNode(const aiNode& node);
+		mvNode* parseNode(int& id, const aiNode& node);
 
 	private:
 

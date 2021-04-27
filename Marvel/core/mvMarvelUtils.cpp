@@ -40,7 +40,7 @@ namespace Marvel {
 
 	glm::vec3 ExtractTranslation(const glm::mat4& matrix)
 	{
-		return { matrix[1][4], matrix[2][4], matrix[3][4] };
+		return { matrix[0][3], matrix[1][3], matrix[2][3] };
 	}
 
 }

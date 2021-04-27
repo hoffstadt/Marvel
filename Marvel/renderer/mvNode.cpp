@@ -1,24 +1,43 @@
 #include "mvNode.h"
 #include "mvMesh.h"
+#include "mvModelProbe.h"
 
 namespace Marvel {
 
-	mvNode::mvNode(std::vector<std::shared_ptr<mvMesh>> meshPtrs, const glm::mat4& transform)
+	mvNode::mvNode(const std::string& name, int id, std::vector<std::shared_ptr<mvMesh>> meshPtrs, const glm::mat4& transform)
 	{
+		m_name = name;
+		m_id = id;
 		m_meshes = meshPtrs;
 		m_transform = transform;
 		m_appliedTransform = glm::identity<glm::mat4>();
 	}
 
+	int mvNode::getID() const
+	{
+		return m_id;
+	}
+
 	void mvNode::submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
+		//const auto built = m_appliedTransform * m_transform * accumulatedTransform;
 
 		for (const auto pm : m_meshes)
 			pm->submit(graph, built);
 
 		for (const auto& pc : m_children)
 			pc->submit(graph, built);
+	}
+
+	void mvNode::accept(mvModelProbe& probe)
+	{
+		if (probe.pushNode(*this))
+		{
+			for (auto& cp : m_children)
+				cp->accept(probe);
+			probe.popNode(*this);
+		}
 	}
 
 	void mvNode::draw(mvGraphics& graphics) const
