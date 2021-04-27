@@ -11,6 +11,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvRenderTarget;
+	class mvDepthStencil;
 
 	//-----------------------------------------------------------------------------
 	// mvGraphics
@@ -32,6 +33,7 @@ namespace Marvel {
 		IDXGISwapChain*      getSwapChain   ();
 		ID3D11Texture2D*     getFrameBuffer ();
 		mvRenderTarget*      getTarget      ();
+		mvDepthStencil*      getDepthBuffer ();
 		glm::mat4            getProjection  () const;
 		glm::mat4            getCamera      () const;
 
@@ -47,6 +49,7 @@ namespace Marvel {
 		mvComPtr<IDXGISwapChain>      m_swapChain;
 		mvComPtr<ID3D11Texture2D>     m_frameBuffer;
 		mvRenderTarget*               m_target;
+		mvDepthStencil*               m_depthStencil;
 
 		glm::mat4                     m_projection;
 		glm::mat4                     m_camera;

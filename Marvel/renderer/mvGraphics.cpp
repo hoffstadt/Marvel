@@ -49,6 +49,8 @@ namespace Marvel {
 
         m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
 
+        m_depthStencil = new mvDepthStencil(*this, width, height);
+
         mvBindableRegistry::Initialize(*this);
         
 	}
@@ -56,7 +58,9 @@ namespace Marvel {
     mvGraphics::~mvGraphics()
     {
         delete m_target;
+        delete m_depthStencil;
         m_target = nullptr;
+        m_depthStencil = nullptr;
     }
 
     void mvGraphics::resize(int width, int height)
@@ -64,7 +68,9 @@ namespace Marvel {
         if (m_device)
         {
             delete m_target;
+            delete m_depthStencil;
             m_target = nullptr;
+            m_depthStencil = nullptr;
 
             m_deviceContext->OMSetRenderTargets(0, 0, 0);
             m_frameBuffer->Release();
@@ -75,6 +81,7 @@ namespace Marvel {
            m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
 
             m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
+            m_depthStencil = new mvDepthStencil(*this, width, height);
 
         }
     }
@@ -117,6 +124,11 @@ namespace Marvel {
     mvRenderTarget* mvGraphics::getTarget() 
     { 
         return m_target; 
+    }
+
+    mvDepthStencil* mvGraphics::getDepthBuffer()
+    {
+        return m_depthStencil;
     }
 
     glm::mat4 mvGraphics::getProjection() const

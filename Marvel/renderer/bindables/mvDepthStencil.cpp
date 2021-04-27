@@ -48,4 +48,9 @@ namespace Marvel {
         graphics.getContext()->ClearDepthStencilView(m_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
     }
 
+    void mvDepthStencil::reset()
+    {
+        m_DSV->Release();
+    }
+
 }

@@ -24,7 +24,7 @@ namespace Marvel {
 
 		void bind(mvGraphics& graphics) override {}
 
-		void bindAsBuffer(mvGraphics& graphics);
+		void bindAsBuffer(mvGraphics& graphics, ID3D11DepthStencilView* depthStencilView);
 		void clear       (mvGraphics& graphics);
 		void reset();
 
@@ -38,7 +38,6 @@ namespace Marvel {
 		UINT                               m_height;
 		mvComPtr<ID3D11RenderTargetView>   m_target;
 		mvComPtr<ID3D11ShaderResourceView> m_shaderResource;
-		std::shared_ptr<mvDepthStencil>    m_depthStencil;
 
 	};
 

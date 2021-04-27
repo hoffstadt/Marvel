@@ -51,6 +51,7 @@ int main()
 
     // Light target
     mvRenderTarget target1(graphics, 300, 300);
+    mvDepthStencil depthBuffer(graphics, 300, 300);
 
     // timer
     Marvel::mvTimer timer;
@@ -74,8 +75,9 @@ int main()
         HandleEvents(window, dt, camera);
 
         // light pass
-        target1.bindAsBuffer(graphics);
+        target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
         target1.clear(graphics);
+        depthBuffer.clear(graphics);
 
         lightcamera->bind(graphics);
         light.bind(graphics, lightcamera->getMatrix());
@@ -87,8 +89,9 @@ int main()
         graph.reset();
 
         // viewport pass
-        graphics.getTarget()->bindAsBuffer(graphics);
+        graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
         graphics.getTarget()->clear(graphics);
+        graphics.getDepthBuffer()->clear(graphics);
 
         camera.bind(graphics);
         light.bind(graphics, camera.getMatrix());

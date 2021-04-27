@@ -43,8 +43,6 @@ namespace Marvel {
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		hResult = graphics.getDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, m_shaderResource.GetAddressOf());
 
-		m_depthStencil = std::make_shared<mvDepthStencil>(graphics, width, height);
-
 		assert(SUCCEEDED(hResult));
 	}
 
@@ -59,27 +57,23 @@ namespace Marvel {
 
 		HRESULT hResult = graphics.getDevice()->CreateRenderTargetView(texture, 0, m_target.GetAddressOf());
 		assert(SUCCEEDED(hResult));
-
-		m_depthStencil = std::make_shared<mvDepthStencil>(graphics, m_width, m_height);
 	}
 
 	void mvRenderTarget::clear(mvGraphics& graphics)
 	{
 		static float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		graphics.getContext()->ClearRenderTargetView(m_target.Get(), (float*)&clear_color);
-		m_depthStencil->clear(graphics);
 	}
 
 	void mvRenderTarget::reset()
 	{
 		m_target->Release();
 		m_shaderResource->Release();
-		m_depthStencil->getDepthStencilView()->Release();
 	}
 
-	void mvRenderTarget::bindAsBuffer(mvGraphics& graphics)
+	void mvRenderTarget::bindAsBuffer(mvGraphics& graphics, ID3D11DepthStencilView* depthStencilView)
 	{
-		graphics.getContext()->OMSetRenderTargets(1, m_target.GetAddressOf(), m_depthStencil->getDepthStencilView());
+		graphics.getContext()->OMSetRenderTargets(1, m_target.GetAddressOf(), depthStencilView);
 
 		// configure viewport
 		D3D11_VIEWPORT vp;

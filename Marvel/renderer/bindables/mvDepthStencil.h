@@ -29,6 +29,7 @@ namespace Marvel {
 
 		void                    clear              (mvGraphics& graphics);
 		ID3D11DepthStencilView* getDepthStencilView();
+		void reset();
 
 	private:
 
