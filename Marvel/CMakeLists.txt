@@ -61,6 +61,11 @@ target_sources(marvel
 		"renderer/passes/mvLambertianPass.cpp"
 		"renderer/passes/mvSkyboxPass.cpp"
 
+		#implot
+		"vendor/implot/implot.cpp"
+		"vendor/implot/implot_demo.cpp"
+		"vendor/implot/implot_items.cpp"
+
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
 		"../Dependencies/imgui/imgui.cpp"
@@ -84,6 +89,7 @@ target_include_directories(marvel
 		"renderer/drawables"
 		"renderer/passes"
 		"renderer/render_graph"
+		"vendor/implot"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"

@@ -1,7 +1,8 @@
 #include "mvImGuiManager.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
 #include "mvGraphics.h"
+#include <implot.h>
 
 namespace Marvel {
 
@@ -12,6 +13,7 @@ namespace Marvel {
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		//io.IniFilename = nullptr;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
@@ -28,6 +30,7 @@ namespace Marvel {
 		// Cleanup
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 	}
 
