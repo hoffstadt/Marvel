@@ -10,10 +10,10 @@
 namespace Marvel {
 
 
-	mvRenderGraph::mvRenderGraph(mvGraphics& graphics)
+	mvRenderGraph::mvRenderGraph(mvGraphics& graphics, const char* skybox)
 	{
 		m_passes.push_back(std::make_shared<mvLambertianPass>(graphics));
-		m_passes.push_back(std::make_shared<mvSkyboxPass>(graphics));
+		m_passes.push_back(std::make_shared<mvSkyboxPass>(graphics, skybox));
 	}
 
 	void mvRenderGraph::addJob(mvJob job, size_t target)

@@ -31,7 +31,7 @@ int main()
     mvImGuiManager imManager(window.getHandle(), graphics);
 
     // create render graph
-    mvRenderGraph graph(graphics);
+    mvRenderGraph graph(graphics, "../../Resources/SkyBox");
 
     // create point light
     //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});

@@ -4,16 +4,16 @@
 
 namespace Marvel {
 
-	mvSkyboxPass::mvSkyboxPass(mvGraphics& graphics)
+	mvSkyboxPass::mvSkyboxPass(mvGraphics& graphics, const char* skybox)
 		:
 		mvPass("Skybox")
 	{
-		addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox"));
+		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthFirst));
 		addBindable(std::make_shared<mvSampler>(graphics, mvSampler::Type::Bilinear));
 		addBindable(std::make_shared<mvRasterizer>(graphics, true));
-		addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/Skybox_PS.hlsl"));
-		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/Skybox_VS.hlsl");
+		addBindable(std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_PS.hlsl").c_str()));
+		auto vshader = std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_VS.hlsl").c_str());
 		addBindable(vshader);
 		addBindable(std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 		addBindable(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));

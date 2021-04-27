@@ -15,7 +15,7 @@ namespace Marvel {
 
 	public:
 
-		mvRenderGraph(mvGraphics& graphics);
+		mvRenderGraph(mvGraphics& graphics, const char* skybox);
 
 		void    addJob (mvJob job, size_t target);
 		void    execute(mvGraphics& graphics) const;
