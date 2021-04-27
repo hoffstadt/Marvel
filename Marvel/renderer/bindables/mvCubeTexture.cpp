@@ -69,5 +69,53 @@ namespace Marvel {
 		graphics.getContext()->PSSetShaderResources(m_slot, 1u, m_textureView.GetAddressOf());
 	}
 
+	mvCubeTargetTexture::mvCubeTargetTexture(mvGraphics& graphics, UINT width, UINT height, UINT slot, DXGI_FORMAT format)
+		:
+		m_slot(slot)
+	{
+
+		// texture descriptor
+		D3D11_TEXTURE2D_DESC textureDesc = {};
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 6;
+		textureDesc.Format = format;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+		// create the texture resource
+		mvComPtr<ID3D11Texture2D> pTexture;
+		graphics.getDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture);
+
+		// create the resource view on the texture
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+		graphics.getDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_textureView);
+
+		// make render target resources for capturing shadow map
+		for (UINT face = 0; face < 6; face++)
+		{
+			m_renderTargets.push_back(std::make_shared<mvRenderTarget>(graphics, pTexture.Get(), face));
+		}
+	}
+
+	void mvCubeTargetTexture::bind(mvGraphics& graphics)
+	{
+		graphics.getContext()->PSSetShaderResources(m_slot, 1u, m_textureView.GetAddressOf());
+	}
+
+	std::shared_ptr<mvRenderTarget> mvCubeTargetTexture::getRenderTarget(size_t index) const
+	{
+		return m_renderTargets[index];
+	}
+
 
 }

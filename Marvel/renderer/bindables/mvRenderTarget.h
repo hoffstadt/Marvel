@@ -20,7 +20,7 @@ namespace Marvel {
 	public:
 
 		mvRenderTarget(mvGraphics& graphics, int width, int height);
-		mvRenderTarget(mvGraphics& graphics, ID3D11Texture2D* texture);
+		mvRenderTarget(mvGraphics& graphics, ID3D11Texture2D* texture, int face = -1);
 
 		void bind(mvGraphics& graphics) override {}
 

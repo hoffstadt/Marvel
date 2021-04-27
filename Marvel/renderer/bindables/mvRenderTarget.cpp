@@ -46,7 +46,7 @@ namespace Marvel {
 		assert(SUCCEEDED(hResult));
 	}
 
-	mvRenderTarget::mvRenderTarget(mvGraphics& graphics, ID3D11Texture2D* texture)
+	mvRenderTarget::mvRenderTarget(mvGraphics& graphics, ID3D11Texture2D* texture, int face)
 	{
 
 		// get information from texture about dimensions
@@ -55,7 +55,23 @@ namespace Marvel {
 		m_width = textureDesc.Width;
 		m_height = textureDesc.Height;
 
-		HRESULT hResult = graphics.getDevice()->CreateRenderTargetView(texture, 0, m_target.GetAddressOf());
+		// create the target view on the texture
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+		rtvDesc.Format = textureDesc.Format;
+		if (face > -1)
+		{
+			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+			rtvDesc.Texture2DArray.ArraySize = 1;
+			rtvDesc.Texture2DArray.FirstArraySlice = face;
+			rtvDesc.Texture2DArray.MipSlice = 0;
+		}
+		else
+		{
+			rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
+		}
+
+		HRESULT hResult = graphics.getDevice()->CreateRenderTargetView(texture, &rtvDesc, m_target.GetAddressOf());
 		assert(SUCCEEDED(hResult));
 	}
 
