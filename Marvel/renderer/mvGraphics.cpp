@@ -4,8 +4,11 @@
 
 namespace Marvel {
 
-	mvGraphics::mvGraphics(HWND hwnd, int width, int height)
+	mvGraphics::mvGraphics(HWND hwnd, int width, int height, const std::string& root)
 	{
+
+        m_shaderRoot = root;
+
         DXGI_SWAP_CHAIN_DESC sd = {};
         sd.BufferDesc.Width = width;
         sd.BufferDesc.Height = height;

@@ -20,7 +20,7 @@ namespace Marvel {
 
 	public:
 
-		mvGraphics(HWND hwnd, int width, int height);
+		mvGraphics(HWND hwnd, int width, int height, const std::string& root = "../../Marvel/shaders/");
 		~mvGraphics();
 
 		void drawIndexed(UINT count);
@@ -38,7 +38,6 @@ namespace Marvel {
 		void      setProjection    (glm::mat4 proj);
 		void      setCamera        (glm::mat4 cam);
 
-		void setShaderRoot(const std::string& root) { m_shaderRoot = root; }
 		const std::string& getShaderRoot() const { return m_shaderRoot; }
 
 	private:
