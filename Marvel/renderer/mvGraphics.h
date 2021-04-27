@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "mvMarvelWin.h"
 #include "mvComPtr.h"
 #include <d3d11_1.h>
@@ -37,6 +38,9 @@ namespace Marvel {
 		void      setProjection    (glm::mat4 proj);
 		void      setCamera        (glm::mat4 cam);
 
+		void setShaderRoot(const std::string& root) { m_shaderRoot = root; }
+		const std::string& getShaderRoot() const { return m_shaderRoot; }
+
 	private:
 
 		mvComPtr<ID3D11Device>        m_device;
@@ -47,6 +51,8 @@ namespace Marvel {
 
 		glm::mat4                     m_projection;
 		glm::mat4                     m_camera;
+
+		std::string                   m_shaderRoot = "../../Marvel/shaders/";
 	};
 
 }
