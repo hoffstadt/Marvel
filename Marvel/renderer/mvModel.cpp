@@ -51,6 +51,11 @@ namespace Marvel {
 		m_root->draw(graphics);
 	}
 
+	mvNode* mvModel::getNode(const std::string& name)
+	{
+		return m_root->getNode(name);
+	}
+
 	void mvModel::setRootTransform(glm::mat4 tf)
 	{
 		m_root->setAppliedTransform(tf);

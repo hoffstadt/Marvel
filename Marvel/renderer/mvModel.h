@@ -27,11 +27,12 @@ namespace Marvel {
 	public:
 		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
-		void submit          (mvRenderGraph& graph) const;
-		void linkTechniques  (mvRenderGraph& graph);
-		void draw            (mvGraphics& graphics) const;
-		void setRootTransform(glm::mat4 tf);
-		void accept          (mvModelProbe& probe);
+		void    submit          (mvRenderGraph& graph) const;
+		void    linkTechniques  (mvRenderGraph& graph);
+		void    draw            (mvGraphics& graphics) const;
+		void    setRootTransform(glm::mat4 tf);
+		void    accept          (mvModelProbe& probe);
+		mvNode* getNode         (const std::string& name);
 
 	private:
 

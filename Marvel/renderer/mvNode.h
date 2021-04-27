@@ -32,6 +32,7 @@ namespace Marvel {
 		int              getID              () const;
 		bool             hasChildren        () const { return !m_children.empty(); }
 		const std::string& getName          () const { return m_name; }
+		mvNode*          getNode            (const std::string& name);
 
 
 	private:

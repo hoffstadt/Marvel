@@ -64,4 +64,18 @@ namespace Marvel {
 		m_children.push_back(std::shared_ptr<mvNode>(child));
 	}
 
+	mvNode* mvNode::getNode(const std::string& name)
+	{
+		if (m_name == name)
+			return this;
+
+		for (const auto& child : m_children)
+		{
+			if (auto result = child->getNode(name))
+				return result;
+		}
+
+		return nullptr;
+	}
+
 }
