@@ -104,7 +104,7 @@ namespace Marvel {
 
 		static int id = 0;
 
-		if (ImGui::Begin("Lights"))
+		if (ImGui::Begin("Point Lights"))
 		{
 			
 			ImGui::SliderInt("Light", &id, 0, m_lights.size()-1);

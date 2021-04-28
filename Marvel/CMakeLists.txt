@@ -20,6 +20,7 @@ target_sources(marvel
 		"renderer/mvImGuiManager.cpp"
 		"renderer/mvProjection.cpp"
 		"renderer/mvCamera.cpp"
+		"renderer/mvDirectionLight.cpp"
 		"renderer/mvPointLight.cpp"
 		"renderer/mvNode.cpp"
 		"renderer/mvModel.cpp"

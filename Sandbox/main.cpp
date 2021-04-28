@@ -8,6 +8,7 @@
 #include "mvCamera.h"
 #include "mvTimer.h"
 #include "mvPointLight.h"
+#include "mvDirectionLight.h"
 #include "mvModel.h"
 #include "mvRenderGraph.h"
 #include "mvModelProbe.h"
@@ -36,11 +37,14 @@ int main()
 
     // create point light
     //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
-    mvPointLightManager lightManager(graphics);
+    
+    mvDirectionLightManager dlightManager(graphics);
+    dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
-    mvPointLight& light = lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    mvPointLight& light2 = lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
-    mvPointLight& light3 = lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
+    mvPointLightManager lightManager(graphics);
+    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    //lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
+    //lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 
     // create camera
@@ -49,9 +53,9 @@ int main()
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
-    //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
+    mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     model.linkTechniques(graph);
     lightManager.linkTechniques(graph);
@@ -88,6 +92,7 @@ int main()
 
         lightcamera->bind(graphics);
         lightManager.bind(graphics, lightcamera->getMatrix());
+        dlightManager.bind(graphics, lightcamera->getMatrix());
 
         model.submit(graph);
         lightManager.submit(graph);
@@ -102,6 +107,7 @@ int main()
 
         camera.bind(graphics);
         lightManager.bind(graphics, camera.getMatrix());
+        dlightManager.bind(graphics, camera.getMatrix());
 
         model.submit(graph);
         lightManager.submit(graph);
@@ -116,6 +122,7 @@ int main()
         //probe.spawnWindow(model);
 
         lightManager.show_imgui_windows();
+        dlightManager.show_imgui_windows();
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
