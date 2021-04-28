@@ -2,6 +2,18 @@
 
 namespace Marvel {
 
+	struct mvStructData : public mvLayoutData
+	{
+		std::vector<std::pair<std::string, mvBufferLayoutEntry>> entries;
+	};
+
+	struct mvArrayData : public mvLayoutData
+	{
+		std::optional<mvBufferLayoutEntry> layoutEntry;
+		size_t elementSize;
+		size_t size;
+	};
+
 	size_t AdvanceToBoundary(size_t offset)
 	{
 		return offset + (16u - offset % 16u) % 16u;
@@ -10,12 +22,20 @@ namespace Marvel {
 	mvBufferLayoutEntry::mvBufferLayoutEntry(mvDataType type)
 	{
 		m_type = type;
+
+		if (m_type == Struct)
+			m_data = std::make_unique<mvStructData>();
+		if (m_type == Array)
+			m_data = std::make_unique<mvArrayData>();
 	}
 
 	mvBufferLayoutEntry& mvBufferLayoutEntry::getEntry(const std::string& key)
 	{
 		assert("Keying into non-struct" && m_type == Struct);
-		for (auto& mem : m_entries)
+
+		auto& entries = static_cast<mvStructData&>(*m_data).entries;
+
+		for (auto& mem : entries)
 		{
 			if (mem.first == key)
 			{
@@ -24,6 +44,12 @@ namespace Marvel {
 		}
 		static mvBufferLayoutEntry empty{Empty};
 		return empty;
+	}
+
+	mvBufferLayoutEntry& mvBufferLayoutEntry::getArray()
+	{
+		assert("Keying into non-array" && m_type == Array);
+		return *static_cast<mvArrayData&>(*m_data).layoutEntry;
 	}
 
 	size_t mvBufferLayoutEntry::finalize(size_t offset)
@@ -63,6 +89,9 @@ namespace Marvel {
 		case Struct:
 			return finalizeStruct(offset);
 
+		case Array:
+			return finalizeArray(offset);
+
 		default:
 			assert("Bad type in size computation" && false);
 			return 0u;
@@ -71,20 +100,42 @@ namespace Marvel {
 
 	size_t mvBufferLayoutEntry::finalizeStruct(size_t offset)
 	{
-		assert(m_entries.size() != 0u);
+		auto& entries = static_cast<mvStructData&>(*m_data).entries;
+		assert(entries.size() != 0u);
 		m_offset = AdvanceToBoundary(offset);
 		
 		auto current_offset = m_offset;
-		for (auto& entry : m_entries)
+		for (auto& entry : entries)
 			current_offset = entry.second.finalize(current_offset);
 		
 		return current_offset;
 	}
 
+	size_t mvBufferLayoutEntry::finalizeArray(size_t offset)
+	{
+		auto& data = static_cast<mvArrayData&>(*m_data);
+		assert(data.size != 0u);
+		m_offset = AdvanceToBoundary(offset);
+		data.layoutEntry->finalize(m_offset);
+		data.elementSize = AdvanceToBoundary(data.layoutEntry->getSizeInBytes());
+
+		return getEndingOffset();
+	}
+
 	mvBufferLayoutEntry& mvBufferLayoutEntry::add(mvDataType type, std::string name)
 	{
 		assert("Add to non-struct in layout" && m_type == Struct);
-		m_entries.emplace_back(std::move(name), mvBufferLayoutEntry{ type });
+		auto& data = static_cast<mvStructData&>(*m_data);
+		data.entries.emplace_back(std::move(name), mvBufferLayoutEntry{ type });
+		return *this;
+	}
+
+	mvBufferLayoutEntry& mvBufferLayoutEntry::set(mvDataType type, size_t size)
+	{
+		assert("Set on non-array in layout" && m_type == Array);
+		auto& data = static_cast<mvArrayData&>(*m_data);
+		data.layoutEntry = mvBufferLayoutEntry(type);
+		data.size = size;
 		return *this;
 	}
 
@@ -110,7 +161,16 @@ namespace Marvel {
 			return m_offset + mvMap<Bool>::hlslSize;
 
 		case Struct:
-			return AdvanceToBoundary(m_entries.back().second.getEndingOffset());
+		{
+			auto& entries = static_cast<const mvStructData&>(*m_data).entries;
+			return AdvanceToBoundary(entries.back().second.getEndingOffset());
+		}
+
+		case Array:
+		{
+			const auto& data = static_cast<const mvArrayData&>(*m_data);
+			return m_offset + AdvanceToBoundary(data.layoutEntry->getSizeInBytes()) * data.size;
+		}
 
 		default:
 			assert("Bad type in size computation" && false);

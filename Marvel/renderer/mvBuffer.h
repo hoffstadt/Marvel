@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <optional>
 #include "mvMath.h"
 
 namespace Marvel {
@@ -14,6 +15,7 @@ namespace Marvel {
 		Matrix,
 		Bool,
 		Struct,
+		Array,
 		Empty
 	};
 
@@ -24,15 +26,25 @@ namespace Marvel {
 		static constexpr bool valid = false;
 	};
 
+	struct mvLayoutData
+	{
+
+	};
+
 	//-----------------------------------------------------------------------------
 	// mvBufferLayoutEntry
 	//-----------------------------------------------------------------------------
 	class mvBufferLayoutEntry
 	{
+
+		friend class mvBufferLayout;
+
 	public:
 
 		mvBufferLayoutEntry& add     (mvDataType type, std::string name);
+		mvBufferLayoutEntry& set     (mvDataType type, size_t size);
 		mvBufferLayoutEntry& getEntry(const std::string& key);
+		mvBufferLayoutEntry& getArray();
 
 		size_t getBeginningOffset() const;
 		size_t getEndingOffset   () const;
@@ -45,12 +57,13 @@ namespace Marvel {
 		
 		size_t finalize      (size_t offset);
 		size_t finalizeStruct(size_t offset);
+		size_t finalizeArray(size_t offset);
 
 	private:
 
 		size_t                                                   m_offset = 0;
 		mvDataType                                               m_type = Empty;
-		std::vector<std::pair<std::string, mvBufferLayoutEntry>> m_entries;
+		std::unique_ptr<mvLayoutData>                            m_data;
 
 	};
 
