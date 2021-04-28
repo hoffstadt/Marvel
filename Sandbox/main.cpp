@@ -36,19 +36,25 @@ int main()
 
     // create point light
     //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
-    mvPointLight light(graphics, {2.0f, 0.0f, -3.3f});
-    auto lightcamera = light.getCamera();
+    mvPointLightManager lightManager(graphics);
+
+    mvPointLight& light = lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    mvPointLight& light2 = lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
+    mvPointLight& light3 = lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
+    auto lightcamera = lightManager.getLight(0).getCamera();
 
     // create camera
-    //mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
-    mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, width, height);
+    mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
+    //mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, width, height);
+    //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
-    mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
+    //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
+    //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     model.linkTechniques(graph);
-    light.linkTechniques(graph);
+    lightManager.linkTechniques(graph);
 
     // Light target
     mvRenderTarget target1(graphics, 300, 300);
@@ -81,10 +87,10 @@ int main()
         depthBuffer.clear(graphics);
 
         lightcamera->bind(graphics);
-        light.bind(graphics, lightcamera->getMatrix());
+        lightManager.bind(graphics, lightcamera->getMatrix());
 
         model.submit(graph);
-        light.submit(graph);
+        lightManager.submit(graph);
 
         graph.execute(graphics);
         graph.reset();
@@ -95,10 +101,10 @@ int main()
         graphics.getDepthBuffer()->clear(graphics);
 
         camera.bind(graphics);
-        light.bind(graphics, camera.getMatrix());
+        lightManager.bind(graphics, camera.getMatrix());
 
         model.submit(graph);
-        light.submit(graph);
+        lightManager.submit(graph);
 
         graph.execute(graphics);
         graph.reset();
@@ -106,10 +112,10 @@ int main()
         imManager.beginFrame();
 
         // probes
-        static mvModelProbe probe("Model Probe");
-        probe.spawnWindow(model);
+        //static mvModelProbe probe("Model Probe");
+        //probe.spawnWindow(model);
 
-        light.show_imgui_windows("Light 1");
+        lightManager.show_imgui_windows();
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),

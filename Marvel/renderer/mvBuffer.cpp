@@ -70,6 +70,11 @@ namespace Marvel {
 
 		switch (m_type)
 		{
+
+		case Integer:
+			m_offset = AdvanceIfCrossesBoundary(offset, mvMap<Integer>::hlslSize);
+			return m_offset + mvMap<Integer>::hlslSize;
+
 		case Float:
 			m_offset = AdvanceIfCrossesBoundary(offset, mvMap<Float>::hlslSize);
 			return m_offset + mvMap<Float>::hlslSize;
@@ -148,6 +153,10 @@ namespace Marvel {
 	{
 		switch (m_type)
 		{
+
+		case Integer:
+			return m_offset + mvMap<Integer>::hlslSize;
+
 		case Float:
 			return m_offset + mvMap<Float>::hlslSize;
 

@@ -32,20 +32,24 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
     }
     
-	// fragment to light vector data
-    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
+    for (int i = 0; i < LightCount; i++)
+    {
     
-	// attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, lv.dist);
+	    // fragment to light vector data
+        const LightVectorData lv = CalculateLightVectorData(viewLightPos[i], viewFragPos);
     
-	// diffuse
-    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dir, viewNormal);
+	    // attenuation
+        const float att = Attenuate(attConst[i], attLin[i], attQuad[i], lv.dist);
     
-    // specular
-    specular = Speculate(
-        diffuseColor * diffuseIntensity * specularColor, specularWeight, viewNormal,
-        lv.vec, viewFragPos, att, specularGloss
-    );
+	    // diffuse
+        diffuse += Diffuse(diffuseColor[i], diffuseIntensity[i], att, lv.dir, viewNormal);
+    
+        // specular
+        specular += Speculate(
+            diffuseColor[i] * diffuseIntensity[i] * specularColor, specularWeight, viewNormal,
+            lv.vec, viewFragPos, att, specularGloss
+        );
+    }
 
 	// final color
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);

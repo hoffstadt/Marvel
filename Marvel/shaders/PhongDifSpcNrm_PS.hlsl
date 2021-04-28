@@ -47,9 +47,6 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
     }
     
-	// fragment to light vector data
-    const LightVectorData lv = CalculateLightVectorData(viewLightPos, viewFragPos);
-    
     // specular parameter determination (mapped or uniform)
     float3 specularReflectionColor;
     float specularPower = specularGloss;
@@ -67,17 +64,25 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         specularPower = pow(2.0f, specularSample.a * 13.0f);
     }
     
-	// attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, lv.dist);
     
-	// diffuse light
-    diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.dir, viewNormal);
+    for (int i = 0; i < LightCount; i++)
+    {
     
-    // specular reflected
-    specularReflected = Speculate(
-        diffuseColor * diffuseIntensity * specularReflectionColor, specularWeight, viewNormal,
-        lv.vec, viewFragPos, att, specularPower
-    );
+	    // fragment to light vector data
+        const LightVectorData lv = CalculateLightVectorData(viewLightPos[i], viewFragPos);
+    
+	    // attenuation
+        const float att = Attenuate(attConst[i], attLin[i], attQuad[i], lv.dist);
+    
+	    // diffuse
+        diffuse += Diffuse(diffuseColor[i], diffuseIntensity[i], att, lv.dir, viewNormal);
+    
+        // specular
+        specularReflected += Speculate(
+            diffuseColor[i] * diffuseIntensity[i] * specularReflectionColor, specularWeight, viewNormal,
+            lv.vec, viewFragPos, att, specularPower
+        );
+    }
 
 	// final color = attenuate diffuse & ambient by diffuse texture color and add specular reflected
     return float4(saturate((diffuse + ambient) * dtex.rgb + specularReflected), 1.0f);

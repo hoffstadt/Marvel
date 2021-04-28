@@ -1,12 +1,13 @@
 cbuffer mvPointLightCBuf : register(b0)
 {
-    float3 viewLightPos;
+    int LightCount;
     float3 ambient;
-    float3 diffuseColor;
-    float diffuseIntensity;
-    float attConst;
-    float attLin;
-    float attQuad;
+    float3 viewLightPos[16];
+    float3 diffuseColor[16];
+    float diffuseIntensity[16];
+    float attConst[16];
+    float attLin[16];
+    float attQuad[16];
 };
 
 struct LightVectorData
