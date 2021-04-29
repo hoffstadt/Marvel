@@ -66,5 +66,8 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     }
 
 	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
+    
+    float3 litColor = saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular);
+    
+    return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), FogStart, FogRange, FogColor, litColor), 1.0f);
 }

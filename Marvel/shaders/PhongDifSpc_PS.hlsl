@@ -77,5 +77,8 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
     }
 
 	// final color = attenuate diffuse & ambient by diffuse texture color and add specular reflected
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected), 1.0f);
+  
+    float3 litColor = saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected);
+    
+    return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), FogStart, FogRange, FogColor, litColor), 1.0f);
 }

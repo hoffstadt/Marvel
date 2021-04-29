@@ -28,7 +28,7 @@ namespace Marvel {
 			//aiProcess_JoinIdenticalVertices |
 			aiProcess_ConvertToLeftHanded |
 
-			aiProcess_FixInfacingNormals |
+			//aiProcess_FixInfacingNormals |
 			aiProcess_SplitLargeMeshes |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_CalcTangentSpace |        // Create binormals/tangents just in case

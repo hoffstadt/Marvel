@@ -90,6 +90,8 @@ int main()
         target1.clear(graphics);
         depthBuffer.clear(graphics);
 
+        graph.bind(graphics);
+
         lightcamera->bind(graphics);
         lightManager.bind(graphics, lightcamera->getMatrix());
         dlightManager.bind(graphics, lightcamera->getMatrix());
@@ -104,6 +106,8 @@ int main()
         graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
         graphics.getTarget()->clear(graphics);
         graphics.getDepthBuffer()->clear(graphics);
+
+        graph.bind(graphics);
 
         camera.bind(graphics);
         lightManager.bind(graphics, camera.getMatrix());
@@ -123,6 +127,7 @@ int main()
 
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
+        graph.show_imgui_window();
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
