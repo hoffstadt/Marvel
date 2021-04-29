@@ -43,6 +43,7 @@ namespace Marvel {
 				glm::mat4 rotationz = glm::rotate(glm::identity<glm::mat4>(), tf.zRot, glm::vec3(0.0f, 0.0f, 1.0f));
 
 				glm::mat4 transformation = translation * rotationz * rotationy * rotationx;
+				//glm::mat4 transformation = rotationx * rotationy * rotationz * translation;
 
 				m_selectedNode->setAppliedTransform(transformation);
 			}

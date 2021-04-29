@@ -77,7 +77,7 @@ namespace Marvel {
         std::vector<float>().swap(vertices);
         std::vector<float>().swap(normals);
         std::vector<float>().swap(texCoords);
-        std::vector<unsigned short>().swap(indices);
+        std::vector<unsigned int>().swap(indices);
         std::vector<unsigned int>().swap(lineIndices);
     }
 

@@ -37,14 +37,14 @@ namespace Marvel {
 		const Marvel::mvVertexLayout& vertexLayout = mat.getLayout();
 		
 		std::vector<float> verticies;
-		verticies.reserve(mesh.mNumVertices * 14);
-		std::vector<unsigned short> indicies;
+		verticies.reserve(mesh.mNumVertices * 6);
+		std::vector<unsigned int> indicies;
 		indicies.reserve(mesh.mNumFaces * 3);
 
 
 		// this is nasty and requires the layout order to be correct. 
 		// a more robust system is needed.
-		for (int i = 0; i < mesh.mNumVertices; i++)
+		for (size_t i = 0; i < mesh.mNumVertices; i++)
 		{
 			if (vertexLayout.hasElement(ElementType::Position3D))
 			{

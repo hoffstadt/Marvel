@@ -38,7 +38,7 @@ namespace Marvel {
 
 		// create index buffer
 		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics,
-			std::vector<unsigned short>{
+			std::vector<unsigned int>{
 			0, 2, 1, 2, 3, 1,
 				1, 3, 5, 3, 7, 5,
 				2, 6, 3, 3, 6, 7,

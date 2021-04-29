@@ -21,7 +21,7 @@ namespace Marvel {
 		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{0.0f, 0.0f, 0.0f}, vl, true);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, std::vector<unsigned short>{0u}, true);
+		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, std::vector<unsigned int>{0u}, true);
 
 		mvStep step("Lambertian");
 

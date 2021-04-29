@@ -12,7 +12,7 @@ namespace Marvel
 
 	public:
 
-		mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned short>& indices, bool dynamic = false);
+		mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned int>& indices, bool dynamic = false);
 
 		void bind(mvGraphics& graphics) override;
 
@@ -20,17 +20,17 @@ namespace Marvel
 
 		bool isDynamic() const;
 
-		std::vector<unsigned short>& getData();
+		std::vector<unsigned int>& getData();
 
 		UINT getCount() const;
 
 	private:
 
-		mvComPtr<ID3D11Buffer>      m_indexBuffer;
-		UINT                        m_count;
-		std::vector<unsigned short> m_data;
-		bool                        m_dynamic;
-		int                         m_buffersize;
+		mvComPtr<ID3D11Buffer>    m_indexBuffer;
+		UINT                      m_count;
+		std::vector<unsigned int> m_data;
+		bool                      m_dynamic;
+		int                       m_buffersize;
 
 	};
 }

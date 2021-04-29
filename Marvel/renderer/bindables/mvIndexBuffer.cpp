@@ -4,7 +4,7 @@
 namespace Marvel
 {
 
-    mvIndexBuffer::mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned short>& indices, bool dynamic)
+    mvIndexBuffer::mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned int>& indices, bool dynamic)
     {
 
         m_count = (UINT)indices.size();
@@ -19,17 +19,17 @@ namespace Marvel
         {
             bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
             bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            m_buffersize = m_count * sizeof(unsigned short) + 10000;
+            m_buffersize = m_count * sizeof(unsigned int) + 10000;
         }
         else
         {
             bufferDesc.Usage = D3D11_USAGE_DEFAULT;
             bufferDesc.CPUAccessFlags = 0u;
-            m_buffersize = UINT(sizeof(unsigned short) * m_count);
+            m_buffersize = UINT(sizeof(unsigned int) * m_count);
         }
 
         bufferDesc.ByteWidth = m_buffersize;
-        bufferDesc.StructureByteStride = sizeof(unsigned short);
+        bufferDesc.StructureByteStride = sizeof(unsigned int);
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         bufferDesc.MiscFlags = 0u;
 
@@ -45,7 +45,7 @@ namespace Marvel
     void mvIndexBuffer::bind(mvGraphics& graphics)
     {
         update(graphics);
-        graphics.getContext()->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+        graphics.getContext()->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
     }
 
     void mvIndexBuffer::update(mvGraphics& graphics)
@@ -55,16 +55,16 @@ namespace Marvel
         
         m_count = m_data.size();
 
-        if (m_buffersize < m_data.size()*sizeof(unsigned short))
+        if (m_buffersize < m_data.size()*sizeof(unsigned int))
         {
             m_indexBuffer->Release();
             m_indexBuffer = nullptr;
-            m_buffersize = m_count*sizeof(unsigned short) + 10000;
+            m_buffersize = m_count*sizeof(unsigned int) + 10000;
             D3D11_BUFFER_DESC bufferDesc = {};
             bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
             bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             bufferDesc.ByteWidth = m_buffersize;
-            bufferDesc.StructureByteStride = sizeof(unsigned short);
+            bufferDesc.StructureByteStride = sizeof(unsigned int);
             bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
             bufferDesc.MiscFlags = 0u;
             graphics.getDevice()->CreateBuffer(&bufferDesc, nullptr, m_indexBuffer.GetAddressOf());
@@ -76,7 +76,7 @@ namespace Marvel
         if (graphics.getContext()->Map(m_indexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource) != S_OK)
             return;
 
-        memcpy((unsigned short*)resource.pData, m_data.data(), m_data.size() * sizeof(unsigned short));
+        memcpy((unsigned short*)resource.pData, m_data.data(), m_data.size() * sizeof(unsigned int));
 
         graphics.getContext()->Unmap(m_indexBuffer.Get(), 0);
     }
@@ -91,7 +91,7 @@ namespace Marvel
         return m_dynamic;
     }
 
-    std::vector<unsigned short>& mvIndexBuffer::getData()
+    std::vector<unsigned int>& mvIndexBuffer::getData()
     {
         return m_data;
     }

@@ -27,7 +27,7 @@ namespace Marvel {
     const float* getVertices() const        { return vertices.data(); }
     const float* getNormals() const         { return normals.data(); }
     const float* getTexCoords() const       { return texCoords.data(); }
-    const unsigned short* getIndices() const  { return indices.data(); }
+    const unsigned int* getIndices() const  { return indices.data(); }
     const unsigned int* getLineIndices() const  { return lineIndices.data(); }
 
     // for interleaved vertices: V/N/T
@@ -61,7 +61,7 @@ namespace Marvel {
     std::vector<float> vertices;
     std::vector<float> normals;
     std::vector<float> texCoords;
-    std::vector<unsigned short> indices;
+    std::vector<unsigned int> indices;
     std::vector<unsigned int> lineIndices;
 
     // interleaved

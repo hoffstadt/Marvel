@@ -118,8 +118,8 @@ int main()
         imManager.beginFrame();
 
         // probes
-        //static mvModelProbe probe("Model Probe");
-        //probe.spawnWindow(model);
+        static mvModelProbe probe("Model Probe");
+        probe.spawnWindow(model);
 
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();

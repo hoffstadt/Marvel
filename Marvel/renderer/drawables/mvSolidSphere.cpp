@@ -19,7 +19,7 @@ namespace Marvel {
 		vl.append(ElementType::Normal);
 
 		std::vector<float> verticies;
-		std::vector<unsigned short> indicies;
+		std::vector<unsigned int> indicies;
 		std::vector<float> normals;
 		Sphere sphere(radius);
 

@@ -21,7 +21,6 @@ namespace Marvel {
 	void mvNode::submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
-		//const auto built = m_appliedTransform * m_transform * accumulatedTransform;
 
 		for (const auto pm : m_meshes)
 			pm->submit(graph, built);

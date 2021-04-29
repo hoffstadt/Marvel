@@ -5,20 +5,43 @@
 #include "mvNode.h"
 #include "drawables/mvMesh.h"
 
+
 namespace Marvel {
+
+	glm::mat4 ScaleTranslation(glm::mat4 mat, float scale)
+	{
+		mat[3][0] = mat[3][0] * scale;
+		mat[3][1] = mat[3][1] * scale;
+		mat[3][2] = mat[3][2] * scale;
+		return mat;
+	}
 
 	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
 	{
 		Assimp::Importer imp;
 		const auto pScene = imp.ReadFile(pathString.c_str(),
-			aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
+			//aiProcess_Triangulate |
+			//aiProcess_JoinIdenticalVertices |
+			//aiProcess_ConvertToLeftHanded |
+			//aiProcess_GenNormals |
+			//aiProcess_CalcTangentSpace
+			//aiProcess_JoinIdenticalVertices |
 			aiProcess_ConvertToLeftHanded |
-			aiProcess_GenNormals |
-			aiProcess_CalcTangentSpace
+
+			aiProcess_FixInfacingNormals |
+			aiProcess_SplitLargeMeshes |
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_CalcTangentSpace |        // Create binormals/tangents just in case
+			aiProcess_Triangulate |             // Make sure we're triangles
+			//aiProcess_SortByPType |             // Split meshes by primitive type
+			aiProcess_GenNormals |              // Make sure we have legit normals
+			aiProcess_GenUVCoords |             // Convert UVs if required 
+			aiProcess_OptimizeMeshes |          // Batch draws where possible
+			aiProcess_ValidateDataStructure    // Validation
+
 		);
 
-
+		m_meshes.reserve(pScene->mNumMeshes);
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			const auto& mesh = *pScene->mMeshes[i];
@@ -27,12 +50,12 @@ namespace Marvel {
 		}
 
 		int id = 0;
-		m_root.reset(parseNode(id, *pScene->mRootNode));
+		m_root.reset(parseNode(id, *pScene->mRootNode, scale));
 	}
 
 	void mvModel::submit(mvRenderGraph& graph) const
 	{
-		m_root->submit(graph, glm::identity<glm::mat4>());
+		m_root->submit(graph, glm::mat4(1.0f));
 	}
 
 	void mvModel::accept(mvModelProbe& probe)
@@ -61,9 +84,10 @@ namespace Marvel {
 		m_root->setAppliedTransform(tf);
 	}
 
-	mvNode* mvModel::parseNode(int& id, const aiNode& node)
+	mvNode* mvModel::parseNode(int& id, const aiNode& node, float scale)
 	{
-		const auto transform = reinterpret_cast<const glm::mat4*>(&node.mTransformation);
+		const auto transform = ScaleTranslation(glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation)), scale);
+
 
 		std::vector<std::shared_ptr<mvMesh>> curMeshPtrs;
 		curMeshPtrs.reserve(node.mNumMeshes);
@@ -73,9 +97,9 @@ namespace Marvel {
 			curMeshPtrs.push_back(m_meshes.at(meshIdx));
 		}
 
-		mvNode* pNode = new mvNode(node.mName.C_Str(), id++, curMeshPtrs, *transform);
+		mvNode* pNode = new mvNode(node.mName.C_Str(), id++, curMeshPtrs, transform);
 		for (size_t i = 0; i < node.mNumChildren; i++)
-			pNode->addChild(parseNode(id, *node.mChildren[i]));
+			pNode->addChild(parseNode(id, *node.mChildren[i], scale));
 
 		return pNode;
 	}

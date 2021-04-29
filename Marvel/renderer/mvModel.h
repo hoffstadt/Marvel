@@ -36,7 +36,7 @@ namespace Marvel {
 
 	private:
 
-		mvNode* parseNode(int& id, const aiNode& node);
+		mvNode* parseNode(int& id, const aiNode& node, float scale);
 
 	private:
 
