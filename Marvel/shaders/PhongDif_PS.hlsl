@@ -1,6 +1,7 @@
 #include "operations.hlsli"
 #include "pointlight.hlsli"
 #include "transform.hlsli"
+#include "directionallight.hlsli"
 
 cbuffer ObjectCBuf : register(b1)
 {
@@ -38,6 +39,19 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
         specular += Speculate(
             diffuseColor[i] * diffuseIntensity[i] * specularColor, specularWeight, viewNormal,
             lv.vec, viewFragPos, att, specularGloss
+        );
+    }
+    
+    for (int i = 0; i < dLightCount; i++)
+    {
+        
+	    // diffuse
+        diffuse += Diffuse(ddiffuseColor[i], ddiffuseIntensity[i], 1.0f, -normalize(viewLightDir[i]), viewNormal);
+    
+        // specular
+        specular += Speculate(
+            ddiffuseColor[i] * ddiffuseIntensity[i] * specularColor, specularWeight, viewNormal,
+            -normalize(viewLightDir[i]), viewFragPos, 1.0f, specularGloss
         );
     }
 

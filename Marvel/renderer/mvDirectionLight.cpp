@@ -1,6 +1,7 @@
 #include "mvDirectionLight.h"
 #include <imgui.h>
 #include "mvGraphics.h"
+#include "mvMarvelUtils.h"
 
 namespace Marvel {
 
@@ -49,7 +50,7 @@ namespace Marvel {
 
 		for (int i = 0; i < MaxLights; i++)
 		{
-			pos.values[i] = { 0.0f, 0.0f, 0.0f, -1.0f };
+			pos.values[i] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			diffuseColor.values[i] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			diffuseIntensity.values[i] = 1.0f;
 		}
@@ -95,8 +96,8 @@ namespace Marvel {
 
 		for (int i = 0; i<m_lights.size(); i++)
 		{
-			//glm::vec4 out = view * pos.values[i];
-			glm::vec4 out = pos.values[i];
+			glm::vec4 out = view * pos.values[i];
+			//glm::vec4 out = pos.values[i];
 			pos.values[i].x = out.x;
 			pos.values[i].y = out.y;
 			pos.values[i].z = out.z;

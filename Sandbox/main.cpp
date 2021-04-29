@@ -43,8 +43,8 @@ int main()
 
     mvPointLightManager lightManager(graphics);
     lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    //lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
-    //lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
+    lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
+    lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 
     // create camera
@@ -53,9 +53,9 @@ int main()
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
+    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f/20.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
-    mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
+    //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     model.linkTechniques(graph);
     lightManager.linkTechniques(graph);
