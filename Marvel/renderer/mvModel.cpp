@@ -8,27 +8,15 @@
 
 namespace Marvel {
 
-	glm::mat4 ScaleTranslation(glm::mat4 mat, float scale)
-	{
-		mat[3][0] = mat[3][0] * scale;
-		mat[3][1] = mat[3][1] * scale;
-		mat[3][2] = mat[3][2] * scale;
-		return mat;
-	}
-
 	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
+		:
+		m_mesh(graphics, 0.1f, { 0.0f, 1.0f, 0.0f }, 1)
 	{
+		m_mesh.setPosition(0.0f, 0.0f, 0.0f);
+
 		Assimp::Importer imp;
 		const auto pScene = imp.ReadFile(pathString.c_str(),
-			//aiProcess_Triangulate |
-			//aiProcess_JoinIdenticalVertices |
-			//aiProcess_ConvertToLeftHanded |
-			//aiProcess_GenNormals |
-			//aiProcess_CalcTangentSpace
-			//aiProcess_JoinIdenticalVertices |
 			aiProcess_ConvertToLeftHanded |
-
-			//aiProcess_FixInfacingNormals |
 			aiProcess_SplitLargeMeshes |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_CalcTangentSpace |        // Create binormals/tangents just in case
@@ -41,12 +29,15 @@ namespace Marvel {
 
 		);
 
+		double scaleFactor = 0.0;
+		pScene->mMetaData->Get("UnitScaleFactor", scaleFactor);
+
 		m_meshes.reserve(pScene->mNumMeshes);
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			const auto& mesh = *pScene->mMeshes[i];
 			m_meshes.push_back(std::make_shared<mvMesh>(
-				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
+				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale*scaleFactor));
 		}
 
 		int id = 0;
@@ -55,6 +46,7 @@ namespace Marvel {
 
 	void mvModel::submit(mvRenderGraph& graph) const
 	{
+		m_mesh.submit(graph);
 		m_root->submit(graph, glm::mat4(1.0f));
 	}
 
@@ -65,12 +57,14 @@ namespace Marvel {
 
 	void mvModel::linkTechniques(mvRenderGraph& graph)
 	{
+		m_mesh.linkTechniques(graph);
 		for (auto& mesh : m_meshes)
 			mesh->linkTechniques(graph);
 	}
 
 	void mvModel::draw(mvGraphics& graphics) const
 	{
+		m_mesh.draw(graphics);
 		m_root->draw(graphics);
 	}
 
@@ -86,8 +80,7 @@ namespace Marvel {
 
 	mvNode* mvModel::parseNode(int& id, const aiNode& node, float scale)
 	{
-		const auto transform = ScaleTranslation(glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation)), scale);
-
+		const auto transform = glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation))* glm::scale(glm::vec3(scale, scale, scale));
 
 		std::vector<std::shared_ptr<mvMesh>> curMeshPtrs;
 		curMeshPtrs.reserve(node.mNumMeshes);
@@ -98,6 +91,7 @@ namespace Marvel {
 		}
 
 		mvNode* pNode = new mvNode(node.mName.C_Str(), id++, curMeshPtrs, transform);
+		pNode->setModel(this);
 		for (size_t i = 0; i < node.mNumChildren; i++)
 			pNode->addChild(parseNode(id, *node.mChildren[i], scale));
 

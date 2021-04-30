@@ -2,17 +2,23 @@
 #include <string>
 #include <unordered_map>
 
+
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
+	// forward declarations
+	//-----------------------------------------------------------------------------
 	class mvNode;
 	class mvModel;
+	class mvRenderGraph;
+	class mvGraphics;
 
 	class mvModelProbe
 	{
 
 	public:
 
-		mvModelProbe(const std::string& name);
+		mvModelProbe(mvGraphics& graphics, const std::string& name);
 		
 		void spawnWindow(mvModel& model);
 		bool pushNode(mvNode& node);
@@ -30,6 +36,13 @@ namespace Marvel {
 			float x = 0.0f;
 			float y = 0.0f;
 			float z = 0.0f;
+
+			float oxRot = 0.0f;
+			float oyRot = 0.0f;
+			float ozRot = 0.0f;
+			float ox = 0.0f;
+			float oy = 0.0f;
+			float oz = 0.0f;
 		};
 		std::string m_name;
 		std::unordered_map<int, TransformParameters> m_transformParams;

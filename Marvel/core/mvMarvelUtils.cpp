@@ -20,27 +20,14 @@ namespace Marvel {
 
 	glm::vec3 ExtractEulerAngles(const glm::mat4& mat)
 	{
-		//DirectX::XMFLOAT3 euler;
 		glm::vec3 euler;
-
-		euler.x = asinf(-mat[2][3]);                  // Pitch
-		if (cosf(euler.x) > 0.0001)                // Not at poles
-		{
-			euler.y = atan2f(mat[1][3], mat[3][3]);      // Yaw
-			euler.z = atan2f(mat[2][1], mat[2][2]);      // Roll
-		}
-		else
-		{
-			euler.y = 0.0f;                           // Yaw
-			euler.z = atan2f(-mat[1][2], mat[1][1]);     // Roll
-		}
-
+		glm::extractEulerAngleXYZ(glm::transpose(mat), euler.x, euler.y, euler.z);
 		return euler;
 	}
 
 	glm::vec3 ExtractTranslation(const glm::mat4& matrix)
 	{
-		return { matrix[0][3], matrix[1][3], matrix[2][3] };
+		return { matrix[3][0], matrix[3][1], matrix[3][2] };
 	}
 
 }

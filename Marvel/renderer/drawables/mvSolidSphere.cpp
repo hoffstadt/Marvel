@@ -4,6 +4,7 @@
 #include "mvCommonBindables.h"
 #include "Sphere.h"
 #include "mvTechnique.h"
+#include "mvMarvelUtils.h"
 
 namespace Marvel {
 
@@ -46,6 +47,7 @@ namespace Marvel {
 
 		mvStep step("Lambertian");
 
+		// solid color
 		if (simple == 1)
 		{
 			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
@@ -55,7 +57,7 @@ namespace Marvel {
 
 			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
 
-			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
+			bufferRaw->getElement("materialColor").setIfExists(color);
 
 			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
 
@@ -70,6 +72,8 @@ namespace Marvel {
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
+
+		// flat shade
 		else if(simple == 2)
 		{
 			// create vertex shader
@@ -81,6 +85,8 @@ namespace Marvel {
 			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}
+
+		// phong
 		else
 		{
 			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
@@ -117,6 +123,18 @@ namespace Marvel {
 		technique.addStep(step);
 		addTechnique(technique);
 
+	}
+
+	void mvSolidSphere::setTransform(glm::mat4 transform)
+	{
+		const auto angles = ExtractEulerAngles(transform);
+		const auto translation = ExtractTranslation(transform);
+		m_x = translation.x;
+		m_y = translation.y;
+		m_z = translation.z;
+		m_xangle = angles.x;
+		m_yangle = angles.y;
+		m_zangle = angles.z;
 	}
 
 	glm::mat4 mvSolidSphere::getTransform() const

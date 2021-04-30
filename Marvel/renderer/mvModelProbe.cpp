@@ -6,10 +6,11 @@
 
 namespace Marvel {
 
-	mvModelProbe::mvModelProbe(const std::string& name)
+	mvModelProbe::mvModelProbe(mvGraphics& graphics, const std::string& name)
 	{
 		m_name = name;
 	}
+
 
 	void mvModelProbe::spawnWindow(mvModel& model)
 	{
@@ -23,11 +24,21 @@ namespace Marvel {
 			bool dirty = false;
 			const auto dcheck = [&dirty](bool changed) {dirty = dirty || changed; };
 			auto& tf = ResolveTransform();
-			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Translation");
+
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Original Translation");
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "X: %f", tf.ox);
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "Y: %f", tf.oy);
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "Z: %f", tf.oz);
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Original Orientation");
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "X-rotation: %f", tf.oxRot);
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "Y-rotation: %f", tf.oyRot);
+			ImGui::TextColored({ 0.3f,1.0f,0.2f,1.0f }, "Z-rotation: %f", tf.ozRot);
+
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Applied Translation");
 			dcheck(ImGui::SliderFloat("X", &tf.x, -60.f, 60.f));
 			dcheck(ImGui::SliderFloat("Y", &tf.y, -60.f, 60.f));
 			dcheck(ImGui::SliderFloat("Z", &tf.z, -60.f, 60.f));
-			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Orientation");
+			ImGui::TextColored({ 0.4f,1.0f,0.6f,1.0f }, "Applied Orientation");
 			dcheck(ImGui::SliderAngle("X-rotation", &tf.xRot, -180.0f, 180.0f));
 			dcheck(ImGui::SliderAngle("Y-rotation", &tf.yRot, -180.0f, 180.0f));
 			dcheck(ImGui::SliderAngle("Z-rotation", &tf.zRot, -180.0f, 180.0f));
@@ -43,7 +54,6 @@ namespace Marvel {
 				glm::mat4 rotationz = glm::rotate(glm::identity<glm::mat4>(), tf.zRot, glm::vec3(0.0f, 0.0f, 1.0f));
 
 				glm::mat4 transformation = translation * rotationz * rotationy * rotationx;
-				//glm::mat4 transformation = rotationx * rotationy * rotationz * translation;
 
 				m_selectedNode->setAppliedTransform(transformation);
 			}
@@ -69,7 +79,12 @@ namespace Marvel {
 		);
 		// processing for selecting node
 		if (ImGui::IsItemClicked())
+		{
+			if(m_selectedNode)
+				m_selectedNode->setSelection(false);
 			m_selectedNode = &node;
+			m_selectedNode->setSelection(true);
+		}
 	
 		// signal if children should also be recursed
 		return expanded;
@@ -95,8 +110,11 @@ namespace Marvel {
 	mvModelProbe::TransformParameters& mvModelProbe::LoadTransform(int id)
 	{
 		const auto& applied = m_selectedNode->getAppliedTransform();
+		const auto& original = m_selectedNode->getTransform();
 		const auto angles = ExtractEulerAngles(applied);
+		const auto oangles = ExtractEulerAngles(original);
 		const auto translation = ExtractTranslation(applied);
+		const auto otranslation = ExtractTranslation(original);
 		TransformParameters tp;
 		tp.zRot = angles.z;
 		tp.xRot = angles.x;
@@ -104,6 +122,13 @@ namespace Marvel {
 		tp.x = translation.x;
 		tp.y = translation.y;
 		tp.z = translation.z;
+
+		tp.ozRot = -oangles.z * 180.0f / M_PI;
+		tp.oxRot = -oangles.x * 180.0f / M_PI;
+		tp.oyRot = -oangles.y * 180.0f / M_PI;
+		tp.ox = otranslation.x;
+		tp.oy = otranslation.y;
+		tp.oz = otranslation.z;
 		return m_transformParams.insert({ id,{ tp } }).first->second;
 	}
 }

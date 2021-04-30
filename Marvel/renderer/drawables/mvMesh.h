@@ -30,7 +30,6 @@ namespace Marvel {
 
 		void      submit            (mvRenderGraph& graph, glm::mat4 accumulatedTranform) const;
 		glm::mat4 getTransform      () const override;
-		void      show_imgui_windows(const char* name);
 
 	private:
 

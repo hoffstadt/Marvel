@@ -34,17 +34,14 @@ int main()
 
     // create render graph
     mvRenderGraph graph(graphics, "../../Resources/SkyBox");
-
-    // create point light
-    //mvPointLight light(graphics, {10.0f, 5.0f, 0.0f});
     
     mvDirectionLightManager dlightManager(graphics);
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
     lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    lightManager.addLight(graphics, { -22.9f, 19.2f, -26.0f });
-    lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
+    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
+    //lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 
     // create camera
@@ -57,8 +54,10 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
+   
     model.linkTechniques(graph);
     lightManager.linkTechniques(graph);
+
 
     // Light target
     mvRenderTarget target1(graphics, 300, 300);
@@ -119,12 +118,10 @@ int main()
         graph.execute(graphics);
         graph.reset();
 
+        static mvModelProbe probe(graphics, "Model Probe");
+
         imManager.beginFrame();
-
-        // probes
-        static mvModelProbe probe("Model Probe");
         probe.spawnWindow(model);
-
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph.show_imgui_window();

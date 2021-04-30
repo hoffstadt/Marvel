@@ -1,5 +1,6 @@
 #include "mvNode.h"
 #include "mvMesh.h"
+#include "mvModel.h"
 #include "mvModelProbe.h"
 
 namespace Marvel {
@@ -18,11 +19,19 @@ namespace Marvel {
 		return m_id;
 	}
 
+	void mvNode::setModel(mvModel* model)
+	{
+		m_model = model;
+	}
+
 	void mvNode::submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
 
-		for (const auto pm : m_meshes)
+		if (m_selected)
+			m_model->getSphere().setTransform(built);
+
+		for (const auto& pm : m_meshes)
 			pm->submit(graph, built);
 
 		for (const auto& pc : m_children)
@@ -56,6 +65,11 @@ namespace Marvel {
 	const glm::mat4& mvNode::getAppliedTransform() const
 	{
 		return m_appliedTransform;
+	}
+
+	const glm::mat4& mvNode::getTransform() const
+	{
+		return m_transform;
 	}
 
 	void mvNode::addChild(mvNode* child)
