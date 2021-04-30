@@ -28,15 +28,12 @@ namespace Marvel {
 
 		);
 
-		double scaleFactor = 0.0;
-		pScene->mMetaData->Get("UnitScaleFactor", scaleFactor);
-
 		m_meshes.reserve(pScene->mNumMeshes);
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			const auto& mesh = *pScene->mMeshes[i];
 			m_meshes.push_back(std::make_shared<mvMesh>(
-				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale*scaleFactor));
+				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
 		}
 
 		int id = 0;
@@ -79,7 +76,7 @@ namespace Marvel {
 
 	mvNode* mvModel::parseNode(int& id, const aiNode& node, float scale)
 	{
-		const auto transform = glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation))* glm::scale(glm::vec3(scale, scale, scale));
+		const auto transform = glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation)) * glm::scale(glm::vec3(scale, scale, scale));
 
 		std::vector<std::shared_ptr<mvMesh>> curMeshPtrs;
 		curMeshPtrs.reserve(node.mNumMeshes);
