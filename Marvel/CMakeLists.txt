@@ -58,10 +58,12 @@ target_sources(marvel
 		"renderer/drawables/mvSolidSphere.cpp"
 		"renderer/drawables/mvPointCloud.cpp"
 		"renderer/drawables/mvMesh.cpp"
+		"renderer/drawables/mvGizmo.cpp"
 		
 		"renderer/passes/mvPass.cpp"
 		"renderer/passes/mvLambertianPass.cpp"
 		"renderer/passes/mvSkyboxPass.cpp"
+		"renderer/passes/mvOverlayPass.cpp"
 
 		#implot
 		"vendor/implot/implot.cpp"

@@ -5,7 +5,7 @@
 #include <memory>
 #include "mvNode.h"
 #include "mvMesh.h"
-#include "mvSolidSphere.h"
+#include "mvGizmo.h"
 
 //-----------------------------------------------------------------------------
 // forward declarations
@@ -34,7 +34,7 @@ namespace Marvel {
 		void    setRootTransform(glm::mat4 tf);
 		void    accept          (mvModelProbe& probe);
 		mvNode* getNode         (const std::string& name);
-		mvSolidSphere& getSphere() { return m_mesh; }
+		mvGizmo& getSphere() { return m_mesh; }
 
 	private:
 
@@ -44,6 +44,6 @@ namespace Marvel {
 
 		std::shared_ptr<mvNode>              m_root;
 		std::vector<std::shared_ptr<mvMesh>> m_meshes;
-		mvSolidSphere                        m_mesh;
+		mvGizmo                              m_mesh;
 	};
 }

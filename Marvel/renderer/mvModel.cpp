@@ -10,9 +10,8 @@ namespace Marvel {
 
 	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
 		:
-		m_mesh(graphics, 0.1f, { 0.0f, 1.0f, 0.0f }, 1)
+		m_mesh(graphics)
 	{
-		m_mesh.setPosition(0.0f, 0.0f, 0.0f);
 
 		Assimp::Importer imp;
 		const auto pScene = imp.ReadFile(pathString.c_str(),

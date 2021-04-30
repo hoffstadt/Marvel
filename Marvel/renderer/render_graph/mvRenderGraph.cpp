@@ -5,6 +5,7 @@
 #include "mvPass.h"
 #include "mvLambertianPass.h"
 #include "mvSkyboxPass.h"
+#include "mvOverlayPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 
@@ -15,6 +16,7 @@ namespace Marvel {
 	{
 		m_passes.push_back(std::make_shared<mvLambertianPass>(graphics));
 		m_passes.push_back(std::make_shared<mvSkyboxPass>(graphics, skybox));
+		m_passes.push_back(std::make_shared<mvOverlayPass>(graphics));
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
 		auto& root = layout.getRoot();

@@ -4,3 +4,4 @@
 #include "mvSolidSphere.h"
 #include "mvPointCloud.h"
 #include "mvMesh.h"
+#include "mvGizmo.h"
