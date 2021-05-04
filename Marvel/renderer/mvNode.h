@@ -29,6 +29,7 @@ namespace Marvel {
 		const glm::mat4& getTransform       () const;
 		void             setAppliedTransform(glm::mat4 transform);
 		const glm::mat4& getAppliedTransform() const;
+		const glm::mat4& getFullTransform() const;
 		void             addChild           (mvNode* child);
 		void             accept             (mvModelProbe& probe);
 		int              getID              () const;
@@ -45,6 +46,7 @@ namespace Marvel {
 		std::vector<std::shared_ptr<mvMesh>> m_meshes;
 		glm::mat4                            m_transform;
 		glm::mat4                            m_appliedTransform;
+		mutable glm::mat4                    m_fullTransform;
 		int                                  m_id = 0;
 		std::string                          m_name;
 		bool                                 m_selected = false;

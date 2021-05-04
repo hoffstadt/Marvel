@@ -5,3 +5,4 @@
 #include "mvPointCloud.h"
 #include "mvMesh.h"
 #include "mvGizmo.h"
+#include "mvSolidModel.h"

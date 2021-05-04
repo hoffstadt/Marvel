@@ -8,22 +8,19 @@ namespace Marvel {
 	// forward declarations
 	class mvGraphics;
 
-	class mvPointCloud : public mvDrawable
+	class mvSolidModel : public mvDrawable
 	{
 
 
 	public:
 
-		mvPointCloud(mvGraphics& graphics, glm::vec3 color);
+		mvSolidModel(mvGraphics& graphics, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color);
 
 		glm::mat4 getTransform() const override;
 
 		void show_imgui_windows(const char* name);
 		void setPosition(float x, float y, float z);
 		void setRotation(float x, float y, float z);
-
-		std::vector<float>& getVertices();
-		std::vector<unsigned int>& getIndices();
 
 	private:
 

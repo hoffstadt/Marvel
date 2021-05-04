@@ -1,4 +1,4 @@
-#include "mvPointCloud.h"
+#include "mvSolidModel.h"
 #include <imgui.h>
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
@@ -7,21 +7,22 @@
 
 namespace Marvel {
 
-	mvPointCloud::mvPointCloud(mvGraphics& graphics, glm::vec3 color)
+	mvSolidModel::mvSolidModel(mvGraphics& graphics, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
 	{
 
 		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
+		vl.append(ElementType::Normal);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{0.0f, 0.0f, 0.0f}, vl, true);
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, vertices, vl, true);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, std::vector<unsigned int>{0u}, true);
+		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, true);
 
 		mvStep step("Lambertian");
 
@@ -39,11 +40,11 @@ namespace Marvel {
 		step.addBindable(buf);
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("Solid_VS");
+		auto vshader = mvBindableRegistry::GetBindable("Phong_VS");
 		step.addBindable(vshader);
 		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
 			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable("Solid_PS"));
+		step.addBindable(mvBindableRegistry::GetBindable("Phong_PS"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 
@@ -53,17 +54,7 @@ namespace Marvel {
 
 	}
 
-	std::vector<float>& mvPointCloud::getVertices()
-	{
-		return m_vertexBuffer->getData();
-	}
-
-	std::vector<unsigned int>& mvPointCloud::getIndices()
-	{
-		return m_indexBuffer->getData();
-	}
-
-	glm::mat4 mvPointCloud::getTransform() const
+	glm::mat4 mvSolidModel::getTransform() const
 	{
 		return glm::translate(glm::vec3{ m_x, m_y, m_z }) *
 			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
@@ -71,7 +62,7 @@ namespace Marvel {
 			glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f });
 	}
 
-	void mvPointCloud::show_imgui_windows(const char* name)
+	void mvSolidModel::show_imgui_windows(const char* name)
 	{
 		if (ImGui::Begin(name))
 		{
@@ -85,14 +76,14 @@ namespace Marvel {
 		ImGui::End();
 	}
 
-	void mvPointCloud::setPosition(float x, float y, float z)
+	void mvSolidModel::setPosition(float x, float y, float z)
 	{
 		m_x = x;
 		m_y = y;
 		m_z = z;
 	}
 
-	void mvPointCloud::setRotation(float x, float y, float z)
+	void mvSolidModel::setRotation(float x, float y, float z)
 	{
 		m_xangle = x;
 		m_yangle = y;

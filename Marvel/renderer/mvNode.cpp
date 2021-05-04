@@ -28,6 +28,8 @@ namespace Marvel {
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
 
+		m_fullTransform = built;
+
 		if (m_selected)
 			m_model->getSphere().setTransform(built);
 
@@ -65,6 +67,11 @@ namespace Marvel {
 	const glm::mat4& mvNode::getAppliedTransform() const
 	{
 		return m_appliedTransform;
+	}
+
+	const glm::mat4& mvNode::getFullTransform() const
+	{
+		return m_fullTransform;
 	}
 
 	const glm::mat4& mvNode::getTransform() const

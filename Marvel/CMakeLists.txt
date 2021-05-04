@@ -59,6 +59,7 @@ target_sources(marvel
 		"renderer/drawables/mvPointCloud.cpp"
 		"renderer/drawables/mvMesh.cpp"
 		"renderer/drawables/mvGizmo.cpp"
+		"renderer/drawables/mvSolidModel.cpp"
 		
 		"renderer/passes/mvPass.cpp"
 		"renderer/passes/mvLambertianPass.cpp"
