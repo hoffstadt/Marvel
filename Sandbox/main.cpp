@@ -54,8 +54,13 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
+    // create testing cube
+    mvCube cube(graphics, { 1.0f, 0.0f, 0.5f });
+    cube.setPosition(0.0f, 5.0f, 0.0f);
+
    
     model.linkTechniques(graph);
+    cube.linkTechniques(graph);
     lightManager.linkTechniques(graph);
 
 
@@ -96,6 +101,7 @@ int main()
         dlightManager.bind(graphics, lightcamera->getMatrix());
 
         model.submit(graph);
+        cube.submit(graph);
         lightManager.submit(graph);
 
         graph.execute(graphics);
@@ -112,6 +118,7 @@ int main()
         lightManager.bind(graphics, camera.getMatrix());
         dlightManager.bind(graphics, camera.getMatrix());
 
+        cube.submit(graph);
         model.submit(graph);
         lightManager.submit(graph);
 
@@ -125,6 +132,7 @@ int main()
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph.show_imgui_window();
+        cube.show_imgui_windows("Test Cube");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),

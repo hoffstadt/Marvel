@@ -60,6 +60,7 @@ target_sources(marvel
 		"renderer/drawables/mvMesh.cpp"
 		"renderer/drawables/mvGizmo.cpp"
 		"renderer/drawables/mvSolidModel.cpp"
+		"renderer/drawables/mvCube.cpp"
 		
 		"renderer/passes/mvPass.cpp"
 		"renderer/passes/mvLambertianPass.cpp"

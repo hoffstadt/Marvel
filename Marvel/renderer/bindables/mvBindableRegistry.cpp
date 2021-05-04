@@ -9,6 +9,7 @@ namespace Marvel {
 	void mvBindableRegistry::Initialize(mvGraphics& graphics)
 	{
 		// pixel shaders
+		m_bindables.try_emplace("CubeTest_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "CubeTest_PS.hlsl").c_str()));
 		m_bindables.try_emplace("Gizmo_ps", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Gizmo_ps.hlsl").c_str()));
 		m_bindables.try_emplace("Phong_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Phong_PS.hlsl").c_str()));
 		m_bindables.try_emplace("PhongDif_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "PhongDif_PS.hlsl").c_str()));
@@ -22,6 +23,7 @@ namespace Marvel {
 		m_bindables.try_emplace("Skybox_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_PS.hlsl").c_str()));
 
 		// vertex shaders
+		m_bindables.try_emplace("CubeTest_VS", std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "CubeTest_VS.hlsl").c_str()));
 		m_bindables.try_emplace("Gizmo_vs", std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "Gizmo_vs.hlsl").c_str()));
 		m_bindables.try_emplace("Phong_VS", std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "Phong_VS.hlsl").c_str()));
 		m_bindables.try_emplace("PhongDif_VS", std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "PhongDif_VS.hlsl").c_str()));
