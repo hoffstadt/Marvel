@@ -31,7 +31,7 @@ namespace Marvel {
 		m_fullTransform = built;
 
 		if (m_selected)
-			m_model->getSphere().setTransform(built);
+			m_model->getGizmo().setTransform(built);
 
 		for (const auto& pm : m_meshes)
 			pm->submit(graph, built);
@@ -48,15 +48,6 @@ namespace Marvel {
 				cp->accept(probe);
 			probe.popNode(*this);
 		}
-	}
-
-	void mvNode::draw(mvGraphics& graphics) const
-	{
-		for (const auto& pm : m_meshes)
-			pm->draw(graphics);
-
-		for (const auto& pc : m_children)
-			pc->draw(graphics);
 	}
 
 	void mvNode::setAppliedTransform(glm::mat4 transform)

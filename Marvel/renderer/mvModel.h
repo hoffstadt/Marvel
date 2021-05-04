@@ -25,16 +25,26 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	class mvModel
 	{
+
 	public:
+
 		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
-		void    submit          (mvRenderGraph& graph) const;
-		void    linkTechniques  (mvRenderGraph& graph);
-		void    draw            (mvGraphics& graphics) const;
-		void    setRootTransform(glm::mat4 tf);
-		void    accept          (mvModelProbe& probe);
-		mvNode* getNode         (const std::string& name);
-		mvGizmo& getSphere() { return m_mesh; }
+		// propagates through graph linking steps to passes
+		// model -> node -> mesh -> technique -> step -> pass
+		void linkTechniques(mvRenderGraph& graph);
+
+		// propagates through graph submitting jobs
+		// model -> node -> mesh -> technique -> step -> pass
+		void submit(mvRenderGraph& graph) const;
+
+		// sets the root transform which will propagate
+		// trhough the graph
+		void setRootTransform(glm::mat4 tf);
+
+		void     accept          (mvModelProbe& probe);
+		mvNode*  getNode         (const std::string& name);
+		mvGizmo& getGizmo        () { return m_mesh; }
 
 	private:
 

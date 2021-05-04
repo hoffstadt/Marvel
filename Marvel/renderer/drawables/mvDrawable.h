@@ -20,20 +20,28 @@ namespace Marvel {
 	class mvDrawable
 	{
 
+		// for retrieving index count
+		friend class mvJob;
+
 	public:
 
 		mvDrawable() = default;
 
-		virtual void      draw(mvGraphics& graphics) const;
 		virtual glm::mat4 getTransform() const = 0;
 
-		void submit(mvRenderGraph& graph) const;
-
-		void bind         (mvGraphics& graphics) const;
-		UINT getIndexCount() const;
-		void addTechnique (mvTechnique technique);
+		// propagates through graph linking steps to passes
+		// drawable -> technique -> step -> pass
 		void linkTechniques(mvRenderGraph& graph);
 
+		// propagates through graph submitting jobs
+		// drawable -> technique -> step -> pass
+		void submit(mvRenderGraph& graph) const;
+
+		// binds topology, index buffer, and vertex buffer
+		void bind(mvGraphics& graphics) const;
+
+		void addTechnique (mvTechnique technique);
+		
 	protected:
 
 		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;

@@ -22,11 +22,12 @@ namespace Marvel {
 
 		glm::mat4 getMatrix() const;
 
-		void bind       (mvGraphics& graphics) const;
-		void rotate     (float dx, float dy);
-		void translate  (float dx, float dy, float dz);
-		void setPos(float x, float y, float z);
+		void bind     (mvGraphics& graphics) const;
+		void rotate   (float dx, float dy);
+		void translate(float dx, float dy, float dz);
+		void setPos   (float x, float y, float z);
 
+		// called when the viewport is resized
 		void updateProjection(int width, int height);
 
 	private:

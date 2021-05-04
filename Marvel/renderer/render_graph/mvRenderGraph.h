@@ -29,7 +29,9 @@ namespace Marvel {
 		void    reset();
 		mvPass* getPass(const std::string& name);
 		void    show_imgui_window();
-		void    bind(mvGraphics& graphics);
+
+		// binds global bindables
+		void bind(mvGraphics& graphics);
 
 	private:
 

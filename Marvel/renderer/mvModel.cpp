@@ -58,12 +58,6 @@ namespace Marvel {
 			mesh->linkTechniques(graph);
 	}
 
-	void mvModel::draw(mvGraphics& graphics) const
-	{
-		m_mesh.draw(graphics);
-		m_root->draw(graphics);
-	}
-
 	mvNode* mvModel::getNode(const std::string& name)
 	{
 		return m_root->getNode(name);

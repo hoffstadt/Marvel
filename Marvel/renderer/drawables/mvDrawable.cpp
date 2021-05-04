@@ -19,17 +19,6 @@ namespace Marvel {
 		m_techniques.push_back(std::move(technique));
 	}
 
-	UINT mvDrawable::getIndexCount() const
-	{
-		return m_indexBuffer->getCount();
-	}
-
-	void mvDrawable::draw(mvGraphics& graphics) const
-	{
-		bind(graphics);
-		graphics.drawIndexed(getIndexCount());
-	}
-
 	void mvDrawable::submit(mvRenderGraph& graph) const
 	{
 		for (const auto& tech : m_techniques)

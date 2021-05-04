@@ -15,6 +15,8 @@ namespace Marvel{
 
 	//-----------------------------------------------------------------------------
 	// mvPass
+	// 	   * collection of jobs
+	// 	   * pass-wide bindables
 	//-----------------------------------------------------------------------------
 	class mvPass
 	{
@@ -23,7 +25,7 @@ namespace Marvel{
 
 		mvPass(const std::string& name);
 
-		virtual void execute(mvGraphics& graphics) const = 0;
+		virtual void execute(mvGraphics& graphics) const;
 
 		void               addJob     (mvJob job);
 		void               reset      ();

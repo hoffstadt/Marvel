@@ -25,7 +25,7 @@ namespace Marvel {
 	{
 		for (auto& bindable : m_bindables)
 		{
-			bindable->setParent(parent);
+			bindable->m_parent = parent;
 			bindable->bind(graphics);
 		}
 	}

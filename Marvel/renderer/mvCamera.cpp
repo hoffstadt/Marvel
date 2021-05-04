@@ -5,7 +5,7 @@
 namespace Marvel {
 
 	template<typename T>
-	T wrap_angle(T theta) noexcept
+	static T wrap_angle(T theta) noexcept
 	{
 		constexpr T twoPi = (T)2 * (T)PI_D;
 		const T mod = (T)fmod(theta, twoPi);

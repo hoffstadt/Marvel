@@ -26,21 +26,26 @@ namespace Marvel {
 
 		void drawIndexed(UINT count);
 
+		// called when the viewport is resized
+		//   * recreates render target
+		//   * recreates depth stencil
+		//   * resizes framebuffer
 		void resize(int width, int height);
 
-		ID3D11Device*        getDevice      ();
-		ID3D11DeviceContext* getContext     ();
-		IDXGISwapChain*      getSwapChain   ();
-		ID3D11Texture2D*     getFrameBuffer ();
-		mvRenderTarget*      getTarget      ();
-		mvDepthStencil*      getDepthBuffer ();
-		glm::mat4            getProjection  () const;
-		glm::mat4            getCamera      () const;
+		// setters
+		void setProjection(glm::mat4 proj);
+		void setCamera    (glm::mat4 cam);
 
-		void      setProjection    (glm::mat4 proj);
-		void      setCamera        (glm::mat4 cam);
-
-		const std::string& getShaderRoot() const { return m_shaderRoot; }
+		// getters
+		ID3D11Device*        getDevice     ();
+		ID3D11DeviceContext* getContext    ();
+		IDXGISwapChain*      getSwapChain  ();
+		ID3D11Texture2D*     getFrameBuffer();
+		mvRenderTarget*      getTarget     ();
+		mvDepthStencil*      getDepthBuffer();
+		glm::mat4            getProjection () const;
+		glm::mat4            getCamera     () const;
+		const std::string&   getShaderRoot () const { return m_shaderRoot; }
 
 	private:
 
@@ -50,10 +55,8 @@ namespace Marvel {
 		mvComPtr<ID3D11Texture2D>     m_frameBuffer;
 		mvRenderTarget*               m_target;
 		mvDepthStencil*               m_depthStencil;
-
 		glm::mat4                     m_projection;
 		glm::mat4                     m_camera;
-
 		std::string                   m_shaderRoot = "../../Marvel/shaders/";
 	};
 

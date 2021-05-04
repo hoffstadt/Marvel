@@ -6,18 +6,29 @@
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
+	// forward declarations
+	//-----------------------------------------------------------------------------
 	class mvGraphics;
 	class mvDrawable;
 	class mvRenderGraph;
 
+	//-----------------------------------------------------------------------------
+	// mvTechnique
+	//-----------------------------------------------------------------------------
 	class mvTechnique
 	{
 
 	public:
 
-		void addStep(mvStep step);
+		// links steps to their target passes
+		void link(mvRenderGraph& graph);
+
+		// propagates drawable to all steps to submit their jobs
+		// to their target passes
 		void submit(const mvDrawable& drawable) const;
-		void link  (mvRenderGraph& graph);
+	
+		void addStep(mvStep step);
 
 	private:
 

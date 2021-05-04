@@ -25,12 +25,17 @@ namespace Marvel {
 
 		mvStep(const std::string& targetPass);
 
+		// sets the pass this step targets
+		void link(mvRenderGraph& graph);
+
+		// adds a job to target pass
+		void submit(const mvDrawable& drawable) const;
+
+		// binds all step specific bindables to the pipeline
+		void bind(mvGraphics& graphics, const mvDrawable* parent) const;
+
 		void addBindable(std::shared_ptr<mvBindable> bindable);
-		void bind       (mvGraphics& graphics, const mvDrawable* parent) const;
-		void submit     (const mvDrawable& drawable) const;
-		void link       (mvRenderGraph& graph);
-
-
+		
 	private:
 
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;

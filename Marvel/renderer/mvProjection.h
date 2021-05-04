@@ -20,6 +20,7 @@ namespace Marvel {
 
 		glm::mat4 getMatrix() const;
 
+		// called when viewport is resized
 		void update(int width, int height);
 
 	private:

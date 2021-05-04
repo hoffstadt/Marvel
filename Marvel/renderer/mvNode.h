@@ -24,20 +24,28 @@ namespace Marvel {
 
 		mvNode(const std::string& name, int id, std::vector<std::shared_ptr<mvMesh>> meshPtrs, const glm::mat4& transform);
 
-		void             submit             (mvRenderGraph& graph, glm::mat4 accumulatedTransform) const;
-		void             draw               (mvGraphics& graphics) const;
-		const glm::mat4& getTransform       () const;
+		// propagates through node children submitting jobs
+		// node -> mesh -> technique -> step -> pass
+		void submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const;
+
+		// transforms
+		const glm::mat4& getTransform       () const; // internal transform
+		const glm::mat4& getAppliedTransform() const; // transform set by user
+		const glm::mat4& getFullTransform   () const; // final transform (accumulation included)
 		void             setAppliedTransform(glm::mat4 transform);
-		const glm::mat4& getAppliedTransform() const;
-		const glm::mat4& getFullTransform() const;
-		void             addChild           (mvNode* child);
-		void             accept             (mvModelProbe& probe);
-		int              getID              () const;
-		bool             hasChildren        () const { return !m_children.empty(); }
-		const std::string& getName          () const { return m_name; }
-		mvNode*          getNode            (const std::string& name);
-		void             setModel           (mvModel* model);
-		void             setSelection       (bool value) { m_selected = value; }
+
+		void addChild(mvNode* child);
+		void accept  (mvModelProbe& probe);
+
+		// setters
+		void setModel     (mvModel* model);
+		void setSelection (bool value) { m_selected = value; }
+
+		// getters
+		int                getID              () const;
+		bool               hasChildren        () const { return !m_children.empty(); }
+		const std::string& getName            () const { return m_name; }
+		mvNode*            getNode            (const std::string& name);
 
 
 	private:

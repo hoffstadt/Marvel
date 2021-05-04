@@ -14,6 +14,6 @@ namespace Marvel
 	{
 		m_drawable->bind(graphics);
 		m_step->bind(graphics, m_drawable);
-		graphics.drawIndexed(m_drawable->getIndexCount());
+		graphics.drawIndexed(m_drawable->m_indexBuffer->getCount());
 	}
 }

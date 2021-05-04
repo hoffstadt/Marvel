@@ -28,13 +28,15 @@ namespace Marvel {
 
 		mvMesh(mvGraphics& graphics, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
 
-		void      submit            (mvRenderGraph& graph, glm::mat4 accumulatedTranform) const;
-		glm::mat4 getTransform      () const override;
+		// propagates through graph submitting jobs
+		// mesh -> technique -> step -> pass
+		void submit(mvRenderGraph& graph, glm::mat4 accumulatedTranform) const;
+		
+		glm::mat4 getTransform() const override;
 
 	private:
 
 		mutable glm::mat4 m_transform;
-
 
 	};
 

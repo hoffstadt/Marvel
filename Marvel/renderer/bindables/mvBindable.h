@@ -14,13 +14,14 @@ namespace Marvel {
     class mvBindable
     {
 
+        // to set parent
+        friend class mvStep;
+
     public:
 
         virtual ~mvBindable() = default;
 
         virtual void bind(mvGraphics& graphics) = 0;
-
-        void setParent(const mvDrawable* parent) { m_parent = parent; }
 
     protected:
 
