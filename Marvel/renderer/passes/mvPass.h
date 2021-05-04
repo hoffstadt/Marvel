@@ -12,6 +12,7 @@ namespace Marvel{
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvDepthStencil;
 
 	//-----------------------------------------------------------------------------
 	// mvPass
@@ -20,6 +21,8 @@ namespace Marvel{
 	//-----------------------------------------------------------------------------
 	class mvPass
 	{
+
+		friend class mvRenderGraph;
 
 	public:
 
@@ -37,5 +40,6 @@ namespace Marvel{
 		std::vector<mvJob>                       m_jobs;
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;
 		std::string                              m_name;
+		std::shared_ptr<mvDepthStencil>          m_depthStencil;
 	};
 }

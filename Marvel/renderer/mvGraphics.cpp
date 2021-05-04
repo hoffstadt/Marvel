@@ -6,7 +6,8 @@ namespace Marvel {
 
 	mvGraphics::mvGraphics(HWND hwnd, int width, int height, const std::string& root)
 	{
-
+        m_width = width;
+        m_height = height;
         m_shaderRoot = root;
 
         DXGI_SWAP_CHAIN_DESC sd = {};

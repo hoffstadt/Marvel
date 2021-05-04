@@ -48,6 +48,7 @@ target_sources(marvel
 		"renderer/bindables/mvSkyBoxTransformConstantBuffer.cpp"
 		"renderer/bindables/mvTransformConstantBuffer.cpp"
 		"renderer/bindables/mvNullGeometryShader.cpp"
+		"renderer/bindables/mvNullPixelShader.cpp"
 		"renderer/bindables/mvBlender.cpp"
 		"renderer/bindables/mvRasterizer.cpp"
 		"renderer/bindables/mvCubeTexture.cpp"
@@ -66,6 +67,7 @@ target_sources(marvel
 		"renderer/passes/mvLambertianPass.cpp"
 		"renderer/passes/mvSkyboxPass.cpp"
 		"renderer/passes/mvOverlayPass.cpp"
+		"renderer/passes/mvShadowMappingPass.cpp"
 
 		#implot
 		"vendor/implot/implot.cpp"

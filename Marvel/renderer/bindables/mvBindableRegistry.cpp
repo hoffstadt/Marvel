@@ -21,6 +21,7 @@ namespace Marvel {
 		m_bindables.try_emplace("PhongDifSpcNrm_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "PhongDifSpcNrm_PS.hlsl").c_str()));
 		m_bindables.try_emplace("Solid_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Solid_PS.hlsl").c_str()));
 		m_bindables.try_emplace("Skybox_PS", std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_PS.hlsl").c_str()));
+		m_bindables.try_emplace("null_ps", std::make_shared<mvNullPixelShader>(graphics));
 
 		// vertex shaders
 		m_bindables.try_emplace("CubeTest_VS", std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "CubeTest_VS.hlsl").c_str()));

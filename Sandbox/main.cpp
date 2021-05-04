@@ -5,6 +5,7 @@
 #include "mvImGuiManager.h"
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
+#include "mvShadowMappingPass.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
 #include "mvPointLight.h"
@@ -44,6 +45,8 @@ int main()
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 
+    static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
+
     // create camera
     mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
     //mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, width, height);
@@ -63,6 +66,7 @@ int main()
     cube.linkTechniques(graph);
     lightManager.linkTechniques(graph);
 
+    
 
     // Light target
     mvRenderTarget target1(graphics, 300, 300);
@@ -94,6 +98,7 @@ int main()
         target1.clear(graphics);
         depthBuffer.clear(graphics);
 
+        graph.bindMainCamera(*lightcamera);
         graph.bind(graphics);
 
         lightcamera->bind(graphics);
@@ -111,6 +116,8 @@ int main()
         graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
         graphics.getTarget()->clear(graphics);
         graphics.getDepthBuffer()->clear(graphics);
+
+        graph.bindMainCamera(camera);
 
         graph.bind(graphics);
 

@@ -23,7 +23,9 @@ namespace Marvel {
 
 	public:
 
-		mvDepthStencil(mvGraphics& graphics, int width, int height);
+		enum class Usage{ DepthStencil, ShadowDepth};
+
+		mvDepthStencil(mvGraphics& graphics, int width, int height, bool shaderBinding = false, Usage usage = Usage::DepthStencil);
 
 		void bind(mvGraphics& graphics) override {}
 
@@ -31,9 +33,43 @@ namespace Marvel {
 		ID3D11DepthStencilView* getDepthStencilView();
 		void reset();
 
-	private:
+	protected:
 
 		mvComPtr<ID3D11DepthStencilView> m_DSV;
+
+	};
+
+	//-----------------------------------------------------------------------------
+	// mvInputDepthStencil
+	//-----------------------------------------------------------------------------
+	class mvInputDepthStencil : public mvDepthStencil
+	{
+
+	public:
+
+		mvInputDepthStencil(mvGraphics& graphics, int width, int height, UINT slot, Usage usage = Usage::DepthStencil);
+		mvInputDepthStencil(mvGraphics& graphics, UINT slot, Usage usage = Usage::DepthStencil);
+
+		void bind(mvGraphics& graphics) override;
+
+	private:
+
+		UINT m_slot;
+		mvComPtr<ID3D11ShaderResourceView> m_shaderResourceView;
+
+	};
+
+	//-----------------------------------------------------------------------------
+	// mvOutputDepthStencil
+	//-----------------------------------------------------------------------------
+	class mvOutputDepthStencil : public mvDepthStencil
+	{
+
+	public:
+
+		mvOutputDepthStencil(mvGraphics& graphics, int width, int height);
+
+		void bind(mvGraphics& graphics) override {}
 
 	};
 

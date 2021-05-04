@@ -13,20 +13,20 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// mvLambertianPass
 	//-----------------------------------------------------------------------------
-	class mvLambertianPass : public mvPass
+	class mvShadowMappingPass : public mvPass
 	{
 
 	public:
 
-		mvLambertianPass(mvGraphics& graphics);
+		mvShadowMappingPass(mvGraphics& graphics);
 
 		void execute(mvGraphics& graphics) const override;
 
-		void bindMainCamera(const mvCamera& cam);
+		void bindShadowCamera(const mvCamera& cam);
 
 	private:
 
-		const mvCamera* m_camera = nullptr;
+		const mvCamera* m_shadowCamera = nullptr;
 
 	};
 

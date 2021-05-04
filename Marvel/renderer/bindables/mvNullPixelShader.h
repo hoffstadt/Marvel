@@ -1,6 +1,7 @@
 #pragma once
-
-#include "mvPass.h"
+#include <d3d11.h>
+#include "mvComPtr.h"
+#include "mvBindable.h"
 
 namespace Marvel {
 
@@ -8,25 +9,18 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvCamera;
 
 	//-----------------------------------------------------------------------------
-	// mvLambertianPass
+	// mvVertexShader
 	//-----------------------------------------------------------------------------
-	class mvLambertianPass : public mvPass
+	class mvNullPixelShader : public mvBindable
 	{
 
 	public:
 
-		mvLambertianPass(mvGraphics& graphics);
+		mvNullPixelShader(mvGraphics& graphics);
 
-		void execute(mvGraphics& graphics) const override;
-
-		void bindMainCamera(const mvCamera& cam);
-
-	private:
-
-		const mvCamera* m_camera = nullptr;
+		void bind(mvGraphics& graphics) override;
 
 	};
 
