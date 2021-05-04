@@ -46,6 +46,8 @@ namespace Marvel {
 		glm::mat4            getProjection () const;
 		glm::mat4            getCamera     () const;
 		const std::string&   getShaderRoot () const { return m_shaderRoot; }
+		int                  getWidth      () const { return m_width; }
+		int                  getHeight     () const { return m_height; }
 
 	private:
 
@@ -58,6 +60,8 @@ namespace Marvel {
 		glm::mat4                     m_projection;
 		glm::mat4                     m_camera;
 		std::string                   m_shaderRoot = "../../Marvel/shaders/";
+		int                           m_width;
+		int                           m_height;
 	};
 
 }

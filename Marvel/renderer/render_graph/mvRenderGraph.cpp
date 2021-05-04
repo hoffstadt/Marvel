@@ -5,6 +5,7 @@
 #include "mvPass.h"
 #include "mvLambertianPass.h"
 #include "mvSkyboxPass.h"
+#include "mvShadowMappingPass.h"
 #include "mvOverlayPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
@@ -14,6 +15,7 @@ namespace Marvel {
 
 	mvRenderGraph::mvRenderGraph(mvGraphics& graphics, const char* skybox)
 	{
+		m_passes.push_back(std::make_shared<mvShadowMappingPass>(graphics));
 		m_passes.push_back(std::make_shared<mvLambertianPass>(graphics));
 		m_passes.push_back(std::make_shared<mvSkyboxPass>(graphics, skybox));
 		m_passes.push_back(std::make_shared<mvOverlayPass>(graphics));
@@ -58,6 +60,12 @@ namespace Marvel {
 		}
 
 		assert(false);
+	}
+
+	void mvRenderGraph::bindMainCamera(mvCamera& camera)
+	{
+		static_cast<mvLambertianPass*>(getPass("Lambertian"))->bindMainCamera(camera);
+		static_cast<mvOverlayPass*>(getPass("Overlay"))->bindMainCamera(camera);
 	}
 
 	void mvRenderGraph::bind(mvGraphics& graphics)

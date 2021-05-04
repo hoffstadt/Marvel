@@ -20,3 +20,4 @@
 #include "mvRasterizer.h"
 #include "mvCubeTexture.h"
 #include "mvStencil.h"
+#include "mvNullPixelShader.h"

@@ -13,6 +13,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvCamera;
 
 	//-----------------------------------------------------------------------------
 	// mvRenderGraph
@@ -29,6 +30,7 @@ namespace Marvel {
 		void    reset();
 		mvPass* getPass(const std::string& name);
 		void    show_imgui_window();
+		void    bindMainCamera(mvCamera& camera);
 
 		// binds global bindables
 		void bind(mvGraphics& graphics);

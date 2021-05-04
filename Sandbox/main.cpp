@@ -5,6 +5,7 @@
 #include "mvImGuiManager.h"
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
+#include "mvShadowMappingPass.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
 #include "mvPointLight.h"
@@ -39,10 +40,12 @@ int main()
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
+    //lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    //lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
+
+    static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
 
     // create camera
     mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
@@ -54,10 +57,16 @@ int main()
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
+    // create testing cube
+    mvCube cube(graphics, { 1.0f, 0.0f, 0.5f });
+    cube.setPosition(0.0f, 5.0f, 0.0f);
+
    
     model.linkTechniques(graph);
+    cube.linkTechniques(graph);
     lightManager.linkTechniques(graph);
 
+    
 
     // Light target
     mvRenderTarget target1(graphics, 300, 300);
@@ -89,6 +98,7 @@ int main()
         target1.clear(graphics);
         depthBuffer.clear(graphics);
 
+        graph.bindMainCamera(*lightcamera);
         graph.bind(graphics);
 
         lightcamera->bind(graphics);
@@ -96,6 +106,7 @@ int main()
         dlightManager.bind(graphics, lightcamera->getMatrix());
 
         model.submit(graph);
+        cube.submit(graph);
         lightManager.submit(graph);
 
         graph.execute(graphics);
@@ -106,12 +117,15 @@ int main()
         graphics.getTarget()->clear(graphics);
         graphics.getDepthBuffer()->clear(graphics);
 
+        graph.bindMainCamera(camera);
+
         graph.bind(graphics);
 
         camera.bind(graphics);
         lightManager.bind(graphics, camera.getMatrix());
         dlightManager.bind(graphics, camera.getMatrix());
 
+        cube.submit(graph);
         model.submit(graph);
         lightManager.submit(graph);
 
@@ -125,6 +139,7 @@ int main()
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph.show_imgui_window();
+        cube.show_imgui_windows("Test Cube");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),

@@ -8,6 +8,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvCamera;
 
 	//-----------------------------------------------------------------------------
 	// mvLambertianPass
@@ -20,6 +21,12 @@ namespace Marvel {
 		mvOverlayPass(mvGraphics& graphics);
 
 		void execute(mvGraphics& graphics) const override;
+
+		void bindMainCamera(const mvCamera& cam);
+
+	private:
+
+		const mvCamera* m_camera = nullptr;
 
 	};
 
