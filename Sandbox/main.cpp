@@ -39,8 +39,8 @@ int main()
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
+    //lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    //lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 

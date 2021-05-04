@@ -78,10 +78,10 @@ namespace Marvel {
 		}
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, vertices, vl, true);
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, vertices, vl, false);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, true);
+		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, false);
 
 		mvStep step("Lambertian");
 
