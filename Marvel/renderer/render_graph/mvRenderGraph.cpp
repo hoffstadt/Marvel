@@ -14,6 +14,9 @@ namespace Marvel {
 
 
 	mvRenderGraph::mvRenderGraph(mvGraphics& graphics, const char* skybox)
+		:
+		m_depthStencil(graphics.getDepthBuffer()),
+		m_renderTarget(graphics.getTarget())
 	{
 		m_passes.push_back(std::make_shared<mvShadowMappingPass>(graphics));
 		m_passes.push_back(std::make_shared<mvLambertianPass>(graphics));
@@ -49,6 +52,18 @@ namespace Marvel {
 	{
 		for (auto& pass : m_passes)
 			pass->reset();
+	}
+
+	void mvRenderGraph::releaseBuffers()
+	{
+		m_renderTarget.reset();
+		m_depthStencil.reset();
+	}
+
+	void mvRenderGraph::resize(mvGraphics& graphics)
+	{
+		m_renderTarget = graphics.getTarget();
+		m_depthStencil = graphics.getDepthBuffer();
 	}
 
 	mvPass* mvRenderGraph::getPass(const std::string& name)

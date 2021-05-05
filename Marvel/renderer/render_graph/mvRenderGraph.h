@@ -14,6 +14,8 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 	class mvCamera;
+	class mvDepthStencil;
+	class mvRenderTarget;
 
 	//-----------------------------------------------------------------------------
 	// mvRenderGraph
@@ -35,11 +37,22 @@ namespace Marvel {
 		// binds global bindables
 		void bind(mvGraphics& graphics);
 
+		// clears render target/depth stencil
+		void releaseBuffers();
+
+		// reset depth/targets
+		void resize(mvGraphics& graphics);
+
 	private:
+
+		std::shared_ptr<mvDepthStencil>        m_depthStencil; // master depth
+		std::shared_ptr<mvRenderTarget>        m_renderTarget; // back buffer
 
 		std::vector <std::shared_ptr<mvPass>>  m_passes;
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 		std::unique_ptr<mvBuffer>              m_bufferData;
+
+
 
 	};
 

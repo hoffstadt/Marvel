@@ -48,9 +48,9 @@ namespace Marvel {
         hResult = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
         assert(SUCCEEDED(hResult));
 
-        m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
+        m_target = std::make_shared<mvRenderTarget>(*this, m_frameBuffer.Get());
 
-        m_depthStencil = new mvDepthStencil(*this, width, height);
+        m_depthStencil = std::make_shared<mvDepthStencil>(*this, width, height);
 
         mvBindableRegistry::Initialize(*this);
         
@@ -58,8 +58,6 @@ namespace Marvel {
 
     mvGraphics::~mvGraphics()
     {
-        delete m_target;
-        delete m_depthStencil;
         m_target = nullptr;
         m_depthStencil = nullptr;
     }
@@ -68,21 +66,26 @@ namespace Marvel {
     {
         if (m_device)
         {
-            delete m_target;
-            delete m_depthStencil;
-            m_target = nullptr;
-            m_depthStencil = nullptr;
-
-            m_deviceContext->OMSetRenderTargets(0, 0, 0);
-            m_frameBuffer->Release();
-
            m_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 
            // Create Framebuffer Render Target
            m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
 
-            m_target = new mvRenderTarget(*this, m_frameBuffer.Get());
-            m_depthStencil = new mvDepthStencil(*this, width, height);
+           m_target = std::make_shared<mvRenderTarget>(*this, m_frameBuffer.Get());
+           m_depthStencil = std::make_shared<mvDepthStencil>(*this, width, height);
+
+        }
+    }
+
+    void mvGraphics::releaseBuffers()
+    {
+        if (m_device)
+        {
+            m_target.reset();
+            m_depthStencil.reset();
+
+            m_deviceContext->OMSetRenderTargets(0, 0, 0);
+            m_frameBuffer->Release();
 
         }
     }
@@ -122,12 +125,12 @@ namespace Marvel {
         return m_frameBuffer.Get(); 
     }
 
-    mvRenderTarget* mvGraphics::getTarget() 
+    std::shared_ptr<mvRenderTarget> mvGraphics::getTarget() 
     { 
         return m_target; 
     }
 
-    mvDepthStencil* mvGraphics::getDepthBuffer()
+    std::shared_ptr<mvDepthStencil> mvGraphics::getDepthBuffer()
     {
         return m_depthStencil;
     }

@@ -84,7 +84,10 @@ int main()
 
         if (window.wantsResize())
         {
+            graphics.releaseBuffers();
+            graph.releaseBuffers();
             graphics.resize(window.getClientWidth(), window.getClientHeight());
+            graph.resize(graphics);
             camera.updateProjection(window.getClientWidth(), window.getClientHeight());
             window.setResizedFlag(false);
         }

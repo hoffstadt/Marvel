@@ -13,6 +13,7 @@ namespace Marvel{
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 	class mvDepthStencil;
+	class mvRenderTarget;
 
 	//-----------------------------------------------------------------------------
 	// mvPass
@@ -41,5 +42,6 @@ namespace Marvel{
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;
 		std::string                              m_name;
 		std::shared_ptr<mvDepthStencil>          m_depthStencil;
+		std::shared_ptr<mvRenderTarget>          m_renderTarget;
 	};
 }
