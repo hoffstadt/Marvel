@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <assert.h>
 #include "mvBufferResource.h"
 
 namespace Marvel {
@@ -24,8 +25,8 @@ namespace Marvel {
 		}
 
 		virtual ~mvPassProduct() = default;
-		virtual std::shared_ptr<mvBindable> getBindable() { return nullptr; };
-		virtual std::shared_ptr<mvBufferResource> getBuffer() { return nullptr; };
+		virtual std::shared_ptr<mvBindable> getBindable() { assert(false); return nullptr; };
+		virtual std::shared_ptr<mvBufferResource> getBuffer() { assert(false); return nullptr; };
 
 		const std::string& getName() const { return m_name; }
 

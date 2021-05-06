@@ -135,4 +135,10 @@ namespace Marvel {
         mvDepthStencil(graphics, width, height, false, Usage::DepthStencil)
     {
     }
+
+    mvOutputDepthStencil::mvOutputDepthStencil(mvGraphics& graphics)
+        :
+        mvDepthStencil(graphics, graphics.getWidth(), graphics.getHeight(), false, Usage::DepthStencil)
+    {
+    }
 }

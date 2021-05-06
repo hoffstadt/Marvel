@@ -84,12 +84,12 @@ int main()
 
         if (window.wantsResize())
         {
-            graphics.releaseBuffers();
-            graph.releaseBuffers();
-            graphics.resize(window.getClientWidth(), window.getClientHeight());
-            graph.resize(graphics);
-            camera.updateProjection(window.getClientWidth(), window.getClientHeight());
-            window.setResizedFlag(false);
+            //graphics.releaseBuffers();
+            //graph.releaseBuffers();
+            //graphics.resize(window.getClientWidth(), window.getClientHeight());
+            //graph.resize(graphics);
+            //camera.updateProjection(window.getClientWidth(), window.getClientHeight());
+            //window.setResizedFlag(false);
         }
 
         const auto dt = timer.mark() * 1.0f;
@@ -158,9 +158,11 @@ int main()
 
         imManager.endFrame();
 
+        graph.reset();
+
         graphics.getSwapChain()->Present(1, 0);
 
-        graph.reset();
+        
 
     }
 

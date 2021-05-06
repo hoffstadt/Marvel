@@ -16,13 +16,14 @@ namespace Marvel {
 
 	mvRenderGraph::mvRenderGraph(mvGraphics& graphics, const char* skybox)
 		:
-		m_depthStencil(graphics.getDepthBuffer()),
+		m_depthStencil(std::make_shared<mvOutputDepthStencil>(graphics)),
 		m_renderTarget(graphics.getTarget())
 	{
 
 		requestGlobalResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("backbuffer", m_renderTarget));
-		requestGlobalResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("masterdepth", m_depthStencil));
+
 		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("backbuffer", m_renderTarget));
+		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("masterdepth", m_depthStencil));
 
 		{
 			auto pass = std::make_unique<mvClearBufferPass>("clear_target");
@@ -100,7 +101,7 @@ namespace Marvel {
 	void mvRenderGraph::resize(mvGraphics& graphics)
 	{
 		m_renderTarget = graphics.getTarget();
-		m_depthStencil = graphics.getDepthBuffer();
+		//m_depthStencil = graphics.getDepthBuffer();
 	}
 
 	mvPass* mvRenderGraph::getPass(const std::string& name)
@@ -192,15 +193,15 @@ namespace Marvel {
 		for (auto& resource : pass.getPassResources())
 		{
 			// local name
-			const std::string& name = resource->getPass();
+			const std::string& passname = resource->getPass();
 
-			if (name == "global")
+			if (passname == "global")
 			{
-				for (auto& globalResource : m_products)
+				for (auto& globalproduct : m_products)
 				{
-					if (globalResource->getName() == resource->getProduct())
+					if (globalproduct->getName() == resource->getProduct())
 					{
-						resource->bind(*globalResource);
+						resource->bind(*globalproduct);
 						break;
 					}
 				}
@@ -210,7 +211,7 @@ namespace Marvel {
 			{
 				for (auto& existingPass : m_passes)
 				{
-					if (existingPass->getName() == name)
+					if (existingPass->getName() == passname)
 					{
 						resource->bind(existingPass->getPassProduct(resource->getProduct()));
 						break;

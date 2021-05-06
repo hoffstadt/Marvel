@@ -76,6 +76,7 @@ namespace Marvel {
 	public:
 
 		mvOutputDepthStencil(mvGraphics& graphics, int width, int height);
+		mvOutputDepthStencil(mvGraphics& graphics);
 
 		void bind(mvGraphics& graphics) override {}
 
