@@ -26,22 +26,7 @@ This project is still early and parts of it are being ported over from earlier p
 | Windows Support | - | ✅ | ✅  | ✅ | ✅ |
 | Linux Support | - | ✅ | - | - | ✅ | - |
 | Apple Support | - | | - | - |
-| Swap Chain Created | - | - | ✅ | | ✅ | |
-| Pipeline Abstraction | ✅ | ✅ | ✅ |
-| Bindable System | ✅ | ✅ | ✅ |
-| Vertex Buffer Layout System | ✅ | ✅ | ✅ |
-| Textures | ✅ | ✅ | ✅ |
-| Constant Buffer System | ✅ | ✅ | ✅ |
-| Camera System | ✅ | ✅ | ✅ |
-| Dynamic Lighting | ✅ | | ✅ |
-| Environment Map |
-| Alpha Blending |
-| Normal Mapping | | | ✅ |
-| Specular Mapping | | | ✅ |
-| Scene Graph System | | | ✅ |
-| Model Loading | | | ✅ |
-| Outline Effect |
-| Shadows|
+
 
 ## Building
 ### Windows
