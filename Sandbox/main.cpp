@@ -45,7 +45,7 @@ int main()
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
 
-    static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
+    //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
 
     // create camera
     mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
@@ -68,9 +68,9 @@ int main()
 
     
 
-    // Light target
-    mvRenderTarget target1(graphics, 300, 300);
-    mvDepthStencil depthBuffer(graphics, 300, 300);
+    //// Light target
+    //mvRenderTarget target1(graphics, 300, 300);
+    //mvDepthStencil depthBuffer(graphics, 300, 300);
 
     // timer
     Marvel::mvTimer timer;
@@ -96,29 +96,29 @@ int main()
 
         HandleEvents(window, dt, camera);
 
-        // light pass
-        target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
-        target1.clear(graphics);
-        depthBuffer.clear(graphics);
+        //// light pass
+        //target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
+        //target1.clear(graphics);
+        //depthBuffer.clear(graphics);
 
-        graph.bindMainCamera(*lightcamera);
-        graph.bind(graphics);
+        //graph.bindMainCamera(*lightcamera);
+        //graph.bind(graphics);
 
-        lightcamera->bind(graphics);
-        lightManager.bind(graphics, lightcamera->getMatrix());
-        dlightManager.bind(graphics, lightcamera->getMatrix());
+        //lightcamera->bind(graphics);
+        //lightManager.bind(graphics, lightcamera->getMatrix());
+        //dlightManager.bind(graphics, lightcamera->getMatrix());
 
-        model.submit(graph);
-        cube.submit(graph);
-        lightManager.submit(graph);
+        //model.submit(graph);
+        //cube.submit(graph);
+        //lightManager.submit(graph);
 
-        graph.execute(graphics);
-        graph.reset();
+        //graph.execute(graphics);
+        //graph.reset();
 
         // viewport pass
-        graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
-        graphics.getTarget()->clear(graphics);
-        graphics.getDepthBuffer()->clear(graphics);
+        //graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
+        //graphics.getTarget()->clear(graphics);
+        //graphics.getDepthBuffer()->clear(graphics);
 
         graph.bindMainCamera(camera);
 
@@ -133,7 +133,7 @@ int main()
         lightManager.submit(graph);
 
         graph.execute(graphics);
-        graph.reset();
+        
 
         static mvModelProbe probe(graphics, "Model Probe");
 
@@ -148,17 +148,19 @@ int main()
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
         
-        //ImGui::SetNextWindowSize(ImVec2(300, 320));
-        if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            if (target1.getTarget())
-                ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
-        }
-        ImGui::End();
+        ////ImGui::SetNextWindowSize(ImVec2(300, 320));
+        //if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        //{
+        //    if (target1.getTarget())
+        //        ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
+        //}
+        //ImGui::End();
 
         imManager.endFrame();
 
         graphics.getSwapChain()->Present(1, 0);
+
+        graph.reset();
 
     }
 

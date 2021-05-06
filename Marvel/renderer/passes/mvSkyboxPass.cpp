@@ -6,7 +6,7 @@ namespace Marvel {
 
 	mvSkyboxPass::mvSkyboxPass(mvGraphics& graphics, const char* skybox)
 		:
-		mvPass("Skybox")
+		mvPass("skybox")
 	{
 		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthFirst));
@@ -17,6 +17,11 @@ namespace Marvel {
 		addBindable(vshader);
 		addBindable(std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 		addBindable(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
+
+		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
+		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
+		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
+		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
 
 		// create vertex layout
 		mvVertexLayout vl;

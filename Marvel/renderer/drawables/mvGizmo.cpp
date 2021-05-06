@@ -44,7 +44,7 @@ namespace Marvel {
 			4, 5
 		});
 
-		mvStep step("Overlay");
+		mvStep step("overlay");
 
 		// create vertex shader
 		auto vshader = mvBindableRegistry::GetBindable("Gizmo_vs");

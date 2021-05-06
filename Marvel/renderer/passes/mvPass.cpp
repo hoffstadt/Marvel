@@ -33,4 +33,48 @@ namespace Marvel {
 	{
 		return m_name;
 	}
+
+	void mvPass::requestResource(std::unique_ptr<mvPassResource> resource)
+	{
+		m_resources.push_back(std::move(resource));
+	}
+
+	void mvPass::issueProduct(std::unique_ptr<mvPassProduct> product)
+	{
+		m_products.push_back(std::move(product));
+	}
+
+	mvPassResource& mvPass::getPassResource(const std::string& name) const
+	{
+		for (const auto& resource : m_resources)
+		{
+			if (resource->getName() == name)
+				return *resource;
+		}
+	}
+
+	mvPassProduct& mvPass::getPassProduct(const std::string& name) const
+	{
+		for (const auto& product : m_products)
+		{
+			if (product->getName() == name)
+				return *product;
+		}
+	}
+
+	void mvPass::linkResourceToProduct(const std::string& name, const std::string& pass, const std::string& product)
+	{
+		auto& resource = getPassResource(name);
+		resource.setTarget(pass, product);
+	}
+
+	const std::vector<std::unique_ptr<mvPassResource>>& mvPass::getPassResources() const
+	{
+		return m_resources;
+	}
+
+	const std::vector<std::unique_ptr<mvPassProduct>>& mvPass::getPassProducts() const
+	{
+		return m_products;
+	}
 }

@@ -64,10 +64,12 @@ target_sources(marvel
 		"renderer/drawables/mvCube.cpp"
 		
 		"renderer/passes/mvPass.cpp"
+		"renderer/passes/mvPassResource.cpp"
 		"renderer/passes/mvLambertianPass.cpp"
 		"renderer/passes/mvSkyboxPass.cpp"
 		"renderer/passes/mvOverlayPass.cpp"
 		"renderer/passes/mvShadowMappingPass.cpp"
+		"renderer/passes/mvClearBufferPass.cpp"
 
 		#implot
 		"vendor/implot/implot.cpp"

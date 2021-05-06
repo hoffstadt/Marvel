@@ -17,7 +17,7 @@ namespace Marvel {
 		auto& root = layout.getRoot();
 
 		mvTechnique phong;
-		mvStep step("Lambertian");
+		mvStep step("lambertian");
 		std::string shaderCode = "Phong";
 		aiString texFileName;
 

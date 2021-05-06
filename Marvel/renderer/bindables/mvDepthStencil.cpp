@@ -1,5 +1,6 @@
 #include "mvDepthStencil.h"
 #include "mvGraphics.h"
+#include "mvRenderTarget.h"
 
 namespace Marvel {
 
@@ -78,12 +79,27 @@ namespace Marvel {
 
     void mvDepthStencil::clear(mvGraphics& graphics)
     {
-        graphics.getContext()->ClearDepthStencilView(m_DSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+        graphics.getContext()->ClearDepthStencilView(m_DSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
     }
 
     void mvDepthStencil::reset()
     {
         m_DSV->Release();
+    }
+
+    void mvDepthStencil::bindAsBuffer(mvGraphics& graphics)
+    {
+        graphics.getContext()->OMSetRenderTargets(0, nullptr, m_DSV.Get());
+    }
+
+    void mvDepthStencil::bindAsBuffer(mvGraphics& graphics, mvBufferResource* renderTarget)
+    {
+        bindAsBuffer(graphics, static_cast<mvRenderTarget*>(renderTarget));
+    }
+
+    void mvDepthStencil::bindAsBuffer(mvGraphics& graphics, mvRenderTarget* renderTarget)
+    {
+        renderTarget->bindAsBuffer(graphics, this);
     }
 
     mvInputDepthStencil::mvInputDepthStencil(mvGraphics& graphics, int width, int height, UINT slot, Usage usage)

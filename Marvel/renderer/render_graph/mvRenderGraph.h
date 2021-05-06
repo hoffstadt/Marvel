@@ -43,14 +43,29 @@ namespace Marvel {
 		// reset depth/targets
 		void resize(mvGraphics& graphics);
 
+	protected:
+
+		void addPass(std::unique_ptr<mvPass> pass);
+		void linkResourcesToProducts(mvPass& pass);
+		void linkResourceProduct(const std::string& resource, const std::string& pass, const std::string& product);
+		void linkGlobalResources();
+		void bake();
+
+		// resource/products
+		void requestGlobalResource(std::unique_ptr<mvPassResource> resource);
+		void issueGlobalProduct(std::unique_ptr<mvPassProduct> product);
+
 	private:
 
 		std::shared_ptr<mvDepthStencil>        m_depthStencil; // master depth
 		std::shared_ptr<mvRenderTarget>        m_renderTarget; // back buffer
 
-		std::vector <std::shared_ptr<mvPass>>  m_passes;
+		std::vector <std::unique_ptr<mvPass>>  m_passes;
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 		std::unique_ptr<mvBuffer>              m_bufferData;
+
+		std::vector<std::unique_ptr<mvPassResource>> m_resources;
+		std::vector<std::unique_ptr<mvPassProduct>> m_products;
 
 
 
