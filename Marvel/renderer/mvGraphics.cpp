@@ -63,6 +63,8 @@ namespace Marvel {
 
     void mvGraphics::resize(int width, int height)
     {
+        m_width = width;
+        m_height = height;
         if (m_device)
         {
            m_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);

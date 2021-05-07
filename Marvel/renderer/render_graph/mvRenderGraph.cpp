@@ -1,5 +1,6 @@
 #include "mvRenderGraph.h"
 #include <vector>
+#include <iostream>
 #include <imgui.h>
 #include <assert.h>
 #include "mvPass.h"
@@ -100,7 +101,7 @@ namespace Marvel {
 	void mvRenderGraph::resize(mvGraphics& graphics)
 	{
 		m_renderTarget = graphics.getTarget();
-		//m_depthStencil = graphics.getDepthBuffer();
+		m_depthStencil = std::move(std::make_shared<mvOutputDepthStencil>(graphics));
 	}
 
 	mvPass* mvRenderGraph::getPass(const std::string& name)
@@ -253,6 +254,8 @@ namespace Marvel {
 
 	void mvRenderGraph::bake()
 	{
+		linkGlobalResources();
+
 		// ensure all global resources have been linked
 		for (const auto& globalResource : m_resources)
 		{
@@ -265,14 +268,20 @@ namespace Marvel {
 			assert(globalProduct->isLinked());
 		}
 
-		linkGlobalResources();
+		bool ok = true;
 
 		// ensure all pass resources have been linked
 		for (const auto& pass : m_passes)
 		{
-			assert(pass->isLinked());
+			if (!pass->isLinked())
+			{
+				std::cout << pass->getName() << std::endl;
+				ok = false;
+				break;
+			}
 		}
 
+		//assert(ok);
 		//linkGlobalResources();
 	}
 }

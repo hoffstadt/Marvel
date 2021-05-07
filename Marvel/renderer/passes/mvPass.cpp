@@ -2,6 +2,7 @@
 #include "mvGraphics.h"
 #include "mvRenderTarget.h"
 #include "mvDepthStencil.h"
+#include <iostream>
 
 namespace Marvel {
 
@@ -86,12 +87,14 @@ namespace Marvel {
 		{
 			if (!resource->isPreLinked())
 			{
+				std::cout << "pre " << resource->getName() << std::endl;
 				assert(false);
 				return false;
 			}
 
 			if (!resource->isLinked())
 			{
+				std::cout << resource->getName() << std::endl;
 				assert(false);
 				return false;
 			}
@@ -101,9 +104,12 @@ namespace Marvel {
 		{
 			if (!product->isLinked())
 			{
+				std::cout << product->getName() << std::endl;
 				assert(false);
 				return false;
 			}
 		}
+
+		return true;
 	}
 }
