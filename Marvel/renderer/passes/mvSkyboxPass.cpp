@@ -4,9 +4,9 @@
 
 namespace Marvel {
 
-	mvSkyboxPass::mvSkyboxPass(mvGraphics& graphics, const char* skybox)
+	mvSkyboxPass::mvSkyboxPass(mvGraphics& graphics, const std::string& name, const char* skybox)
 		:
-		mvPass("skybox")
+		mvPass(name)
 	{
 		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthFirst));
@@ -58,6 +58,11 @@ namespace Marvel {
 
 	void mvSkyboxPass::execute(mvGraphics& graphics) const
 	{
+		if (m_renderTarget)
+			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());
+		else
+			m_depthStencil->bindAsBuffer(graphics);
+
 		m_vertexBuffer->bind(graphics);
 		m_indexBuffer->bind(graphics);
 

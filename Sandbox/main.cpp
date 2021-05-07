@@ -21,6 +21,7 @@ void HandleEvents(mvWindow& window, float dt, mvCamera& camera);
 int main()
 {
 
+    //ID3D11Debug* d3dDebug;
     int width = 1850;
     int height = 900;
 
@@ -30,20 +31,35 @@ int main()
     // create graphics
     mvGraphics graphics(window.getHandle(), width, height);
 
+    //// Set up debug layer to break on D3D11 errors
+    //d3dDebug = nullptr;
+    //graphics.getDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
+    //if (d3dDebug)
+    //{
+    //    ID3D11InfoQueue* d3dInfoQueue = nullptr;
+    //    if (SUCCEEDED(d3dDebug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&d3dInfoQueue)))
+    //    {
+    //        d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+    //        d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+    //        d3dInfoQueue->Release();
+    //    }
+    //    d3dDebug->Release();
+    //}
+
     // create imgui manager
     mvImGuiManager imManager(window.getHandle(), graphics);
 
     // create render graph
     mvRenderGraph graph(graphics, "../../Resources/SkyBox");
-    
+
     mvDirectionLightManager dlightManager(graphics);
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    //lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    //lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
+    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
-    auto lightcamera = lightManager.getLight(0).getCamera();
+    //auto lightcamera = lightManager.getLight(0).getCamera();
 
     //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
 
@@ -61,12 +77,10 @@ int main()
     mvCube cube(graphics, { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 0.0f);
 
-   
+
     model.linkTechniques(graph);
     cube.linkTechniques(graph);
     lightManager.linkTechniques(graph);
-
-    
 
     //// Light target
     //mvRenderTarget target1(graphics, 300, 300);
@@ -94,7 +108,7 @@ int main()
 
         const auto dt = timer.mark() * 1.0f;
 
-        HandleEvents(window, dt, camera);
+        //HandleEvents(window, dt, camera);
 
         //// light pass
         //target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
@@ -133,12 +147,12 @@ int main()
         lightManager.submit(graph);
 
         graph.execute(graphics);
-        
+
 
         static mvModelProbe probe(graphics, "Model Probe");
 
         imManager.beginFrame();
-        probe.spawnWindow(model);
+        //probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph.show_imgui_window();
@@ -147,7 +161,7 @@ int main()
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
-        
+            
         ////ImGui::SetNextWindowSize(ImVec2(300, 320));
         //if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         //{
@@ -162,9 +176,10 @@ int main()
 
         graphics.getSwapChain()->Present(1, 0);
 
-        
-
     }
+    //HRESULT blah = d3dDebug->ReportLiveDeviceObjects(
+    //    D3D11_RLDO_DETAIL
+    //);
 
 }
 

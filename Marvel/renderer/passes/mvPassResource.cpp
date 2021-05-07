@@ -1,4 +1,5 @@
 #include "mvPassResource.h"
+#include <assert.h>
 
 namespace Marvel {
 
@@ -16,17 +17,23 @@ namespace Marvel {
 
 	const std::string& mvPassResource::getPass() const
 	{
+		assert(m_prelinked && "not linked yet");
 		return m_pass;
 	}
 
 	const std::string& mvPassResource::getProduct() const
 	{
+		assert(m_prelinked && "not linked yet");
 		return m_product;
 	}
 
 	void mvPassResource::setTarget(const std::string& pass, const std::string& product)
 	{
+		assert(!m_prelinked && "already linked");
+
 		m_pass = pass;
 		m_product = product;
+
+		m_prelinked = true;
 	}
 }

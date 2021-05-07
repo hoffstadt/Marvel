@@ -56,7 +56,7 @@ namespace Marvel {
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 
 		mvTechnique technique;
-		technique.addStep(step);
+		technique.addStep(std::move(step));
 		addTechnique(technique);
 
 	}

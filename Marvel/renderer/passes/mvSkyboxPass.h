@@ -20,7 +20,7 @@ namespace Marvel {
 
 	public:
 
-		mvSkyboxPass(mvGraphics& graphics, const char* skybox);
+		mvSkyboxPass(mvGraphics& graphics, const std::string& name, const char* skybox);
 
 		void execute(mvGraphics& graphics) const override;
 

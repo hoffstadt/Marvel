@@ -27,7 +27,6 @@ namespace Marvel {
 
 		mvRenderGraph(mvGraphics& graphics, const char* skybox);
 
-		void    addJob (mvJob job, size_t target);
 		void    execute(mvGraphics& graphics) const;
 		void    reset();
 		mvPass* getPass(const std::string& name);
@@ -46,8 +45,13 @@ namespace Marvel {
 	protected:
 
 		void addPass(std::unique_ptr<mvPass> pass);
+
+		// preps passes
+		void linkGlobalResourceToProduct(const std::string& resource, const std::string& pass, const std::string& product);
+
+		// performs actual linking
 		void linkResourcesToProducts(mvPass& pass);
-		void linkResourceProduct(const std::string& resource, const std::string& pass, const std::string& product);
+
 		void linkGlobalResources();
 		void bake();
 

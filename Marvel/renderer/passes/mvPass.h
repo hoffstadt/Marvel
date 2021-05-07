@@ -30,13 +30,15 @@ namespace Marvel{
 	public:
 
 		mvPass(const std::string& name);
+		virtual ~mvPass() = default;
 
-		virtual void execute(mvGraphics& graphics) const;
+		virtual void execute(mvGraphics& graphics) const = 0;
 
 		void               addJob     (mvJob job);
 		void               reset      ();
 		void               addBindable(std::shared_ptr<mvBindable> bindable);
 		const std::string& getName    () const;
+		bool               isLinked() const;
 
 		// resources/producsts
 		const std::vector<std::unique_ptr<mvPassResource>>& getPassResources() const;

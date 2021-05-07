@@ -16,11 +16,12 @@ namespace Marvel {
 
 	mvRenderGraph::mvRenderGraph(mvGraphics& graphics, const char* skybox)
 		:
-		m_depthStencil(std::make_shared<mvOutputDepthStencil>(graphics)),
+		m_depthStencil(std::move(std::make_shared<mvOutputDepthStencil>(graphics))),
 		m_renderTarget(graphics.getTarget())
 	{
 
 		requestGlobalResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("backbuffer", m_renderTarget));
+		requestGlobalResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("masterdepth", m_depthStencil));
 
 		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("backbuffer", m_renderTarget));
 		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("masterdepth", m_depthStencil));
@@ -38,26 +39,29 @@ namespace Marvel {
 		}
 
 		{
-			auto pass = std::make_unique<mvLambertianPass>(graphics);
+			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
 			pass->linkResourceToProduct("render_target", "clear_target", "buffer");
 			pass->linkResourceToProduct("depth_stencil", "clear_depth", "buffer");
 			addPass(std::move(pass));
 		}
 
 		{
-			auto pass = std::make_unique<mvSkyboxPass>(graphics, skybox);
+			auto pass = std::make_unique<mvSkyboxPass>(graphics, "skybox", skybox);
 			pass->linkResourceToProduct("render_target", "lambertian", "render_target");
 			pass->linkResourceToProduct("depth_stencil", "lambertian", "depth_stencil");
 			addPass(std::move(pass));
 		}
 
 		{
-			auto pass = std::make_unique<mvOverlayPass>(graphics);
+			auto pass = std::make_unique<mvOverlayPass>(graphics, "overlay");
 			pass->linkResourceToProduct("render_target", "skybox", "render_target");
 			pass->linkResourceToProduct("depth_stencil", "skybox", "depth_stencil");
 			addPass(std::move(pass));
 		}
-		linkResourceProduct("backbuffer", "overlay", "render_target");
+
+		// ensure something outputs the backbuffer
+		linkGlobalResourceToProduct("backbuffer", "overlay", "render_target");
+		linkGlobalResourceToProduct("masterdepth", "overlay", "depth_stencil");
 
 		bake();
 
@@ -73,11 +77,6 @@ namespace Marvel {
 		m_bufferData->getElement("FogRange") = 100.0f;
 		m_bufferData->getElement("FogStart") = 10.0f;
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 3, m_bufferData.get());
-	}
-
-	void mvRenderGraph::addJob(mvJob job, size_t target)
-	{
-		m_passes[target]->addJob(job);
 	}
 
 	void mvRenderGraph::execute(mvGraphics& graphics) const
@@ -145,21 +144,49 @@ namespace Marvel {
 
 	void mvRenderGraph::requestGlobalResource(std::unique_ptr<mvPassResource> resource)
 	{
+		// ensure resource doesn't already exists
+		for (const auto& existing : m_resources)
+		{
+			if (existing->getName() == resource->getName())
+			{
+				assert(false && "global resource already exists");
+			}
+		}
+
 		m_resources.push_back(std::move(resource));
 	}
 
 	void mvRenderGraph::issueGlobalProduct(std::unique_ptr<mvPassProduct> product)
 	{
+		// ensure product doesn't already exists
+		for (const auto& existing : m_products)
+		{
+			if (existing->getName() == product->getName())
+			{
+				assert(false && "global product already exists");
+			}
+		}
+
 		m_products.push_back(std::move(product));
 	}
 
 	void mvRenderGraph::addPass(std::unique_ptr<mvPass> pass)
 	{
 		linkResourcesToProducts(*pass);
+
+		// ensure pass doesn't already exists
+		for (const auto& existing : m_passes)
+		{
+			if (existing->getName() == pass->getName())
+			{
+				assert(false && "pass already exists");
+			}
+		}
+
 		m_passes.push_back(std::move(pass));
 	}
 
-	void mvRenderGraph::linkResourceProduct(const std::string& resource, const std::string& pass, const std::string& product)
+	void mvRenderGraph::linkGlobalResourceToProduct(const std::string& resource, const std::string& pass, const std::string& product)
 	{
 		for (auto& global_resource : m_resources)
 		{
@@ -190,18 +217,19 @@ namespace Marvel {
 
 	void mvRenderGraph::linkResourcesToProducts(mvPass& pass)
 	{
-		for (auto& resource : pass.getPassResources())
+		// iterate through pass's unlinked resorces
+		for (auto& unlinkedResource : pass.getPassResources())
 		{
-			// local name
-			const std::string& passname = resource->getPass();
+			// pass local resource name
+			const std::string& passname = unlinkedResource->getPass();
 
 			if (passname == "global")
 			{
 				for (auto& globalproduct : m_products)
 				{
-					if (globalproduct->getName() == resource->getProduct())
+					if (globalproduct->getName() == unlinkedResource->getProduct())
 					{
-						resource->bind(*globalproduct);
+						unlinkedResource->bind(*globalproduct);
 						break;
 					}
 				}
@@ -213,7 +241,8 @@ namespace Marvel {
 				{
 					if (existingPass->getName() == passname)
 					{
-						resource->bind(existingPass->getPassProduct(resource->getProduct()));
+						auto& product = existingPass->getPassProduct(unlinkedResource->getProduct());
+						unlinkedResource->bind(product);
 						break;
 					}
 				}
@@ -224,6 +253,26 @@ namespace Marvel {
 
 	void mvRenderGraph::bake()
 	{
+		// ensure all global resources have been linked
+		for (const auto& globalResource : m_resources)
+		{
+			assert(globalResource->isPreLinked());
+		}
+
+		// ensure all global products have been linked
+		for (const auto& globalProduct : m_products)
+		{
+			assert(globalProduct->isLinked());
+		}
+
 		linkGlobalResources();
+
+		// ensure all pass resources have been linked
+		for (const auto& pass : m_passes)
+		{
+			assert(pass->isLinked());
+		}
+
+		//linkGlobalResources();
 	}
 }

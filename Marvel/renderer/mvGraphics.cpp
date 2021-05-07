@@ -1,5 +1,6 @@
 #include "mvGraphics.h"
 #include <assert.h>
+#include <d3d11sdklayers.h>
 #include "mvCommonBindables.h"
 
 namespace Marvel {
@@ -58,8 +59,6 @@ namespace Marvel {
 
     mvGraphics::~mvGraphics()
     {
-        m_target = nullptr;
-        //m_depthStencil = nullptr;
     }
 
     void mvGraphics::resize(int width, int height)
@@ -129,11 +128,6 @@ namespace Marvel {
     { 
         return m_target; 
     }
-
-    //std::shared_ptr<mvDepthStencil> mvGraphics::getDepthBuffer()
-    //{
-    //    return m_depthStencil;
-    //}
 
     glm::mat4 mvGraphics::getProjection() const
     {

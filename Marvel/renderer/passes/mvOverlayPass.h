@@ -18,7 +18,7 @@ namespace Marvel {
 
 	public:
 
-		mvOverlayPass(mvGraphics& graphics);
+		mvOverlayPass(mvGraphics& graphics, const std::string& name);
 
 		void execute(mvGraphics& graphics) const override;
 

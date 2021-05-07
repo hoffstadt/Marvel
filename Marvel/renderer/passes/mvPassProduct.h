@@ -29,10 +29,12 @@ namespace Marvel {
 		virtual std::shared_ptr<mvBufferResource> getBuffer() { assert(false); return nullptr; };
 
 		const std::string& getName() const { return m_name; }
+		bool isLinked() const { return m_linked; }
 
 	protected:
 
 		std::string m_name;
+		bool        m_linked = false;
 	};
 
 	template<typename T>
@@ -51,6 +53,11 @@ namespace Marvel {
 
 		std::shared_ptr<mvBindable> getBindable() override
 		{
+			if (m_linked)
+			{
+				assert(false && "already bound");
+			}
+			m_linked = true;
 			return m_resource;
 		};
 
@@ -74,6 +81,11 @@ namespace Marvel {
 
 		std::shared_ptr<mvBufferResource> getBuffer() override
 		{
+			if (m_linked)
+			{
+				assert(false && "already bound");
+			}
+			m_linked = true;
 			return m_resource;
 		}
 

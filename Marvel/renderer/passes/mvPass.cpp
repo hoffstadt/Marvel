@@ -1,5 +1,7 @@
 #include "mvPass.h"
 #include "mvGraphics.h"
+#include "mvRenderTarget.h"
+#include "mvDepthStencil.h"
 
 namespace Marvel {
 
@@ -13,11 +15,6 @@ namespace Marvel {
 		m_jobs.push_back(job);
 	}
 
-	void mvPass::execute(mvGraphics& graphics) const
-	{
-		for (const auto& j : m_jobs)
-			j.execute(graphics);
-	}
 
 	void mvPass::reset()
 	{
@@ -26,7 +23,7 @@ namespace Marvel {
 
 	void mvPass::addBindable(std::shared_ptr<mvBindable> bindable)
 	{
-		m_bindables.push_back(bindable);
+		m_bindables.push_back(std::move(bindable));
 	}
 
 	const std::string& mvPass::getName() const
@@ -36,6 +33,7 @@ namespace Marvel {
 
 	void mvPass::requestResource(std::unique_ptr<mvPassResource> resource)
 	{
+		
 		m_resources.push_back(std::move(resource));
 	}
 
@@ -51,6 +49,8 @@ namespace Marvel {
 			if (resource->getName() == name)
 				return *resource;
 		}
+
+		assert(false && "pass resource not found");
 	}
 
 	mvPassProduct& mvPass::getPassProduct(const std::string& name) const
@@ -60,6 +60,8 @@ namespace Marvel {
 			if (product->getName() == name)
 				return *product;
 		}
+
+		assert(false && "pass product not found");
 	}
 
 	void mvPass::linkResourceToProduct(const std::string& name, const std::string& pass, const std::string& product)
@@ -76,5 +78,32 @@ namespace Marvel {
 	const std::vector<std::unique_ptr<mvPassProduct>>& mvPass::getPassProducts() const
 	{
 		return m_products;
+	}
+
+	bool mvPass::isLinked() const
+	{
+		for (const auto& resource : m_resources)
+		{
+			if (!resource->isPreLinked())
+			{
+				assert(false);
+				return false;
+			}
+
+			if (!resource->isLinked())
+			{
+				assert(false);
+				return false;
+			}
+		}
+
+		for (const auto& product : m_products)
+		{
+			if (!product->isLinked())
+			{
+				assert(false);
+				return false;
+			}
+		}
 	}
 }

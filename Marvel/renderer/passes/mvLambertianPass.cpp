@@ -5,9 +5,9 @@
 
 namespace Marvel {
 
-	mvLambertianPass::mvLambertianPass(mvGraphics& graphics)
+	mvLambertianPass::mvLambertianPass(mvGraphics& graphics, const std::string& name)
 		:
-		mvPass("lambertian")
+		mvPass(name)
 	{
 		
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
@@ -20,6 +20,11 @@ namespace Marvel {
 
 	void mvLambertianPass::execute(mvGraphics& graphics) const
 	{
+		if (m_renderTarget)
+			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());
+		else
+			m_depthStencil->bindAsBuffer(graphics);
+
 		m_camera->bind(graphics);
 
 		for (auto& bind : m_bindables)

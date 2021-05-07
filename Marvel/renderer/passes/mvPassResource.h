@@ -23,12 +23,17 @@ namespace Marvel {
 		const std::string& getName() const;
 		const std::string& getPass() const;
 		const std::string& getProduct() const;
+		bool               isPreLinked() const { return m_prelinked; }
+		bool               isLinked() const { return m_linked; }
 
 	protected:
 
-		std::string m_name;
-		std::string m_pass;
-		std::string m_product;
+		std::string m_name;    // internal name
+		std::string m_pass;    // pass where resource resides after linking
+		std::string m_product; // name of resource (product) in linked pass
+
+		bool m_prelinked = false;
+		bool m_linked = false;
 
 	};
 
@@ -50,6 +55,7 @@ namespace Marvel {
 		{
 			auto ptr = std::dynamic_pointer_cast<T>(product.getBindable());
 			m_resource = std::move(ptr);
+			m_linked = true;
 		}
 
 	private:
@@ -76,6 +82,7 @@ namespace Marvel {
 		{
 			auto ptr = std::dynamic_pointer_cast<T>(product.getBuffer());
 			m_resource = std::move(ptr);
+			m_linked = true;
 		}
 
 	private:

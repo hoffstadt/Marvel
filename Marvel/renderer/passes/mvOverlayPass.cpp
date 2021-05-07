@@ -5,9 +5,9 @@
 
 namespace Marvel {
 
-	mvOverlayPass::mvOverlayPass(mvGraphics& graphics)
+	mvOverlayPass::mvOverlayPass(mvGraphics& graphics, const std::string& name)
 		:
-		mvPass("overlay")
+		mvPass(name)
 	{
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
@@ -18,6 +18,11 @@ namespace Marvel {
 
 	void mvOverlayPass::execute(mvGraphics& graphics) const
 	{
+		if (m_renderTarget)
+			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());
+		else
+			m_depthStencil->bindAsBuffer(graphics);
+
 		m_camera->bind(graphics);
 
 		for (auto& bind : m_bindables)
