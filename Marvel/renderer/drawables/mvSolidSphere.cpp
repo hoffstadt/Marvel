@@ -45,7 +45,7 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indicies);
 
-		mvStep step("Lambertian");
+		mvStep step("lambertian");
 
 		// solid color
 		if (simple == 1)

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "mvPass.h"
 
 namespace Marvel {
@@ -7,27 +6,25 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// forward declarations
 	//-----------------------------------------------------------------------------
-	class mvGraphics;
-	class mvCamera;
+	class mvBufferResource;
 
 	//-----------------------------------------------------------------------------
-	// mvLambertianPass
+	// mvClearBufferPass
 	//-----------------------------------------------------------------------------
-	class mvOverlayPass : public mvPass
+	class mvClearBufferPass : public mvPass
 	{
 
 	public:
 
-		mvOverlayPass(mvGraphics& graphics, const std::string& name);
+		mvClearBufferPass(std::string name);
 
 		void execute(mvGraphics& graphics) const override;
 
-		void bindMainCamera(const mvCamera& cam);
-
 	private:
 
-		const mvCamera* m_camera = nullptr;
-
+		std::shared_ptr<mvBufferResource> m_buffer;
+	
 	};
+
 
 }

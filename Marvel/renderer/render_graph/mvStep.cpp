@@ -18,7 +18,7 @@ namespace Marvel {
 
 	void mvStep::addBindable(std::shared_ptr<mvBindable> bindable)
 	{
-		m_bindables.push_back(bindable);
+		m_bindables.push_back(std::move(bindable));
 	}
 
 	void mvStep::bind(mvGraphics& graphics, const mvDrawable* parent) const

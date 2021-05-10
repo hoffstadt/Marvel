@@ -5,6 +5,8 @@
 #include <string>
 #include "mvJob.h"
 #include "mvBindable.h"
+#include "mvPassResource.h"
+#include "mvPassProduct.h"
 
 namespace Marvel{
 
@@ -28,13 +30,30 @@ namespace Marvel{
 	public:
 
 		mvPass(const std::string& name);
+		virtual ~mvPass() = default;
 
-		virtual void execute(mvGraphics& graphics) const;
+		virtual void execute(mvGraphics& graphics) const = 0;
 
 		void               addJob     (mvJob job);
 		void               reset      ();
+		void               releaseBuffers();
 		void               addBindable(std::shared_ptr<mvBindable> bindable);
 		const std::string& getName    () const;
+		bool               isLinked() const;
+
+		// resources/producsts
+		const std::vector<std::unique_ptr<mvPassResource>>& getPassResources() const;
+		const std::vector<std::unique_ptr<mvPassProduct>>& getPassProducts() const;
+
+		mvPassResource& getPassResource(const std::string& name) const;
+		mvPassProduct&  getPassProduct (const std::string& name) const;
+		void            linkResourceToProduct(const std::string& name, const std::string& pass, const std::string& product);
+
+	protected:
+
+		// resource/products
+		void requestResource(std::unique_ptr<mvPassResource> resource);
+		void issueProduct(std::unique_ptr<mvPassProduct> product);
 
 	protected:
 
@@ -43,5 +62,8 @@ namespace Marvel{
 		std::string                              m_name;
 		std::shared_ptr<mvDepthStencil>          m_depthStencil;
 		std::shared_ptr<mvRenderTarget>          m_renderTarget;
+
+		std::vector<std::unique_ptr<mvPassResource>> m_resources;
+		std::vector<std::unique_ptr<mvPassProduct>> m_products;
 	};
 }

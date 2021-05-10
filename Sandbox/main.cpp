@@ -21,6 +21,7 @@ void HandleEvents(mvWindow& window, float dt, mvCamera& camera);
 int main()
 {
 
+    //ID3D11Debug* d3dDebug;
     int width = 1850;
     int height = 900;
 
@@ -34,18 +35,18 @@ int main()
     mvImGuiManager imManager(window.getHandle(), graphics);
 
     // create render graph
-    mvRenderGraph graph(graphics, "../../Resources/SkyBox");
-    
+    auto graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
+
     mvDirectionLightManager dlightManager(graphics);
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    //lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    //lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
+    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
+    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
     lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
-    auto lightcamera = lightManager.getLight(0).getCamera();
+    //auto lightcamera = lightManager.getLight(0).getCamera();
 
-    static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
+    //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
 
     // create camera
     mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
@@ -61,16 +62,14 @@ int main()
     mvCube cube(graphics, { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 0.0f);
 
-   
-    model.linkTechniques(graph);
-    cube.linkTechniques(graph);
-    lightManager.linkTechniques(graph);
 
-    
+    model.linkTechniques(*graph);
+    cube.linkTechniques(*graph);
+    lightManager.linkTechniques(*graph);
 
-    // Light target
-    mvRenderTarget target1(graphics, 300, 300);
-    mvDepthStencil depthBuffer(graphics, 300, 300);
+    //// Light target
+    //mvRenderTarget target1(graphics, 300, 300);
+    //mvDepthStencil depthBuffer(graphics, 300, 300);
 
     // timer
     Marvel::mvTimer timer;
@@ -84,56 +83,61 @@ int main()
 
         if (window.wantsResize())
         {
+            graph.reset();
+
             graphics.releaseBuffers();
-            graph.releaseBuffers();
             graphics.resize(window.getClientWidth(), window.getClientHeight());
-            graph.resize(graphics);
             camera.updateProjection(window.getClientWidth(), window.getClientHeight());
             window.setResizedFlag(false);
+
+            graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
+            model.linkTechniques(*graph);
+            cube.linkTechniques(*graph);
+            lightManager.linkTechniques(*graph);
         }
 
         const auto dt = timer.mark() * 1.0f;
 
         HandleEvents(window, dt, camera);
 
-        // light pass
-        target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
-        target1.clear(graphics);
-        depthBuffer.clear(graphics);
+        //// light pass
+        //target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
+        //target1.clear(graphics);
+        //depthBuffer.clear(graphics);
 
-        graph.bindMainCamera(*lightcamera);
-        graph.bind(graphics);
+        //graph.bindMainCamera(*lightcamera);
+        //graph.bind(graphics);
 
-        lightcamera->bind(graphics);
-        lightManager.bind(graphics, lightcamera->getMatrix());
-        dlightManager.bind(graphics, lightcamera->getMatrix());
+        //lightcamera->bind(graphics);
+        //lightManager.bind(graphics, lightcamera->getMatrix());
+        //dlightManager.bind(graphics, lightcamera->getMatrix());
 
-        model.submit(graph);
-        cube.submit(graph);
-        lightManager.submit(graph);
+        //model.submit(graph);
+        //cube.submit(graph);
+        //lightManager.submit(graph);
 
-        graph.execute(graphics);
-        graph.reset();
+        //graph.execute(graphics);
+        //graph.reset();
 
         // viewport pass
-        graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
-        graphics.getTarget()->clear(graphics);
-        graphics.getDepthBuffer()->clear(graphics);
+        //graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
+        //graphics.getTarget()->clear(graphics);
+        //graphics.getDepthBuffer()->clear(graphics);
 
-        graph.bindMainCamera(camera);
+        graph->bindMainCamera(camera);
 
-        graph.bind(graphics);
+        graph->bind(graphics);
 
         camera.bind(graphics);
         lightManager.bind(graphics, camera.getMatrix());
         dlightManager.bind(graphics, camera.getMatrix());
 
-        cube.submit(graph);
-        model.submit(graph);
-        lightManager.submit(graph);
+        cube.submit(*graph);
+        model.submit(*graph);
+        lightManager.submit(*graph);
 
-        graph.execute(graphics);
-        graph.reset();
+        graph->execute(graphics);
+
 
         static mvModelProbe probe(graphics, "Model Probe");
 
@@ -141,22 +145,24 @@ int main()
         probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
-        graph.show_imgui_window();
+        graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
-        
-        //ImGui::SetNextWindowSize(ImVec2(300, 320));
-        if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            if (target1.getTarget())
-                ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
-        }
-        ImGui::End();
+            
+        ////ImGui::SetNextWindowSize(ImVec2(300, 320));
+        //if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        //{
+        //    if (target1.getTarget())
+        //        ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
+        //}
+        //ImGui::End();
 
         imManager.endFrame();
+
+        graph->reset();
 
         graphics.getSwapChain()->Present(1, 0);
 

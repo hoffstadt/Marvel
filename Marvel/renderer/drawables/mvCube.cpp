@@ -83,7 +83,7 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, false);
 
-		mvStep step("Lambertian");
+		mvStep step("lambertian");
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
 		auto& root = layout.getRoot();

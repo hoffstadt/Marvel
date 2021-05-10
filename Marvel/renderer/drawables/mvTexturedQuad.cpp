@@ -34,7 +34,7 @@ namespace Marvel {
 				0, 3, 1
 			});
 
-		mvStep step("Lambertian");
+		mvStep step("lambertian");
 
 		// create vertex shader
 		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/PhongDif_VS.hlsl");

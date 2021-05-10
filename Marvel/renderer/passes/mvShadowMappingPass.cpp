@@ -7,9 +7,9 @@ namespace Marvel {
 
 	mvShadowMappingPass::mvShadowMappingPass(mvGraphics& graphics)
 		:
-		mvPass("Shadow")
+		mvPass("shadow")
 	{
-		m_depthStencil = std::make_shared<mvInputDepthStencil>(graphics, 3, mvDepthStencil::Usage::ShadowDepth);
+		//m_depthStencil = std::make_shared<mvInputDepthStencil>(graphics, 3, mvDepthStencil::Usage::ShadowDepth);
 		addBindable(mvBindableRegistry::GetBindable("Solid_VS"));
 		addBindable(mvBindableRegistry::GetBindable("blender"));
 		addBindable(mvBindableRegistry::GetBindable("null_ps"));
@@ -18,7 +18,7 @@ namespace Marvel {
 
 	void mvShadowMappingPass::execute(mvGraphics& graphics) const
 	{
-		m_depthStencil->clear(graphics);
+		//m_depthStencil->clear(graphics);
 		m_shadowCamera->bind(graphics);
 
 		for (auto& bind : m_bindables)

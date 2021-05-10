@@ -21,3 +21,4 @@
 #include "mvCubeTexture.h"
 #include "mvStencil.h"
 #include "mvNullPixelShader.h"
+#include "mvBufferResource.h"
