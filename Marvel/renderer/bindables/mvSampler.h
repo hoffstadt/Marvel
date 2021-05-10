@@ -25,9 +25,15 @@ namespace Marvel {
             Point,
         };
 
+        static std::shared_ptr<mvSampler> Request(mvGraphics& graphics, Type type, bool reflect, UINT slot);
+        static std::string                GenerateUniqueIdentifier(Type type, bool reflect, UINT slot);
+
+    public:
+
         mvSampler(mvGraphics& graphics, Type type = Type::Anisotropic, bool reflect = false, UINT slot = 0u);
 
         void bind(mvGraphics& graphics) override;
+        std::string getUniqueIdentifier() const override;
 
     private:
 

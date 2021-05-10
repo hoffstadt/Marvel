@@ -35,7 +35,7 @@ namespace Marvel {
 			hasTexture = true;
 			shaderCode += "Dif";
 			m_layout.append(ElementType::Texture2D);
-			auto texture = std::make_shared<mvTexture>(graphics, path + texFileName.C_Str());
+			auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 			step.addBindable(texture);
 
 			if (texture->hasAlpha())
@@ -46,7 +46,7 @@ namespace Marvel {
 		}
 		else
 			root->add(Float3, std::string("materialColor"));
-		step.addBindable(std::make_shared<mvRasterizer>(graphics, hasAlpha));
+		step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, hasAlpha));
 
 		// specular
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
@@ -54,7 +54,7 @@ namespace Marvel {
 			hasTexture = true;
 			shaderCode += "Spc";
 			m_layout.append(ElementType::Texture2D);
-			auto texture = std::make_shared<mvTexture>(graphics, path + texFileName.C_Str(), 1);
+			auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
 			step.addBindable(texture);
 			//hasGlossAlpha = texture->hasAlpha();
 			hasGlossAlpha = false;
@@ -72,7 +72,8 @@ namespace Marvel {
 		{
 			hasTexture = true;
 			shaderCode += "Nrm";
-			step.addBindable(std::make_shared<mvTexture>(graphics, path + texFileName.C_Str(), 2));
+			auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
+			step.addBindable(texture);
 			m_layout.append(ElementType::Texture2D);
 			m_layout.append(ElementType::Tangent);
 			m_layout.append(ElementType::Bitangent);
@@ -113,17 +114,16 @@ namespace Marvel {
 		buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable(shaderCode + "_VS");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + shaderCode + "_VS.hlsl");
 
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, m_layout,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable(shaderCode + "_PS"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + shaderCode + "_PS.hlsl"));
 		step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
-		step.addBindable(mvBindableRegistry::GetBindable("blender"));
+		step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, true));
 
 		if(hasTexture)
-			step.addBindable(mvBindableRegistry::GetBindable("sampler"));
+			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 		
 		step.addBindable(buf);
 

@@ -19,9 +19,15 @@ namespace Marvel{
 
 	public:
 
+		static std::shared_ptr<mvRasterizer> Request(mvGraphics& graphics, bool twoSided);
+		static std::string                   GenerateUniqueIdentifier(bool twoSided);
+
+	public:
+
 		mvRasterizer(mvGraphics& graphics, bool twoSided);
 
 		void bind(mvGraphics& graphics) override;
+		std::string getUniqueIdentifier() const override;
 
 	protected:
 

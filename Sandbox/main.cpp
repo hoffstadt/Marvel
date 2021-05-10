@@ -41,9 +41,9 @@ int main()
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    lightManager.addLight(graphics, { 35.1f, 19.7f, -26.0f });
-    lightManager.addLight(graphics, { 0.0f, 0.0f, 0.0f });
-    lightManager.addLight(graphics, { 0.0f, 7.0f, 6.1f });
+    lightManager.addLight(graphics, "light1", { 35.1f, 19.7f, -26.0f });
+    lightManager.addLight(graphics, "light2", { 0.0f, 0.0f, 0.0f });
+    lightManager.addLight(graphics, "light3", { 0.0f, 7.0f, 6.1f });
     //auto lightcamera = lightManager.getLight(0).getCamera();
 
     //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
@@ -59,7 +59,7 @@ int main()
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     // create testing cube
-    mvCube cube(graphics, { 1.0f, 0.0f, 0.5f });
+    mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 0.0f);
 
 

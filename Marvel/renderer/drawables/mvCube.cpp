@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvCube::mvCube(mvGraphics& graphics, glm::vec3 color)
+	mvCube::mvCube(mvGraphics& graphics, const std::string& name, glm::vec3 color)
 	{
 
 		// create topology
@@ -78,10 +78,10 @@ namespace Marvel {
 		}
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, vertices, vl, false);
+		m_vertexBuffer = mvBindableRegistry::Request<mvVertexBuffer>(graphics, name, vertices, vl, false);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, false);
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
 		mvStep step("lambertian");
 
@@ -105,15 +105,14 @@ namespace Marvel {
 		step.addBindable(buf);
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("CubeTest_VS");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "CubeTest_VS.hlsl");
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable("CubeTest_PS"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "CubeTest_PS.hlsl"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
-		step.addBindable(std::make_shared<mvSampler>(graphics));
-		step.addBindable(std::make_shared<mvTexture>(graphics, "../../Resources/brickwall.jpg"));
+		step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+		step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
 
 		mvTechnique technique;
 		technique.addStep(step);

@@ -21,7 +21,7 @@ namespace Marvel {
 
 	public:
 
-		mvPointLight(mvGraphics& graphics, glm::vec3 pos = { 0.0f,0.0f,0.5f });
+		mvPointLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos = { 0.0f,0.0f,0.5f });
 
 		void linkTechniques(mvRenderGraph& graph);
 		void submit        (mvRenderGraph& graph);
@@ -53,7 +53,7 @@ namespace Marvel {
 		void submit(mvRenderGraph& graph);
 		void setPosition(int i, float x, float y, float z);
 
-		mvPointLight& addLight(mvGraphics& graphics, glm::vec3 pos = { 0.0f,0.0f,0.0f });
+		mvPointLight& addLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos = { 0.0f,0.0f,0.0f });
 		mvPointLight& getLight(int i);
 
 	private:

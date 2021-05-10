@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvCube(mvGraphics& graphics, glm::vec3 color);
+		mvCube(mvGraphics& graphics, const std::string& name, glm::vec3 color);
 
 		glm::mat4 getTransform() const override;
 

@@ -2,15 +2,32 @@
 #include <string>
 #include <assert.h>
 #include "mvGraphics.h"
+#include "mvBindableRegistry.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 namespace Marvel {
 
+    std::shared_ptr<mvTexture> mvTexture::Request(mvGraphics& graphics, const std::string& path, UINT slot)
+    {
+        std::string ID = mvTexture::GenerateUniqueIdentifier(path, slot);
+        if (auto bindable = mvBindableRegistry::GetBindable(ID))
+            return std::dynamic_pointer_cast<mvTexture>(bindable);
+        auto bindable = std::make_shared<mvTexture>(graphics, path, slot);
+        mvBindableRegistry::AddBindable(ID, bindable);
+        return bindable;
+    }
+
+    std::string mvTexture::GenerateUniqueIdentifier(const std::string& path, UINT slot)
+    {
+        return typeid(mvTexture).name() + std::string("$") + path + std::string("@") + std::to_string(slot);
+    }
+
     mvTexture::mvTexture(mvGraphics& graphics, const std::string& path, UINT slot)
     {
         m_slot = slot;
+        m_path = path;
 
         // Load Image
         int texWidth, texHeight, texNumChannels;
@@ -64,5 +81,10 @@ namespace Marvel {
     bool mvTexture::hasAlpha() const
     {
         return m_alpha;
+    }
+
+    std::string mvTexture::getUniqueIdentifier() const
+    {
+        return GenerateUniqueIdentifier(m_path, m_slot);
     }
 }

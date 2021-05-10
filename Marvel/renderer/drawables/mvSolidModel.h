@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvSolidModel(mvGraphics& graphics, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color);
+		mvSolidModel(mvGraphics& graphics, const std::string& name, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color);
 
 		glm::mat4 getTransform() const override;
 

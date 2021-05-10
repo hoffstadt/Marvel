@@ -1,10 +1,26 @@
 #include "mvVertexBuffer.h"
+#include "mvBindableRegistry.h"
 
 
 namespace Marvel
 {
 
-	mvVertexBuffer::mvVertexBuffer(mvGraphics& gfx, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic)
+	std::shared_ptr<mvVertexBuffer> mvVertexBuffer::Request(mvGraphics& graphics, const std::string& name, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic)
+	{
+		std::string ID = mvVertexBuffer::GenerateUniqueIdentifier(name, layout, dynamic);
+		if (auto bindable = mvBindableRegistry::GetBindable(ID))
+			return std::dynamic_pointer_cast<mvVertexBuffer>(bindable);
+		auto bindable = std::make_shared<mvVertexBuffer>(graphics, name, vbuf, layout, dynamic);
+		mvBindableRegistry::AddBindable(ID, bindable);
+		return bindable;
+	}
+
+	std::string mvVertexBuffer::GenerateUniqueIdentifier(const std::string& name, const mvVertexLayout& layout, bool dynamic)
+	{
+		return typeid(mvVertexBuffer).name() + std::string("$") + name + std::string("$") + std::string(dynamic ? "T" : "F");
+	}
+
+	mvVertexBuffer::mvVertexBuffer(mvGraphics& graphics, const std::string& name, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic)
 		: 
 		m_stride(layout.getSize()),
 		m_layout(layout)
@@ -12,6 +28,7 @@ namespace Marvel
 
 		m_data = vbuf;
 		m_dynamic = dynamic;
+		m_name = name;
 
 		D3D11_BUFFER_DESC bd = {};
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -33,7 +50,7 @@ namespace Marvel
 		bd.StructureByteStride = m_layout.getSize();
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = m_data.data();
-		gfx.getDevice()->CreateBuffer(&bd, &sd, &m_vertexBuffer);
+		graphics.getDevice()->CreateBuffer(&bd, &sd, &m_vertexBuffer);
 	}
 
 	const mvVertexLayout& mvVertexBuffer::GetLayout() const

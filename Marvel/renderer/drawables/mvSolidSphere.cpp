@@ -8,7 +8,7 @@
 
 namespace Marvel {
 
-	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, float radius, glm::vec3 color, int simple)
+	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, const std::string& name, float radius, glm::vec3 color, int simple)
 	{
 
 		// create topology
@@ -40,10 +40,10 @@ namespace Marvel {
 		}
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, nverticies, vl);
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, nverticies, vl);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indicies);
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
 
 		mvStep step("lambertian");
 
@@ -64,11 +64,10 @@ namespace Marvel {
 			step.addBindable(buf);
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::GetBindable("Solid_VS");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
 			step.addBindable(vshader);
-			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(mvBindableRegistry::GetBindable("Solid_PS"));
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		}
@@ -77,11 +76,10 @@ namespace Marvel {
 		else if(simple == 2)
 		{
 			// create vertex shader
-			auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/vs_flat.hlsl");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "vs_flat.hlsl");
 			step.addBindable(vshader);
-			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/ps_flat.hlsl"));
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "ps_flat.hlsl"));
 			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}
@@ -109,11 +107,10 @@ namespace Marvel {
 			step.addBindable(buf);
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::GetBindable("Phong_VS");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Phong_VS.hlsl");
 			step.addBindable(vshader);
-			step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-				static_cast<mvVertexShader*>(vshader.get())));
-			step.addBindable(mvBindableRegistry::GetBindable("Phong_PS"));
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Phong_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}

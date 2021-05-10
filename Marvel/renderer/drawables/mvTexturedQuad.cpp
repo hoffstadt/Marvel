@@ -6,7 +6,7 @@
 
 namespace Marvel {
 
-	mvTexturedQuad::mvTexturedQuad(mvGraphics& graphics, const std::string& path)
+	mvTexturedQuad::mvTexturedQuad(mvGraphics& graphics, const std::string& name, const std::string& path)
 	{
 
 		// create topology
@@ -20,7 +20,7 @@ namespace Marvel {
 		vl.append(ElementType::Texture2D);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{
 			-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.f, 0.f,
 			 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 1.f, 1.f,
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.f, 1.f,
@@ -28,23 +28,21 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics,
-			std::vector<unsigned int>{
-				0, 1, 2,
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+			0, 1, 2,
 				0, 3, 1
-			});
+		}, false);
 
 		mvStep step("lambertian");
 
 		// create vertex shader
-		auto vshader = std::make_shared<mvVertexShader>(graphics, "../../Marvel/shaders/PhongDif_VS.hlsl");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongDif_VS.hlsl");
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(std::make_shared<mvPixelShader>(graphics, "../../Marvel/shaders/PhongDif_PS.hlsl"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongDif_PS.hlsl"));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
-		step.addBindable(std::make_shared<mvSampler>(graphics));
-		step.addBindable(std::make_shared<mvTexture>(graphics, path));
+		step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+		step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path, 0u));
 
 		mvTechnique technique;
 		technique.addStep(step);

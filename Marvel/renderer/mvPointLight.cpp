@@ -11,9 +11,9 @@ namespace Marvel {
 	struct AttLin { float values[mvPointLightManager::MaxLights];};
 	struct AttQuad { float values[mvPointLightManager::MaxLights];};
 
-	mvPointLight::mvPointLight(mvGraphics& graphics, glm::vec3 pos)
+	mvPointLight::mvPointLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos)
 		:
-		m_mesh(graphics, 0.5f, { 1.0f, 1.0f, 1.0f }, 1)
+		m_mesh(graphics, name,  0.5f, { 1.0f, 1.0f, 1.0f }, 1)
 	{
 		m_mesh.setPosition(pos.x, pos.y, pos.z);
 		m_camera = std::make_shared<mvCamera>(graphics, pos, 0.0f, 0.0f, 300, 300);
@@ -172,10 +172,10 @@ namespace Marvel {
 		pos.values[i].z = z;
 	}
 
-	mvPointLight& mvPointLightManager::addLight(mvGraphics& graphics, glm::vec3 pos)
+	mvPointLight& mvPointLightManager::addLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos)
 	{
 
-		m_lights.emplace_back(graphics, pos);
+		m_lights.emplace_back(graphics, name, pos);
 
 		ViewLightPos& opos = m_bufferData->getElement("viewLightPos");
 		opos.values[m_lights.size()-1].x = pos.x;

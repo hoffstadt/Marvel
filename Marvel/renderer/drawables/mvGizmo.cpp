@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvGizmo::mvGizmo(mvGraphics& graphics)
+	mvGizmo::mvGizmo(mvGraphics& graphics, const std::string& name)
 	{
 
 		// create topology
@@ -23,7 +23,7 @@ namespace Marvel {
 		std::vector<float> normals;
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{
 			    
 				0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 				1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -37,21 +37,19 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics,
-			std::vector<unsigned int>{
-			0, 1, 
-			2, 3,
-			4, 5
-		});
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+			0, 1,
+				2, 3,
+				4, 5
+		}, false);
 
 		mvStep step("overlay");
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("Gizmo_vs");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Gizmo_vs.hlsl");
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable("Gizmo_ps"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Gizmo_ps.hlsl"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 

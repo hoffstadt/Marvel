@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <memory>
+#include <assert.h>
+
 namespace Marvel {
 
     //-----------------------------------------------------------------------------
@@ -22,6 +26,12 @@ namespace Marvel {
         virtual ~mvBindable() = default;
 
         virtual void bind(mvGraphics& graphics) = 0;
+
+        virtual std::string getUniqueIdentifier() const
+        {
+            //assert(false);
+            return "";
+        }
 
     protected:
 

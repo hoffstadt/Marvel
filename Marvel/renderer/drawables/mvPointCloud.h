@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvPointCloud(mvGraphics& graphics, glm::vec3 color);
+		mvPointCloud(mvGraphics& graphics, const std::string& name, glm::vec3 color);
 
 		glm::mat4 getTransform() const override;
 

@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvGizmo(mvGraphics& graphics);
+		mvGizmo(mvGraphics& graphics, const std::string& name);
 
 		glm::mat4 getTransform() const override;
 		void setTransform(glm::mat4 transform);

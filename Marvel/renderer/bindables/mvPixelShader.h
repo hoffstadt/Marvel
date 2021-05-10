@@ -18,9 +18,15 @@ namespace Marvel {
 
 	public:
 
-		mvPixelShader(mvGraphics& graphics, const char* path);
+		static std::shared_ptr<mvPixelShader> Request(mvGraphics& graphics, const std::string& path);
+		static std::string                    GenerateUniqueIdentifier(const std::string& path);
+
+	public:
+
+		mvPixelShader(mvGraphics& graphics, const std::string& path);
 
 		void bind(mvGraphics& graphics) override;
+		std::string getUniqueIdentifier() const override;
 
 		ID3DBlob* getBlob();
 
@@ -28,6 +34,7 @@ namespace Marvel {
 
 		mvComPtr<ID3D11PixelShader> m_pixelShader;
 		mvComPtr<ID3DBlob>          m_blob;
+		std::string                 m_path;
 
 	};
 

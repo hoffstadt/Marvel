@@ -21,7 +21,7 @@ namespace Marvel {
 		float z = 0.0f;
 	};
 
-	mvMesh::mvMesh(mvGraphics& graphics, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale)
+	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale)
 	{
 
 		const auto rootPath = path.parent_path().string() + "\\";
@@ -92,10 +92,10 @@ namespace Marvel {
 
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, verticies, vertexLayout);
+		m_vertexBuffer = mvBindableRegistry::Request<mvVertexBuffer>(graphics, name, verticies, vertexLayout, false);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indicies);
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
 
 		auto techniques = mat.getTechniques();
 

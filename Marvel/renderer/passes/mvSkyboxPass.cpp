@@ -30,7 +30,7 @@ namespace Marvel {
 		constexpr float side = 1.0f / 2.0f;
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{
 			-side, -side, -side,
 				side, -side, -side,
 				-side, side, -side,
@@ -42,18 +42,16 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics,
-			std::vector<unsigned int>{
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
 			0, 2, 1, 2, 3, 1,
 				1, 3, 5, 3, 7, 5,
 				2, 6, 3, 3, 6, 7,
 				4, 5, 7, 4, 7, 6,
 				0, 4, 2, 2, 4, 6,
 				0, 1, 4, 1, 5, 4
-		});
+		}, false);
 
-		addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
+		addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 	}
 
 	void mvSkyboxPass::execute(mvGraphics& graphics) const

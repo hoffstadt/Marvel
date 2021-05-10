@@ -10,7 +10,7 @@ namespace Marvel {
 
 	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
 		:
-		m_mesh(graphics)
+		m_mesh(graphics, pathString+"sphere")
 	{
 
 		Assimp::Importer imp;
@@ -33,7 +33,7 @@ namespace Marvel {
 		{
 			const auto& mesh = *pScene->mMeshes[i];
 			m_meshes.push_back(std::make_shared<mvMesh>(
-				graphics, mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
+				graphics, mesh.mName.C_Str(), mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
 		}
 
 		int id = 0;

@@ -10,7 +10,12 @@ namespace Marvel
 
 	public:
 
-		mvVertexBuffer(mvGraphics& gfx, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic = false);
+		static std::shared_ptr<mvVertexBuffer> Request(mvGraphics& graphics, const std::string& name, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic);
+		static std::string                     GenerateUniqueIdentifier(const std::string& name, const mvVertexLayout& layout, bool dynamic);
+
+	public:
+
+		mvVertexBuffer(mvGraphics& gfx, const std::string& name, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic = false);
 
 		void bind (mvGraphics& gfx) override;
 
@@ -30,6 +35,7 @@ namespace Marvel
 		std::vector<float>     m_data;
 		bool                   m_dynamic;
 		int                    m_buffersize;
+		std::string            m_name;
 
 	};
 }

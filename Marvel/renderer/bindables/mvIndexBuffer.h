@@ -12,7 +12,12 @@ namespace Marvel
 
 	public:
 
-		mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned int>& indices, bool dynamic = false);
+		static std::shared_ptr<mvIndexBuffer> Request(mvGraphics& graphics, const std::string& name, const std::vector<unsigned int>& indices, bool dynamic);
+		static std::string                    GenerateUniqueIdentifier(const std::string& name, bool dynamic);
+
+	public:
+
+		mvIndexBuffer(mvGraphics& graphics, const std::string& name, const std::vector<unsigned int>& indices, bool dynamic = false);
 
 		void bind(mvGraphics& graphics) override;
 

@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvPointCloud::mvPointCloud(mvGraphics& graphics, glm::vec3 color)
+	mvPointCloud::mvPointCloud(mvGraphics& graphics, const std::string& name, glm::vec3 color)
 	{
 
 		// create topology
@@ -18,10 +18,10 @@ namespace Marvel {
 		vl.append(ElementType::Position3D);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, std::vector<float>{0.0f, 0.0f, 0.0f}, vl, true);
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{0.0f, 0.0f, 0.0f}, vl, true);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, std::vector<unsigned int>{0u}, true);
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{0u}, true);
 
 		mvStep step("lambertian");
 
@@ -39,11 +39,10 @@ namespace Marvel {
 		step.addBindable(buf);
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("Solid_VS");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable("Solid_PS"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 

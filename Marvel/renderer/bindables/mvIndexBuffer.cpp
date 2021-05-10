@@ -1,10 +1,25 @@
 #include "mvIndexBuffer.h"
 #include "mvGraphics.h"
+#include "mvBindableRegistry.h"
 
 namespace Marvel
 {
+    std::shared_ptr<mvIndexBuffer> mvIndexBuffer::Request(mvGraphics& graphics, const std::string& name, const std::vector<unsigned int>& indices, bool dynamic)
+    {
+        std::string ID = GenerateUniqueIdentifier(name, dynamic);
+        if (auto bindable = mvBindableRegistry::GetBindable(ID))
+            return std::dynamic_pointer_cast<mvIndexBuffer>(bindable);
+        auto bindable = std::make_shared<mvIndexBuffer>(graphics, name, indices, dynamic);
+        mvBindableRegistry::AddBindable(ID, bindable);
+        return bindable;
+    }
 
-    mvIndexBuffer::mvIndexBuffer(mvGraphics& graphics, const std::vector<unsigned int>& indices, bool dynamic)
+    std::string mvIndexBuffer::GenerateUniqueIdentifier(const std::string& name, bool dynamic)
+    {
+        return typeid(mvIndexBuffer).name() + std::string("$") + name + std::string("$") + std::string(dynamic ? "T" : "F");
+    }
+
+    mvIndexBuffer::mvIndexBuffer(mvGraphics& graphics, const std::string& name, const std::vector<unsigned int>& indices, bool dynamic)
     {
 
         m_count = (UINT)indices.size();

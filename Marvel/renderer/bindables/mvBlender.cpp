@@ -1,8 +1,24 @@
 #include "mvBlender.h"
 #include "mvGraphics.h"
+#include "mvBindableRegistry.h"
 
 namespace Marvel
 {
+	std::shared_ptr<mvBlender> mvBlender::Request(mvGraphics& graphics, bool blending)
+	{
+		std::string ID = mvBlender::GenerateUniqueIdentifier(blending);
+		if (auto bindable = mvBindableRegistry::GetBindable(ID))
+			return std::dynamic_pointer_cast<mvBlender>(bindable);
+		auto bindable = std::make_shared<mvBlender>(graphics, blending);
+		mvBindableRegistry::AddBindable(ID, bindable);
+		return bindable;
+	}
+
+	std::string mvBlender::GenerateUniqueIdentifier(bool blending)
+	{
+		return typeid(mvBlender).name() + std::string("$") + std::string(blending ? "b" : "n");
+	}
+
 	mvBlender::mvBlender(mvGraphics& graphics, bool blending)
 		:
 		m_blending(blending)
@@ -22,5 +38,10 @@ namespace Marvel
 	void mvBlender::bind(mvGraphics& graphics)
 	{
 		graphics.getContext()->OMSetBlendState(m_blender.Get(), nullptr, 0xFFFFFFFFu);
+	}
+
+	std::string mvBlender::getUniqueIdentifier() const
+	{
+		return GenerateUniqueIdentifier(m_blending);
 	}
 }

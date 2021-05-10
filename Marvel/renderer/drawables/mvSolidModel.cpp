@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvSolidModel::mvSolidModel(mvGraphics& graphics, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
+	mvSolidModel::mvSolidModel(mvGraphics& graphics, const std::string& name, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
 	{
 
 		// create topology
@@ -19,10 +19,10 @@ namespace Marvel {
 		vl.append(ElementType::Normal);
 
 		// create vertex buffer
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, vertices, vl, true);
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, vertices, vl, true);
 
 		// create index buffer
-		m_indexBuffer = std::make_shared<mvIndexBuffer>(graphics, indices, true);
+		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
 		mvStep step("lambertian");
 
@@ -40,11 +40,10 @@ namespace Marvel {
 		step.addBindable(buf);
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::GetBindable("Phong_VS");
+		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Phong_VS.hlsl");
 		step.addBindable(vshader);
-		step.addBindable(std::make_shared<mvInputLayout>(graphics, vl,
-			static_cast<mvVertexShader*>(vshader.get())));
-		step.addBindable(mvBindableRegistry::GetBindable("Phong_PS"));
+		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Phong_PS.hlsl"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 

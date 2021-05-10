@@ -13,7 +13,7 @@ namespace Marvel {
 
 	public:
 
-		mvTexturedQuad(mvGraphics& graphics, const std::string& path);
+		mvTexturedQuad(mvGraphics& graphics, const std::string& name, const std::string& path);
 
 		glm::mat4 getTransform() const override;
 

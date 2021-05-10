@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvSolidSphere(mvGraphics& graphics, float radius, glm::vec3 color, int simple);
+		mvSolidSphere(mvGraphics& graphics, const std::string& name, float radius, glm::vec3 color, int simple);
 
 		glm::mat4 getTransform() const override;
 		void setTransform(glm::mat4 transform);

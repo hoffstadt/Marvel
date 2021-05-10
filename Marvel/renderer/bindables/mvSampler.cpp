@@ -2,8 +2,25 @@
 #include "mvSampler.h"
 #include <assert.h>
 #include "mvGraphics.h"
+#include "mvBindableRegistry.h"
 
 namespace Marvel {
+
+	std::shared_ptr<mvSampler> mvSampler::Request(mvGraphics& graphics, Type type, bool reflect, UINT slot)
+	{
+		std::string ID = mvSampler::GenerateUniqueIdentifier(type, reflect, slot);
+		if (auto bindable = mvBindableRegistry::GetBindable(ID))
+			return std::dynamic_pointer_cast<mvSampler>(bindable);
+		auto bindable = std::make_shared<mvSampler>(graphics, type, reflect, slot);
+		mvBindableRegistry::AddBindable(ID, bindable);
+		return bindable;
+	}
+
+	std::string mvSampler::GenerateUniqueIdentifier(Type type, bool reflect, UINT slot)
+	{
+		return typeid(mvSampler).name() + std::string("$Type") + std::to_string((int)type) + std::string("$Reflect") +
+			std::string(reflect ? "true" : "false") + std::string("@") + std::to_string(slot);
+	}
 
     mvSampler::mvSampler(mvGraphics& graphics, mvSampler::Type type, bool reflect, UINT slot)
 		:
@@ -42,5 +59,10 @@ namespace Marvel {
     {
         graphics.getContext()->PSSetSamplers(m_slot, 1, m_samplerState.GetAddressOf());
     }
+
+	std::string mvSampler::getUniqueIdentifier() const
+	{
+		return GenerateUniqueIdentifier(m_type, m_reflect, m_slot);
+	}
 
 }

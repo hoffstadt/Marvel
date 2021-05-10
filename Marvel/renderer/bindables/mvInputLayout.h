@@ -12,7 +12,12 @@ namespace Marvel {
 
 	public:
 
-		mvInputLayout(mvGraphics& graphics, mvVertexLayout vertexLayout, mvVertexShader* vertexShader);
+		static std::shared_ptr<mvInputLayout> Request(mvGraphics& graphics, const mvVertexLayout& vertexLayout, const mvVertexShader& vertexShader);
+		static std::string                    GenerateUniqueIdentifier(const mvVertexLayout& vertexLayout, const mvVertexShader& vertexShader);
+
+	public:
+
+		mvInputLayout(mvGraphics& graphics, const mvVertexLayout& vertexLayout, const mvVertexShader& vertexShader);
 
 		void bind(mvGraphics& graphics) override;
 
@@ -20,6 +25,7 @@ namespace Marvel {
 
 		mvVertexLayout                      m_layout;
 		Marvel::mvComPtr<ID3D11InputLayout> m_inputLayout;
+		std::string                         m_shaderId;
 
 	};
 
