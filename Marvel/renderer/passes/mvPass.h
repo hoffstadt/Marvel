@@ -36,6 +36,7 @@ namespace Marvel{
 
 		void               addJob     (mvJob job);
 		void               reset      ();
+		void               releaseBuffers();
 		void               addBindable(std::shared_ptr<mvBindable> bindable);
 		const std::string& getName    () const;
 		bool               isLinked() const;

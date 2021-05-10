@@ -31,21 +31,6 @@ int main()
     // create graphics
     mvGraphics graphics(window.getHandle(), width, height);
 
-    //// Set up debug layer to break on D3D11 errors
-    //d3dDebug = nullptr;
-    //graphics.getDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
-    //if (d3dDebug)
-    //{
-    //    ID3D11InfoQueue* d3dInfoQueue = nullptr;
-    //    if (SUCCEEDED(d3dDebug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&d3dInfoQueue)))
-    //    {
-    //        d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-    //        d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-    //        d3dInfoQueue->Release();
-    //    }
-    //    d3dDebug->Release();
-    //}
-
     // create imgui manager
     mvImGuiManager imManager(window.getHandle(), graphics);
 
@@ -99,6 +84,7 @@ int main()
         if (window.wantsResize())
         {
             graph.reset();
+
             graphics.releaseBuffers();
             graphics.resize(window.getClientWidth(), window.getClientHeight());
             camera.updateProjection(window.getClientWidth(), window.getClientHeight());
@@ -181,9 +167,6 @@ int main()
         graphics.getSwapChain()->Present(1, 0);
 
     }
-    //HRESULT blah = d3dDebug->ReportLiveDeviceObjects(
-    //    D3D11_RLDO_DETAIL
-    //);
 
 }
 

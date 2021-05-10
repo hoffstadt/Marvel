@@ -2,7 +2,6 @@
 #include "mvGraphics.h"
 #include "mvRenderTarget.h"
 #include "mvDepthStencil.h"
-#include <iostream>
 
 namespace Marvel {
 
@@ -81,20 +80,26 @@ namespace Marvel {
 		return m_products;
 	}
 
+	void mvPass::releaseBuffers()
+	{
+		m_renderTarget->reset();
+		m_renderTarget.reset();
+		m_depthStencil->reset();
+		m_depthStencil.reset();
+	}
+
 	bool mvPass::isLinked() const
 	{
 		for (const auto& resource : m_resources)
 		{
 			if (!resource->isPreLinked())
 			{
-				std::cout << "pre " << resource->getName() << std::endl;
 				assert(false);
 				return false;
 			}
 
 			if (!resource->isLinked())
 			{
-				std::cout << resource->getName() << std::endl;
 				assert(false);
 				return false;
 			}
@@ -104,7 +109,6 @@ namespace Marvel {
 		{
 			if (!product->isLinked())
 			{
-				std::cout << product->getName() << std::endl;
 				assert(false);
 				return false;
 			}

@@ -67,6 +67,7 @@ namespace Marvel {
         m_height = height;
         if (m_device)
         {
+
            m_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 
            // Create Framebuffer Render Target
