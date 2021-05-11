@@ -16,7 +16,7 @@ namespace Marvel {
 		m_mesh(graphics, name,  0.5f, { 1.0f, 1.0f, 1.0f }, 1)
 	{
 		m_mesh.setPosition(pos.x, pos.y, pos.z);
-		m_camera = std::make_shared<mvCamera>(graphics, name, pos, 0.0f, 0.0f, 300, 300);
+		m_camera = std::make_shared<mvCamera>(graphics, name, pos, 0.0f, 0.0f, 1000, 1000, 0.2, 100.0f);
 	}
 
 	void mvPointLight::submit(mvRenderGraph& graph)

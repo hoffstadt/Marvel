@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mvPass.h"
+#include "mvShadowCameraConstantBuffer.h"
 
 namespace Marvel {
 
@@ -23,10 +24,12 @@ namespace Marvel {
 		void execute(mvGraphics& graphics) const override;
 
 		void bindMainCamera(const mvCamera& cam);
+		void bindShadowCamera(const mvCamera& cam);
 
 	private:
 
 		const mvCamera* m_camera = nullptr;
+		std::shared_ptr<mvShadowCameraConstantBuffer> m_shadowCBuf;
 
 	};
 

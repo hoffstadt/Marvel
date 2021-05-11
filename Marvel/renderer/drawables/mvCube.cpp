@@ -83,39 +83,53 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
-		mvStep step("lambertian");
-
-		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-		auto& root = layout.getRoot();
-		root->add(Float3, std::string("materialColor"));
-		root->add(Float3, std::string("specularColor"));
-		root->add(Float, std::string("specularWeight"));
-		root->add(Float, std::string("specularGloss"));
-		root->finalize(0);
-
-		std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-
-		bufferRaw->getElement("materialColor").setIfExists(color);
-		bufferRaw->getElement("specularColor").setIfExists(glm::vec3{1.0f, 1.0f, 1.0f});
-		bufferRaw->getElement("specularWeight").setIfExists(0.1f);
-		bufferRaw->getElement("specularGloss").setIfExists(20.0f);
-
-		std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
-
-		step.addBindable(buf);
-
-		// create vertex shader
-		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "CubeTest_VS.hlsl");
-		step.addBindable(vshader);
-		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "CubeTest_PS.hlsl"));
-		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
-		step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
-		step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
-
 		mvTechnique technique;
-		technique.addStep(step);
+		{
+			mvStep step("lambertian");
+
+			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
+			auto& root = layout.getRoot();
+			root->add(Float3, std::string("materialColor"));
+			root->add(Float3, std::string("specularColor"));
+			root->add(Float, std::string("specularWeight"));
+			root->add(Float, std::string("specularGloss"));
+			root->finalize(0);
+
+			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+
+			bufferRaw->getElement("materialColor").setIfExists(color);
+			bufferRaw->getElement("specularColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
+			bufferRaw->getElement("specularWeight").setIfExists(0.1f);
+			bufferRaw->getElement("specularGloss").setIfExists(20.0f);
+
+			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+
+			step.addBindable(buf);
+
+			// create vertex shader
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+			step.addBindable(vshader);
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
+			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
+			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
+
+
+			technique.addStep(step);
+		}
+
+		{
+			mvStep step("shadow");
+
+			// create vertex shader
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl");
+			step.addBindable(vshader);
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			technique.addStep(step);
+		}
 		addTechnique(technique);
 
 	}

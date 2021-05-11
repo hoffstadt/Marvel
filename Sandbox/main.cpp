@@ -6,6 +6,7 @@
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
 #include "mvShadowMappingPass.h"
+#include "mvLambertianPass.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
 #include "mvPointLight.h"
@@ -41,33 +42,39 @@ int main()
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    lightManager.addLight(graphics, "light1", { 35.1f, 19.7f, -26.0f });
-    //lightManager.addLight(graphics, "light2", { 0.0f, 0.0f, 0.0f });
+    //lightManager.addLight(graphics, "light1", { 35.1f, 19.7f, -26.0f });
+    lightManager.addLight(graphics, "light2", { 0.0f, 5.0f, 0.0f });
     //lightManager.addLight(graphics, "light3", { 0.0f, 7.0f, 6.1f });
-    //auto lightcamera = lightManager.getLight(0).getCamera();
+    auto lightcamera = lightManager.getLight(0).getCamera();
 
-    //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
+    
 
     // create camera
     mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
-    mvCamera camera2(graphics, "testcamera", { 0.0f, 0.0f, 0.0f }, 0.0f, 0.0f, width, height, 0.5f, 50.0f);
+    //mvCamera camera2(graphics, "testcamera", { 0.0f, 0.0f, 0.0f }, 0.0f, 0.0f, width, height, 0.5f, 50.0f);
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
-    cube.setPosition(0.0f, 5.0f, 0.0f);
+    mvCube cube2(graphics, "testcube2", { 1.0f, 0.0f, 0.5f });
+    cube.setPosition(0.0f, 5.0f, 10.0f);
+    cube2.setPosition(0.0f, 5.0f, 5.0f);
 
 
-    model.linkTechniques(*graph);
+    //model.linkTechniques(*graph);
     cube.linkTechniques(*graph);
+    cube2.linkTechniques(*graph);
     lightManager.linkTechniques(*graph);
     //camera.linkTechniques(*graph);
-    camera2.linkTechniques(*graph);
+    lightcamera->linkTechniques(*graph);
+
+    static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*lightcamera);
+    static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*lightcamera);
 
     //// Light target
     //mvRenderTarget target1(graphics, 300, 300);
@@ -93,55 +100,34 @@ int main()
             window.setResizedFlag(false);
 
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
-            model.linkTechniques(*graph);
+            //model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
+            cube2.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
             camera.linkTechniques(*graph);
-            camera2.linkTechniques(*graph);
+            lightcamera->linkTechniques(*graph);
+            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*lightcamera);
+            static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*lightcamera);
         }
 
         const auto dt = timer.mark() * 1.0f;
 
         HandleEvents(window, dt, camera);
 
-        //// light pass
-        //target1.bindAsBuffer(graphics, depthBuffer.getDepthStencilView());
-        //target1.clear(graphics);
-        //depthBuffer.clear(graphics);
-
-        //graph.bindMainCamera(*lightcamera);
-        //graph.bind(graphics);
-
-        //lightcamera->bind(graphics);
-        //lightManager.bind(graphics, lightcamera->getMatrix());
-        //dlightManager.bind(graphics, lightcamera->getMatrix());
-
-        //model.submit(graph);
-        //cube.submit(graph);
-        //lightManager.submit(graph);
-
-        //graph.execute(graphics);
-        //graph.reset();
-
-        // viewport pass
-        //graphics.getTarget()->bindAsBuffer(graphics, graphics.getDepthBuffer()->getDepthStencilView());
-        //graphics.getTarget()->clear(graphics);
-        //graphics.getDepthBuffer()->clear(graphics);
-
         graph->bindMainCamera(camera);
+        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*lightcamera);
+        static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*lightcamera);
 
         graph->bind(graphics);
 
-        camera.bind(graphics);
         lightManager.bind(graphics, camera.getMatrix());
         dlightManager.bind(graphics, camera.getMatrix());
 
-        
         cube.submit(*graph);
-        model.submit(*graph);
+        cube2.submit(*graph);
+        //model.submit(*graph);
         lightManager.submit(*graph);
-        //camera.submit(*graph);
-        camera2.submit(*graph);
+        lightcamera->submit(*graph);
         
         graph->execute(graphics);
 
@@ -149,12 +135,12 @@ int main()
         static mvModelProbe probe(graphics, "Model Probe");
 
         imManager.beginFrame();
-        probe.spawnWindow(model);
+        //probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
-        camera2.show_imgui_windows();
+        cube2.show_imgui_windows("Test Cube2");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
@@ -163,8 +149,8 @@ int main()
         ////ImGui::SetNextWindowSize(ImVec2(300, 320));
         //if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         //{
-        //    if (target1.getTarget())
-        //        ImGui::Image(target1.getShaderResource(), ImVec2(300, 300));
+        //    //if (target1.getTarget())
+        //        ImGui::Image(static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->getOutput()->getShaderResource(), ImVec2(300, 300));
         //}
         //ImGui::End();
 

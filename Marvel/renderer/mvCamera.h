@@ -22,11 +22,13 @@ namespace Marvel {
 			float homePitch = 0.0f, float homeYaw = 0.0f, float width = 1.0f, float height = 1.0f, float nearZ = 0.5f, float farZ = 400.0f);
 
 		glm::mat4 getMatrix() const;
+		glm::mat4 getProjection() const;
 
 		void bind     (mvGraphics& graphics) const;
 		void rotate   (float dx, float dy);
 		void translate(float dx, float dy, float dz);
 		void setPos   (float x, float y, float z);
+		glm::vec3 getPos() const { return m_pos; }
 		void setRotation(float x, float y, float z);
 		void linkTechniques(mvRenderGraph& graph);
 		void submit(mvRenderGraph& graph) const;

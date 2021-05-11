@@ -77,6 +77,11 @@ namespace Marvel {
 		return camera_matrix;
 	}
 
+	glm::mat4 mvCamera::getProjection() const
+	{
+		return m_proj.getMatrix();
+	}
+
 	void mvCamera::bind(mvGraphics& graphics) const
 	{
 		graphics.setCamera(getMatrix());

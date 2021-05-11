@@ -41,6 +41,14 @@ namespace Marvel{
 		const std::string& getName    () const;
 		bool               isLinked() const;
 
+		template<class T>
+		void addBindableResource(std::string name)
+		{
+			const auto index = m_bindables.size();
+			m_bindables.emplace_back();
+			requestResource(std::make_unique<mvBindPassResource<T>>(name, m_bindables.back()));
+		}
+
 		// resources/producsts
 		const std::vector<std::unique_ptr<mvPassResource>>& getPassResources() const;
 		const std::vector<std::unique_ptr<mvPassProduct>>& getPassProducts() const;

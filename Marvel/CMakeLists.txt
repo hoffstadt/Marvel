@@ -45,6 +45,7 @@ target_sources(marvel
 		"renderer/bindables/mvTexture.cpp"
 		"renderer/bindables/mvSampler.cpp"
 		"renderer/bindables/mvRenderTarget.cpp"
+		"renderer/bindables/mvShadowCameraConstantBuffer.cpp"
 		"renderer/bindables/mvSkyBoxTransformConstantBuffer.cpp"
 		"renderer/bindables/mvTransformConstantBuffer.cpp"
 		"renderer/bindables/mvNullGeometryShader.cpp"
@@ -53,6 +54,7 @@ target_sources(marvel
 		"renderer/bindables/mvRasterizer.cpp"
 		"renderer/bindables/mvCubeTexture.cpp"
 		"renderer/bindables/mvStencil.cpp"
+		"renderer/bindables/mvShadowSampler.cpp"
 
 		"renderer/drawables/mvDrawable.cpp"
 		"renderer/drawables/mvTexturedQuad.cpp"

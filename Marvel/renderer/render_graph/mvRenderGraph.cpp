@@ -38,8 +38,15 @@ namespace Marvel {
 			addPass(std::move(pass));
 		}
 
+
+		{
+			auto pass = std::make_unique<mvShadowMappingPass>(graphics, "shadow");
+			addPass(std::move(pass));
+		}
+
 		{
 			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
+			pass->linkResourceToProduct("map", "shadow", "map");
 			pass->linkResourceToProduct("render_target", "clear_target", "buffer");
 			pass->linkResourceToProduct("depth_stencil", "clear_depth", "buffer");
 			addPass(std::move(pass));

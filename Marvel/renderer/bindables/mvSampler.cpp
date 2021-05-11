@@ -1,4 +1,3 @@
-#pragma once
 #include "mvSampler.h"
 #include <assert.h>
 #include "mvGraphics.h"
