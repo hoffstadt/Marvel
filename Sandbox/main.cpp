@@ -42,15 +42,15 @@ int main()
 
     mvPointLightManager lightManager(graphics);
     lightManager.addLight(graphics, "light1", { 35.1f, 19.7f, -26.0f });
-    lightManager.addLight(graphics, "light2", { 0.0f, 0.0f, 0.0f });
-    lightManager.addLight(graphics, "light3", { 0.0f, 7.0f, 6.1f });
+    //lightManager.addLight(graphics, "light2", { 0.0f, 0.0f, 0.0f });
+    //lightManager.addLight(graphics, "light3", { 0.0f, 7.0f, 6.1f });
     //auto lightcamera = lightManager.getLight(0).getCamera();
 
     //static_cast<mvShadowMappingPass*>(graph.getPass("Shadow"))->bindShadowCamera(*lightcamera);
 
     // create camera
-    mvCamera camera(graphics, {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
-    //mvCamera camera(graphics, { 0.0f, 0.0f, -5.0f }, 0.0f, 0.0f, width, height);
+    mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
+    mvCamera camera2(graphics, "testcamera", { 0.0f, 0.0f, 0.0f }, 0.0f, 0.0f, width, height, 0.5f, 50.0f);
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
@@ -66,6 +66,8 @@ int main()
     model.linkTechniques(*graph);
     cube.linkTechniques(*graph);
     lightManager.linkTechniques(*graph);
+    //camera.linkTechniques(*graph);
+    camera2.linkTechniques(*graph);
 
     //// Light target
     //mvRenderTarget target1(graphics, 300, 300);
@@ -94,6 +96,8 @@ int main()
             model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
+            camera.linkTechniques(*graph);
+            camera2.linkTechniques(*graph);
         }
 
         const auto dt = timer.mark() * 1.0f;
@@ -132,10 +136,13 @@ int main()
         lightManager.bind(graphics, camera.getMatrix());
         dlightManager.bind(graphics, camera.getMatrix());
 
+        
         cube.submit(*graph);
         model.submit(*graph);
         lightManager.submit(*graph);
-
+        //camera.submit(*graph);
+        camera2.submit(*graph);
+        
         graph->execute(graphics);
 
 
@@ -147,6 +154,7 @@ int main()
         dlightManager.show_imgui_windows();
         graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
+        camera2.show_imgui_windows();
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),

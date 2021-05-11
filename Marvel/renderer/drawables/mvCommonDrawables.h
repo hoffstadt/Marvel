@@ -6,4 +6,5 @@
 #include "mvMesh.h"
 #include "mvGizmo.h"
 #include "mvSolidModel.h"
+#include "mvFrustum.h"
 #include "mvCube.h"
