@@ -7,6 +7,7 @@ namespace Marvel {
 
 	mvGraphics::mvGraphics(HWND hwnd, int width, int height, const std::string& root)
 	{
+        
         m_width = width;
         m_height = height;
         m_shaderRoot = root;
@@ -51,9 +52,9 @@ namespace Marvel {
 
         m_target = std::make_shared<mvRenderTarget>(*this, m_frameBuffer.Get());
 
-        //m_depthStencil = std::make_shared<mvDepthStencil>(*this, width, height);
-
         mvBindableRegistry::Initialize(*this);
+
+        m_imguiManager = std::make_unique<mvImGuiManager>(hwnd, *this);
         
 	}
 
@@ -140,6 +141,18 @@ namespace Marvel {
     glm::mat4 mvGraphics::getCamera() const
     {
         return m_camera;
+    }
+
+    void mvGraphics::beginFrame()
+    {
+        m_imguiManager->beginFrame();
+    }
+
+    void mvGraphics::endFrame()
+    {
+        m_imguiManager->endFrame();
+
+        m_swapChain->Present(1, 0);
     }
 
 }

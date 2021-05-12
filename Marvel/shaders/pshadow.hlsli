@@ -3,8 +3,8 @@ SamplerComparisonState ssam : register(s1);
 
 static const float zf = 100.0f;
 static const float zn = 0.5f;
-static const float c1 = zf / (zf - zn);
-static const float c0 = -zn * zf / (zf - zn);
+static const float c1 = (zf + zn) / (zf - zn);
+static const float c0 = -(2*zn * zf) / (zf - zn);
 
 float CalculateShadowDepth(const in float4 shadowPos)
 {
@@ -21,6 +21,6 @@ float Shadow(const in float4 shadowPos)
 {
     //return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, length(shadowPos.xyz));
     //return smap.SampleCmpLevelZero(ssam, normalize(shadowPos.xyz), length(shadowPos.xyz) / 100.0f);
-    //return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, CalculateShadowDepth(shadowPos));
-    return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, length(shadowPos));
+    return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, CalculateShadowDepth(shadowPos));
+    //return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, length(shadowPos));
 }

@@ -2,7 +2,6 @@
 #include "mvMath.h"
 #include "mvWindow.h"
 #include "mvGraphics.h"
-#include "mvImGuiManager.h"
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
 #include "mvShadowMappingPass.h"
@@ -32,9 +31,6 @@ int main()
     // create graphics
     mvGraphics graphics(window.getHandle(), width, height);
 
-    // create imgui manager
-    mvImGuiManager imManager(window.getHandle(), graphics);
-
     // create render graph
     auto graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
 
@@ -51,7 +47,7 @@ int main()
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
+    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
@@ -81,7 +77,7 @@ int main()
             window.setResizedFlag(false);
 
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
-            //model.linkTechniques(*graph);
+            model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             cube2.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
@@ -95,6 +91,8 @@ int main()
 
         HandleEvents(window, dt, camera);
 
+        graphics.beginFrame();
+
         graph->bindMainCamera(camera);
         static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*lightcamera);
         static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*lightcamera);
@@ -106,7 +104,7 @@ int main()
 
         cube.submit(*graph);
         cube2.submit(*graph);
-        //model.submit(*graph);
+        model.submit(*graph);
         lightManager.submit(*graph);
         //lightcamera->submit(*graph);
         
@@ -115,8 +113,8 @@ int main()
 
         static mvModelProbe probe(graphics, "Model Probe");
 
-        imManager.beginFrame();
-        //probe.spawnWindow(model);
+        
+        probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph->show_imgui_window();
@@ -134,11 +132,9 @@ int main()
         //}
         //ImGui::End();
 
-        imManager.endFrame();
-
         graph->reset();
 
-        graphics.getSwapChain()->Present(1, 0);
+        graphics.endFrame();
 
     }
 

@@ -11,7 +11,6 @@ namespace Marvel {
 	{
 
 		UINT size = 1000;
-		//m_depthStencil = std::make_shared<mvOutputDepthStencil>(graphics, 1000, 1000);
 		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, 3);
 
 		addBindable(mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl"));

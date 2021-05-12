@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 #include "mvMarvelWin.h"
+#include "mvImGuiManager.h"
 #include "mvComPtr.h"
 #include <d3d11_1.h>
 #include "mvMath.h"
@@ -25,6 +26,9 @@ namespace Marvel {
 		mvGraphics(HWND hwnd, int width, int height, const std::string& root = "../../Marvel/shaders/");
 		~mvGraphics();
 
+		void beginFrame();
+		void endFrame();
+
 		void drawIndexed(UINT count);
 
 		// called when the viewport is resized
@@ -46,7 +50,6 @@ namespace Marvel {
 		IDXGISwapChain*                 getSwapChain  ();
 		ID3D11Texture2D*                getFrameBuffer();
 		std::shared_ptr<mvRenderTarget> getTarget     ();
-		//std::shared_ptr<mvDepthStencil> getDepthBuffer();
 		glm::mat4                       getProjection () const;
 		glm::mat4                       getCamera     () const;
 		const std::string&              getShaderRoot () const { return m_shaderRoot; }
@@ -60,12 +63,13 @@ namespace Marvel {
 		mvComPtr<IDXGISwapChain>        m_swapChain;
 		mvComPtr<ID3D11Texture2D>       m_frameBuffer;
 		std::shared_ptr<mvRenderTarget> m_target = nullptr;
-		//std::shared_ptr<mvDepthStencil> m_depthStencil = nullptr;
 		glm::mat4                       m_projection;
 		glm::mat4                       m_camera;
 		std::string                     m_shaderRoot = "../../Marvel/shaders/";
 		int                             m_width;
 		int                             m_height;
+		std::unique_ptr<mvImGuiManager> m_imguiManager;
+
 	};
 
 }
