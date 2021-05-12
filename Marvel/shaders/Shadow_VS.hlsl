@@ -1,4 +1,4 @@
-#include "transform.hlsli"
+#include "common/transform.hlsli"
 
 float4 main(float3 pos : Position) : SV_Position
 {

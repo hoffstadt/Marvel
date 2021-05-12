@@ -97,6 +97,7 @@ target_include_directories(marvel
 
 		"core"
 		"shaders"
+		"shaders/common"
 		"renderer"
 		"geometry"
 		"renderer/bindables"

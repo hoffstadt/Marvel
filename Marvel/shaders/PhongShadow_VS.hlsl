@@ -1,5 +1,5 @@
-#include "transform.hlsli"
-#include "shadow.hlsli"
+#include "common/transform.hlsli"
+#include "common/shadow.hlsli"
 
 struct VSOut
 {

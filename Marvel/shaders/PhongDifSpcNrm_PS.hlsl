@@ -1,7 +1,7 @@
-#include "operations.hlsli"
-#include "pointlight.hlsli"
-#include "directionallight.hlsli"
-#include "pshadow.hlsli"
+#include "common/operations.hlsli"
+#include "common/pointlight.hlsli"
+#include "common/directionallight.hlsli"
+#include "common/pshadow.hlsli"
 
 cbuffer ObjectCBuf : register(b1)
 {

@@ -1,7 +1,7 @@
-#include "operations.hlsli"
-#include "pointlight.hlsli"
-#include "directionallight.hlsli"
-#include "pshadow.hlsli"
+#include "common/operations.hlsli"
+#include "common/pointlight.hlsli"
+#include "common/directionallight.hlsli"
+#include "common/pshadow.hlsli"
 
 Texture2D tex : register(t0);
 SamplerState splr : register(s0);
@@ -50,22 +50,23 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
             specular *= shadowLevel;
         }
     
-        //for (int i = 0; i < dLightCount; i++)
-        //{
-        
-	       // // diffuse
-        //    diffuse += Diffuse(ddiffuseColor[i], ddiffuseIntensity[i], 1.0f, -normalize(viewLightDir[i]), viewNormal);
-    
-        //    // specular
-        //    specular += Speculate(
-        //        ddiffuseColor[i] * ddiffuseIntensity[i] * specularColor, specularWeight, viewNormal,
-        //        -normalize(viewLightDir[i]), viewFragPos, 1.0f, specularGloss
-        //    );
-        //}
     }
     else
     {
         diffuse = specular = 0.0f;
+    }
+    
+    for (int i = 0; i < dLightCount; i++)
+    {
+        
+	        // diffuse
+        diffuse += Diffuse(ddiffuseColor[i], ddiffuseIntensity[i], 1.0f, -normalize(viewLightDir[i]), viewNormal);
+    
+            // specular
+        specular += Speculate(
+                ddiffuseColor[i] * ddiffuseIntensity[i] * specularColor, specularWeight, viewNormal,
+                -normalize(viewLightDir[i]), viewFragPos, 1.0f, specularGloss
+            );
     }
     
 	// final color
