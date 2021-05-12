@@ -37,18 +37,25 @@ namespace Marvel {
         }
     }
 
+    mvDepthStencil::mvDepthStencil(mvGraphics& graphics, mvComPtr<ID3D11Texture2D> texture, UINT face)
+    {
+        D3D11_TEXTURE2D_DESC descTex = {};
+        texture->GetDesc(&descTex);
+
+        // create target view of depth stensil texture
+        D3D11_DEPTH_STENCIL_VIEW_DESC descView = {};
+        descView.Format = DXGI_FORMAT_D32_FLOAT;
+        descView.Flags = 0;
+        descView.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+        descView.Texture2DArray.MipSlice = 0;
+        descView.Texture2DArray.ArraySize = 1;
+        descView.Texture2DArray.FirstArraySlice = face;
+
+        graphics.getDevice()->CreateDepthStencilView(texture.Get(), &descView, m_DSV.GetAddressOf());
+    }
+
 	mvDepthStencil::mvDepthStencil(mvGraphics& graphics, int width, int height, bool shaderBinding, Usage usage)
 	{
-        // create depth stensil state
-        D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-        dsDesc.DepthEnable = TRUE;
-        dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-        mvComPtr<ID3D11DepthStencilState> pDSState;
-        graphics.getDevice()->CreateDepthStencilState(&dsDesc, &pDSState);
-
-        // bind depth state
-        graphics.getContext()->OMSetDepthStencilState(pDSState.Get(), 1u);
 
         // create depth stensil texture
         mvComPtr<ID3D11Texture2D> pDepthStencil;
@@ -69,6 +76,7 @@ namespace Marvel {
         descDSV.Format = MapUsageTyped(usage);
         descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         descDSV.Texture2D.MipSlice = 0u;
+        descDSV.Flags = 0;
         graphics.getDevice()->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, m_DSV.GetAddressOf());
 	}
 
@@ -132,13 +140,20 @@ namespace Marvel {
 
     mvOutputDepthStencil::mvOutputDepthStencil(mvGraphics& graphics, int width, int height)
         :
-        mvDepthStencil(graphics, width, height, false, Usage::DepthStencil)
+        mvDepthStencil(graphics, width, height)
     {
     }
 
     mvOutputDepthStencil::mvOutputDepthStencil(mvGraphics& graphics)
         :
-        mvDepthStencil(graphics, graphics.getWidth(), graphics.getHeight(), false, Usage::DepthStencil)
+        mvDepthStencil(graphics, graphics.getWidth(), graphics.getHeight())
     {
+    }
+
+    mvOutputDepthStencil::mvOutputDepthStencil(mvGraphics& graphics, mvComPtr<ID3D11Texture2D> texture, UINT face)
+        :
+        mvDepthStencil(graphics, std::move(texture), face)
+    {
+
     }
 }

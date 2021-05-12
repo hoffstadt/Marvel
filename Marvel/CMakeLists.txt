@@ -36,6 +36,7 @@ target_sources(marvel
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
 		"renderer/bindables/mvTopology.cpp"
+		"renderer/bindables/mvShadowRasterizer.cpp"
 		"renderer/bindables/mvGeometryShader.cpp"
 		"renderer/bindables/mvPixelShader.cpp"
 		"renderer/bindables/mvVertexShader.cpp"

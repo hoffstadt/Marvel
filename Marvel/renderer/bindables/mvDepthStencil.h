@@ -27,7 +27,9 @@ namespace Marvel {
 
 		enum class Usage{ DepthStencil, ShadowDepth};
 
+		mvDepthStencil(mvGraphics& graphics, mvComPtr<ID3D11Texture2D> texture, UINT face);
 		mvDepthStencil(mvGraphics& graphics, int width, int height, bool shaderBinding = false, Usage usage = Usage::DepthStencil);
+		virtual ~mvDepthStencil() = default;
 
 		// bindable interface
 		void bind(mvGraphics& graphics) override {}
@@ -77,6 +79,7 @@ namespace Marvel {
 
 		mvOutputDepthStencil(mvGraphics& graphics, int width, int height);
 		mvOutputDepthStencil(mvGraphics& graphics);
+		mvOutputDepthStencil(mvGraphics& graphics, mvComPtr<ID3D11Texture2D> texture, UINT face);
 
 		void bind(mvGraphics& graphics) override {}
 

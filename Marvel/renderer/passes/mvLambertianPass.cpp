@@ -11,11 +11,17 @@ namespace Marvel {
 	{
 		m_shadowCBuf = std::make_shared<mvShadowCameraConstantBuffer>(graphics);
 		addBindable(m_shadowCBuf);
+
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
-		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
+		
 		addBindable(std::make_shared<mvShadowSampler>(graphics));
+		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
+		addBindable(std::make_shared<mvRasterizer>(graphics, false));
+
+		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
 		addBindableResource<mvBindable>("map");
+		
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
 
@@ -24,23 +30,19 @@ namespace Marvel {
 	void mvLambertianPass::execute(mvGraphics& graphics) const
 	{
 
+		m_shadowCBuf->bind(graphics);
+		m_camera->bind(graphics);
+
 		if (m_renderTarget)
 			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());
 		else
 			m_depthStencil->bindAsBuffer(graphics);
-
-		m_shadowCBuf->bind(graphics);
-		m_camera->bind(graphics);
 
 		for (auto& bind : m_bindables)
 			bind->bind(graphics);
 
 		for (const auto& j : m_jobs)
 			j.execute(graphics);
-
-		// unbind shadow map
-		ID3D11ShaderResourceView* const pSRV[6] = { NULL };
-		graphics.getContext()->PSSetShaderResources(3, 6, pSRV);
 	}
 
 	void mvLambertianPass::bindMainCamera(const mvCamera& cam)

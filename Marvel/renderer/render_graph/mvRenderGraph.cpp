@@ -62,7 +62,6 @@ namespace Marvel {
 		{
 			auto pass = std::make_unique<mvOverlayPass>(graphics, "overlay");
 			pass->linkResourceToProduct("render_target", "skybox", "render_target");
-			//pass->linkResourceToProduct("depth_stencil", "skybox", "depth_stencil");
 			addPass(std::move(pass));
 		}
 

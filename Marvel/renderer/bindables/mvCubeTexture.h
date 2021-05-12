@@ -55,4 +55,25 @@ namespace Marvel {
 		std::vector<std::shared_ptr<mvRenderTarget>> m_renderTargets;
 	};
 
+	//-----------------------------------------------------------------------------
+	// mvCubeDepthTexture
+	//-----------------------------------------------------------------------------
+	class mvCubeDepthTexture : public mvBindable
+	{
+
+	public:
+
+		mvCubeDepthTexture(mvGraphics& graphics, UINT size, UINT slot = 0);
+
+		void bind(mvGraphics& graphics) override;
+
+		std::shared_ptr<mvOutputDepthStencil> getDepthBuffer(size_t index) const;
+
+	private:
+
+		unsigned int m_slot;
+		mvComPtr<ID3D11ShaderResourceView> m_textureView;
+		std::vector<std::shared_ptr<mvOutputDepthStencil>> m_depthBuffers;
+	};
+
 }

@@ -10,7 +10,7 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 	class mvCamera;
-	class mvCubeTargetTexture;
+	class mvCubeDepthTexture;
 
 	//-----------------------------------------------------------------------------
 	// mvLambertianPass
@@ -29,7 +29,7 @@ namespace Marvel {
 	private:
 
 		const mvCamera* m_shadowCamera = nullptr;
-		std::shared_ptr<mvCubeTargetTexture> m_depthCube = nullptr;
+		std::shared_ptr<mvCubeDepthTexture> m_depthCube;
 		std::vector<glm::vec3> m_cameraDirections;
 		std::vector<glm::vec3> m_cameraUps;
 

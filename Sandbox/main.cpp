@@ -51,13 +51,15 @@ int main()
     //mvCamera camera(graphics, { 0.0f, 0.0f, -10.0f }, 0.0f, 0.0f, width, height);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 10.0f);
+    mvCube cube2(graphics, "testcube2", { 1.0f, 0.0f, 0.5f });
+    cube2.setPosition(0.0f, 5.0f, 5.0f);
 
     // timer
     Marvel::mvTimer timer;
@@ -79,8 +81,9 @@ int main()
             window.setResizedFlag(false);
 
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
-            model.linkTechniques(*graph);
+            //model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
+            cube2.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
@@ -102,7 +105,8 @@ int main()
         dlightManager.bind(graphics, camera.getMatrix());
 
         cube.submit(*graph);
-        model.submit(*graph);
+        cube2.submit(*graph);
+        //model.submit(*graph);
         lightManager.submit(*graph);
         //lightcamera->submit(*graph);
         
@@ -112,7 +116,7 @@ int main()
         static mvModelProbe probe(graphics, "Model Probe");
 
         imManager.beginFrame();
-        probe.spawnWindow(model);
+        //probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
         graph->show_imgui_window();

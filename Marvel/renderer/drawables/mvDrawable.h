@@ -26,6 +26,7 @@ namespace Marvel {
 	public:
 
 		mvDrawable() = default;
+		virtual ~mvDrawable() = default;
 
 		virtual glm::mat4 getTransform() const = 0;
 

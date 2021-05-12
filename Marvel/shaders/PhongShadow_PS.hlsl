@@ -25,6 +25,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
     
         // shadow map test
     const float shadowLevel = Shadow(spos);
+    
     if (shadowLevel != 0.0f)
     {
         for (int i = 0; i < LightCount; i++)
@@ -44,7 +45,6 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
             diffuseColor[i] * diffuseIntensity[i] * specularColor, specularWeight, viewNormal,
             lv.vec, viewFragPos, att, specularGloss
         );
-            
             // scale by shadow level
             diffuse *= shadowLevel;
             specular *= shadowLevel;

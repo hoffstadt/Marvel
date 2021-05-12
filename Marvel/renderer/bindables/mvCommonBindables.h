@@ -12,6 +12,7 @@
 #include "mvTexture.h"
 #include "mvSampler.h"
 #include "mvShadowSampler.h"
+#include "mvShadowRasterizer.h"
 #include "mvRenderTarget.h"
 #include "mvTransformConstantBuffer.h"
 #include "mvShadowCameraConstantBuffer.h"
