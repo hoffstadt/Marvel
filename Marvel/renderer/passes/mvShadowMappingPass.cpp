@@ -14,7 +14,7 @@ namespace Marvel {
 		m_depthCube = std::make_shared<mvCubeTargetTexture>(graphics, 1000, 1000, 3, DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT);
 
 		addBindable(std::make_shared<mvViewport>(graphics, 1000.0f, 1000.0f));
-		//addBindable(std::make_shared<mvNullPixelShader>(graphics));
+		//addBindable(mvBindableRegistry::GetBindable("null_ps"));
 		addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Shadow_PS.hlsl"));
 		addBindable(mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl"));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
@@ -40,8 +40,6 @@ namespace Marvel {
 
 	void mvShadowMappingPass::execute(mvGraphics& graphics) const
 	{
-
-		//const_cast<mvShadowMappingPass*>(this)->m_renderTarget = m_depthCube->getRenderTarget(0);
 
 		graphics.setProjection(glm::perspectiveLH(PI / 2.0f, 1.0f, 0.5f, 100.0f));
 		for (size_t i = 0; i < 6; i++)

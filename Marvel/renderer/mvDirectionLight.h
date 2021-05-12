@@ -33,7 +33,7 @@ namespace Marvel {
 
 	public:
 
-		static constexpr int MaxLights = 16;
+		static constexpr int MaxLights = 2;
 
 		mvDirectionLightManager(mvGraphics& graphics);
 

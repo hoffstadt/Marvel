@@ -42,12 +42,8 @@ int main()
     dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
-    //lightManager.addLight(graphics, "light1", { 35.1f, 19.7f, -26.0f });
     lightManager.addLight(graphics, "light2", { 0.0f, 5.0f, 0.0f });
-    //lightManager.addLight(graphics, "light3", { 0.0f, 7.0f, 6.1f });
     auto lightcamera = lightManager.getLight(0).getCamera();
-
-    
 
     // create camera
     mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height);
@@ -62,19 +58,6 @@ int main()
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 10.0f);
-
-
-    model.linkTechniques(*graph);
-    cube.linkTechniques(*graph);
-    lightManager.linkTechniques(*graph);
-    lightcamera->linkTechniques(*graph);
-
-    static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*lightcamera);
-    static_cast<mvShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*lightcamera);
-
-    //// Light target
-    //mvRenderTarget target1(graphics, 300, 300);
-    //mvDepthStencil depthBuffer(graphics, 300, 300);
 
     // timer
     Marvel::mvTimer timer;
