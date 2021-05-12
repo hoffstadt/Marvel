@@ -1,17 +1,10 @@
 #include "operations.hlsli"
 #include "pointlight.hlsli"
 #include "directionallight.hlsli"
-
-TextureCube smap : register(t3);
-SamplerComparisonState ssam : register(s1);
+#include "pshadow.hlsli"
 
 Texture2D tex : register(t0);
 SamplerState splr : register(s0);
-
-float Shadow(const in float4 shadowPos)
-{
-    return smap.SampleCmpLevelZero(ssam, normalize(shadowPos.xyz), length(shadowPos.xyz) / 100.0f);
-}
 
 cbuffer ObjectCBuf : register(b1)
 {

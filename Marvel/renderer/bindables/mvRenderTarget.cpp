@@ -95,7 +95,23 @@ namespace Marvel {
 
 	void mvRenderTarget::bindAsBuffer(mvGraphics& graphics, mvBufferResource* depthStencilView)
 	{
-		bindAsBuffer(graphics, static_cast<mvDepthStencil*>(depthStencilView)->getDepthStencilView());
+		if (depthStencilView)
+			bindAsBuffer(graphics, static_cast<mvDepthStencil*>(depthStencilView)->getDepthStencilView());
+		else
+		{
+			graphics.getContext()->OMSetRenderTargets(1, m_target.GetAddressOf(), nullptr);
+
+			// configure viewport
+			D3D11_VIEWPORT vp;
+			vp.Width = (float)m_width;
+			vp.Height = (float)m_height;
+			vp.MinDepth = 0.0f;
+			vp.MaxDepth = 1.0f;
+			vp.TopLeftX = 0.0f;
+			vp.TopLeftY = 0.0f;
+
+			graphics.getContext()->RSSetViewports(1u, &vp);
+		}
 	}
 
 	void mvRenderTarget::bindAsBuffer(mvGraphics& graphics, ID3D11DepthStencilView* depthStencilView)

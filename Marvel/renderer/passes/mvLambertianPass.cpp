@@ -23,7 +23,6 @@ namespace Marvel {
 
 	void mvLambertianPass::execute(mvGraphics& graphics) const
 	{
-		m_shadowCBuf->bind(graphics);
 
 		if (m_renderTarget)
 			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());

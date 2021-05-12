@@ -62,13 +62,13 @@ namespace Marvel {
 		{
 			auto pass = std::make_unique<mvOverlayPass>(graphics, "overlay");
 			pass->linkResourceToProduct("render_target", "skybox", "render_target");
-			pass->linkResourceToProduct("depth_stencil", "skybox", "depth_stencil");
+			//pass->linkResourceToProduct("depth_stencil", "skybox", "depth_stencil");
 			addPass(std::move(pass));
 		}
 
 		// ensure something outputs the backbuffer
 		linkGlobalResourceToProduct("backbuffer", "overlay", "render_target");
-		linkGlobalResourceToProduct("masterdepth", "overlay", "depth_stencil");
+		linkGlobalResourceToProduct("masterdepth", "skybox", "depth_stencil");
 
 		bake();
 

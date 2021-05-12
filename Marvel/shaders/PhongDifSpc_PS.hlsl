@@ -2,6 +2,7 @@
 #include "pointlight.hlsli"
 #include "transform.hlsli"
 #include "directionallight.hlsli"
+#include "pshadow.hlsli"
 
 cbuffer ObjectCBuf : register(b1)
 {
@@ -18,7 +19,7 @@ Texture2D spec : register(t1);
 SamplerState splr : register(s0);
 
 
-float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc : Texcoord) : SV_Target
+float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
 {
     float3 diffuse;
     float3 specularReflected;
@@ -44,23 +45,35 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float2 tc
     }
     
     
-    for (int i = 0; i < LightCount; i++)
+    const float shadowLevel = Shadow(spos);
+    if (shadowLevel != 0.0f)
     {
+        for (int i = 0; i < LightCount; i++)
+        {
     
 	    // fragment to light vector data
-        const LightVectorData lv = CalculateLightVectorData(viewLightPos[i], viewFragPos);
+            const LightVectorData lv = CalculateLightVectorData(viewLightPos[i], viewFragPos);
     
 	    // attenuation
-        const float att = Attenuate(attConst[i], attLin[i], attQuad[i], lv.dist);
+            const float att = Attenuate(attConst[i], attLin[i], attQuad[i], lv.dist);
     
 	    // diffuse
-        diffuse += Diffuse(diffuseColor[i], diffuseIntensity[i], att, lv.dir, viewNormal);
+            diffuse += Diffuse(diffuseColor[i], diffuseIntensity[i], att, lv.dir, viewNormal);
     
         // specular
-        specularReflected += Speculate(
+            specularReflected += Speculate(
             diffuseColor[i] * diffuseIntensity[i] * specularReflectionColor, specularWeight, viewNormal,
             lv.vec, viewFragPos, att, specularPowerLoaded
         );
+        }
+        
+                    // scale by shadow level
+        diffuse *= shadowLevel;
+        specularReflected *= shadowLevel;
+    }
+    else
+    {
+        diffuse = specularReflected = 0.0f;
     }
     
     for (int i = 0; i < dLightCount; i++)
