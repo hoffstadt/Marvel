@@ -11,46 +11,21 @@ namespace Marvel {
 	{
 
 		std::shared_ptr<mvPixelConstantBuffer> buf;
-		std::unique_ptr<mvBuffer>              bufferRaw;
-
-		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-		auto& rootStruct = layout.getRoot();
-		rootStruct->add(Float3, std::string("materialColor"));
-		rootStruct->add(Float3, std::string("specularColor"));
-		rootStruct->add(Float, std::string("specularWeight"));
-		rootStruct->add(Float, std::string("specularGloss"));
-		rootStruct->add(Float, std::string("normalMapWeight"));
-		rootStruct->add(Bool, std::string("useTextureMap"));
-		rootStruct->add(Bool, std::string("useNormalMap"));
-		rootStruct->add(Bool, std::string("useSpecularMap"));
-		rootStruct->add(Bool, std::string("useGlossAlpha"));
-		rootStruct->finalize(0);
+		//std::unique_ptr<mvBuffer>              bufferRaw;
 
 		bool hasAlpha = false;
-
-		bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-
-		bufferRaw->getElement("useTextureMap").setIfExists(false);
-		bufferRaw->getElement("useNormalMap").setIfExists(false);
-		bufferRaw->getElement("useSpecularMap").setIfExists(false);
-		bufferRaw->getElement("useGlossAlpha").setIfExists(false);
-
-		bufferRaw->getElement("normalMapWeight").setIfExists(1.0f);
-		bufferRaw->getElement("specularWeight").setIfExists(1.0f);
 		
-
 		aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 		material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-		bufferRaw->getElement("materialColor") = reinterpret_cast<glm::vec3&>(diffuseColor);
+		m_materialBuffer.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
 
 		aiColor3D specularColor = { 0.18f,0.18f,0.18f };
-		//aiColor3D specularColor = { 0.0f,0.0f,0.0f };
 		material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-		bufferRaw->getElement("specularColor") = reinterpret_cast<glm::vec3&>(specularColor);
+		m_materialBuffer.specularColor = { specularColor.r, specularColor.g, specularColor.b };
 
 		float gloss = 8.0f;
 		material.Get(AI_MATKEY_SHININESS, gloss);
-		bufferRaw->getElement("specularGloss") = gloss;
+		m_materialBuffer.specularGloss = gloss;
 
 		{
 			mvTechnique phong;
@@ -67,7 +42,7 @@ namespace Marvel {
 			// diffuse
 			if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 			{
-				bufferRaw->getElement("useTextureMap").setIfExists(true);
+				m_materialBuffer.useTextureMap = true;
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 				step.addBindable(texture);
 				hasAlpha = texture->hasAlpha();
@@ -82,7 +57,7 @@ namespace Marvel {
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
 				step.addBindable(texture);
 				//hasGlossAlpha = texture->hasAlpha();
-				bufferRaw->getElement("useSpecularMap").setIfExists(true);
+				m_materialBuffer.useSpecularMap = true;
 			}
 
 			// normals
@@ -90,11 +65,11 @@ namespace Marvel {
 			{
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
 				step.addBindable(texture);
-				bufferRaw->getElement("useNormalMap").setIfExists(true);
+				m_materialBuffer.useNormalMap = true;
 				
 			}
 
-			buf = std::make_shared<mvPixelConstantBuffer>(graphics, *rootStruct.get(), 1, bufferRaw.get());
+			buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer);
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");

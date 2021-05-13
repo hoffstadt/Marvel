@@ -3,38 +3,51 @@
 #include "common/pshadow.hlsli"
 #include "common/directionallight.hlsli"
 
-cbuffer ObjectCBuf : register(b1)
+struct Material
 {
     float3 materialColor;
+    //-------------------------- ( 16 bytes )
+    
     float3 specularColor;
     float specularWeight;
+    //-------------------------- ( 16 bytes )
+   
     float specularGloss;
     float normalMapWeight;
-    
-    bool useTextureMap;
+    bool  useTextureMap;
     bool useNormalMap;
+    //-------------------------- ( 16 bytes )
+    
     bool useSpecularMap;
     bool useGlossAlpha;
-    
+    //-------------------------- ( 16 bytes )
+    //-------------------------- ( 4 * 16 = 64 bytes )
 };
 
-Texture2D tex : register(t0);
-Texture2D spec : register(t1);
-Texture2D nmap : register(t2);
+cbuffer Material : register(b1)
+{
+    Material mat;
+};
 
-SamplerState splr : register(s0);
+// textures
+Texture2D ColorTexture    : register(t0);
+Texture2D SpecularTexture : register(t1);
+Texture2D NormalTexture   : register(t2);
+
+// samplers
+SamplerState Sampler : register(s0);
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected;
-    float3 specularReflectedColor = specularColor;
+    float3 specularReflectedColor = mat.specularColor;
     
-    if(useTextureMap)
+    if (mat.useTextureMap)
     {
         
         // sample diffuse texture
-        const float4 dtex = tex.Sample(splr, tc);
+        const float4 dtex = ColorTexture.Sample(Sampler, tc);
         
         // bail if highly translucent
         clip(dtex.a < 0.1f ? -1 : 1);
@@ -50,21 +63,21 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     viewNormal = normalize(viewNormal);
     
     // replace normal with mapped if normal mapping enabled
-    if (useNormalMap)
+    if (mat.useNormalMap)
     {
-        const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, nmap, splr);
-        viewNormal = lerp(viewNormal, mappedNormal, normalMapWeight);
+        const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, NormalTexture, Sampler);
+        viewNormal = lerp(viewNormal, mappedNormal, mat.normalMapWeight);
     }
     
     // specular parameter determination (mapped or uniform)
-    float specularPowerLoaded = specularGloss;
+    float specularPowerLoaded = mat.specularGloss;
     
-    if (useSpecularMap)
+    if (mat.useSpecularMap)
     {
-        const float4 specularSample = spec.Sample(splr, tc);
+        const float4 specularSample = SpecularTexture.Sample(Sampler, tc);
         specularReflectedColor = specularSample.rgb;
         
-        if (useGlossAlpha)
+        if (mat.useGlossAlpha)
         {
             specularPowerLoaded = pow(2.0f, specularSample.a * 13.0f);
         }
@@ -87,7 +100,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
             // specular
             specularReflected += Speculate(
-                diffuseColor[i] * diffuseIntensity[i] * specularReflectedColor, specularWeight, viewNormal,
+                diffuseColor[i] * diffuseIntensity[i] * specularReflectedColor, mat.specularWeight, viewNormal,
                 lv.vec, viewFragPos, att, specularPowerLoaded);
             
         }
@@ -109,19 +122,19 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
         // specular
         specularReflected += Speculate(
-            ddiffuseColor[i] * ddiffuseIntensity[i] * specularReflectedColor, specularWeight, viewNormal,
+            ddiffuseColor[i] * ddiffuseIntensity[i] * specularReflectedColor, mat.specularWeight, viewNormal,
             -normalize(viewLightDir[i]), viewFragPos, 1.0f, specularPowerLoaded);
     }
 
 	// final color
     float3 litColor;
-    if (useTextureMap)
+    if (mat.useTextureMap)
     {
-        litColor = saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specularReflected);
+        litColor = saturate((diffuse + ambient) * ColorTexture.Sample(Sampler, tc).rgb + specularReflected);
     }
     else
     {
-        litColor = saturate((diffuse + ambient) * materialColor + specularReflected);
+        litColor = saturate((diffuse + ambient) * mat.materialColor + specularReflected);
     }
     
     return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), FogStart, FogRange, FogColor, litColor), 1.0f);
