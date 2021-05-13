@@ -42,11 +42,6 @@ namespace Marvel {
 	void mvShadowMappingPass::execute(mvGraphics& graphics) const
 	{
 
-		// unbind shadow map
-		ID3D11ShaderResourceView* const pSRV[6] = { NULL };
-		graphics.getContext()->PSSetShaderResources(0, 1, pSRV);
-		graphics.getContext()->PSSetShaderResources(3, 6, pSRV);
-
 		graphics.setProjection(glm::perspectiveLH(PI / 2.0f, 1.0f, 0.5f, 100.0f));
 		for (size_t i = 0; i < 6; i++)
 		{
@@ -71,10 +66,6 @@ namespace Marvel {
 			for (const auto& j : m_jobs)
 				j.execute(graphics);
 		}
-
-		// unbind shadow map
-		graphics.getContext()->PSSetShaderResources(0, 1, pSRV);
-		graphics.getContext()->PSSetShaderResources(3, 6, pSRV);
 
 	}
 

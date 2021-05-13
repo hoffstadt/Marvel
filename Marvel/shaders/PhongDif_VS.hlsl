@@ -1,7 +1,7 @@
-#include "operations.hlsli"
-#include "pointlight.hlsli"
-#include "transform.hlsli"
-#include "shadow.hlsli"
+#include "common/operations.hlsli"
+#include "common/pointlight.hlsli"
+#include "common/transform.hlsli"
+#include "common/shadow.hlsli"
 
 struct VSOut
 {

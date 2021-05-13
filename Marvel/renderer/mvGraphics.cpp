@@ -145,6 +145,11 @@ namespace Marvel {
 
     void mvGraphics::beginFrame()
     {
+        // unbind shadow map
+        ID3D11ShaderResourceView* const pSRV[6] = { NULL };
+        m_deviceContext->PSSetShaderResources(0, 1, pSRV);
+        m_deviceContext->PSSetShaderResources(3, 6, pSRV);
+
         m_imguiManager->beginFrame();
     }
 
