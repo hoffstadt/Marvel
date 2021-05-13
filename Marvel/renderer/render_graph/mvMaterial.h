@@ -27,24 +27,25 @@ namespace Marvel {
 
 		struct mvMaterialBuffer
 		{
-			glm::vec3 materialColor = {0.45f, 0.45f, 0.85f};
-			float padding1 = 0.0f;
+			alignas(16) glm::vec3 materialColor = {0.45f, 0.45f, 0.85f};
+			//float padding1 = 0.0f;
 			//-------------------------- ( 16 bytes )
 
-			glm::vec3 specularColor = {0.18f, 0.18f, 0.18f};
-			float specularWeight = 1.0f;
+			alignas(16) glm::vec3 specularColor = {0.18f, 0.18f, 0.18f};
+			//float specularWeight = 1.0f;
 			//-------------------------- ( 16 bytes )
 
 			float specularGloss = 8.0f;
 			float normalMapWeight = 1.0f;
-			int useTextureMap = false;
-			int useNormalMap = false;
+			alignas(4) bool useTextureMap = false;
+			alignas(4) bool useNormalMap = false;
 			//-------------------------- ( 16 bytes )
 
-			int useSpecularMap = false;
-			int useGlossAlpha = false;
+			alignas(4) bool useSpecularMap = false;
+			alignas(4) bool useGlossAlpha = false;
+			alignas(4) bool hasAlpha = false;
 
-			char padding6[8];
+			int padding1 = -1;
 			//-------------------------- ( 16 bytes )
 			//-------------------------- ( 4 * 16 = 64 bytes )
 		};
@@ -58,7 +59,7 @@ namespace Marvel {
 
 	private:
 
-		mvMaterialBuffer         m_materialBuffer{};
+		mvMaterialBuffer         m_materialBuffer;
 		std::vector<mvTechnique> m_techniques;
 		mvVertexLayout           m_layout;
 

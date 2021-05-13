@@ -19,8 +19,5 @@ float CalculateShadowDepth(const in float4 shadowPos)
 
 float Shadow(const in float4 shadowPos)
 {
-    //return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, length(shadowPos.xyz));
-    //return smap.SampleCmpLevelZero(ssam, normalize(shadowPos.xyz), length(shadowPos.xyz) / 100.0f);
     return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, CalculateShadowDepth(shadowPos));
-    //return smap.SampleCmpLevelZero(ssam, shadowPos.xyz, length(shadowPos));
 }

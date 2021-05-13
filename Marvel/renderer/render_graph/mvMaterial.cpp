@@ -9,11 +9,6 @@ namespace Marvel {
 
 	mvMaterial::mvMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path)
 	{
-
-		std::shared_ptr<mvPixelConstantBuffer> buf;
-		//std::unique_ptr<mvBuffer>              bufferRaw;
-
-		bool hasAlpha = false;
 		
 		aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 		material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
@@ -45,11 +40,16 @@ namespace Marvel {
 				m_materialBuffer.useTextureMap = true;
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 				step.addBindable(texture);
-				hasAlpha = texture->hasAlpha();
+				m_materialBuffer.hasAlpha = texture->hasAlpha();
+			}
+			else
+			{
+				m_materialBuffer.useTextureMap = false;
+				m_materialBuffer.hasAlpha = false;
 			}
 				
 
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, hasAlpha));
+			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, m_materialBuffer.hasAlpha));
 
 			// specular
 			if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
@@ -58,6 +58,10 @@ namespace Marvel {
 				step.addBindable(texture);
 				//hasGlossAlpha = texture->hasAlpha();
 				m_materialBuffer.useSpecularMap = true;
+			}
+			else
+			{
+				m_materialBuffer.useSpecularMap = false;
 			}
 
 			// normals
@@ -68,8 +72,10 @@ namespace Marvel {
 				m_materialBuffer.useNormalMap = true;
 				
 			}
-
-			buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer);
+			else
+			{
+				m_materialBuffer.useNormalMap = false;
+			}
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
@@ -78,10 +84,11 @@ namespace Marvel {
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
-			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, true));
+			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, m_materialBuffer.hasAlpha));
+			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
 			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 
-			step.addBindable(buf);
+			step.addBindable(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
 
 			phong.addStep(step);
 			m_techniques.push_back(phong);
@@ -92,9 +99,26 @@ namespace Marvel {
 			mvStep step("shadow");
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+			if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
+			{
+				aiString texFileName;
+				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				{
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+					step.addBindable(texture);
+					step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
+					step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+				}
+
+			}
+			else
+			{
+				step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+			}
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 			map.addStep(step);
 			m_techniques.push_back(map);

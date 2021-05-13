@@ -13,8 +13,6 @@ namespace Marvel {
 		UINT size = 1000;
 		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, 3);
 
-		addBindable(mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl"));
-		addBindable(mvBindableRegistry::GetBindable("null_ps"));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
 		addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));
 		addBindable(std::make_shared<mvViewport>(graphics, size, size));
@@ -41,7 +39,6 @@ namespace Marvel {
 
 	void mvShadowMappingPass::execute(mvGraphics& graphics) const
 	{
-
 		graphics.setProjection(glm::perspectiveLH(PI / 2.0f, 1.0f, 0.5f, 100.0f));
 		for (size_t i = 0; i < 6; i++)
 		{
@@ -57,7 +54,6 @@ namespace Marvel {
 			d->clear(graphics);
 
 			const_cast<mvShadowMappingPass*>(this)->m_depthStencil = std::move(d);
-
 			m_depthStencil->bindAsBuffer(graphics);
 
 			for (auto& bind : m_bindables)
@@ -66,7 +62,6 @@ namespace Marvel {
 			for (const auto& j : m_jobs)
 				j.execute(graphics);
 		}
-
 	}
 
 	void mvShadowMappingPass::bindShadowCamera(const mvCamera& cam)

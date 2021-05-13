@@ -20,6 +20,7 @@ struct Material
     
     bool useSpecularMap;
     bool useGlossAlpha;
+    bool hasAlpha;
     //-------------------------- ( 16 bytes )
     //-------------------------- ( 4 * 16 = 64 bytes )
 };
@@ -37,18 +38,19 @@ Texture2D NormalTexture   : register(t2);
 // samplers
 SamplerState Sampler : register(s0);
 
-float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
+float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, 
+float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
-    float3 specularReflected;
+    float3 specularReflected = { 0.0f, 0.0f, 0.0f };
     float3 specularReflectedColor = mat.specularColor;
-    
-    if (mat.useTextureMap)
+    float3 materialColor = mat.materialColor;
+
+    if(mat.hasAlpha)
     {
-        
         // sample diffuse texture
         const float4 dtex = ColorTexture.Sample(Sampler, tc);
-        
+            
         // bail if highly translucent
         clip(dtex.a < 0.1f ? -1 : 1);
         
@@ -57,7 +59,10 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         {
             viewNormal = -viewNormal;
         }
+        
+        materialColor = dtex.rgb;
     }
+
     
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
@@ -127,15 +132,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     }
 
 	// final color
-    float3 litColor;
-    if (mat.useTextureMap)
-    {
-        litColor = saturate((diffuse + ambient) * ColorTexture.Sample(Sampler, tc).rgb + specularReflected);
-    }
-    else
-    {
-        litColor = saturate((diffuse + ambient) * mat.materialColor + specularReflected);
-    }
-    
+    float3 litColor = saturate((diffuse + ambient) * materialColor + specularReflected);   
     return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), FogStart, FogRange, FogColor, litColor), 1.0f);
+
 }

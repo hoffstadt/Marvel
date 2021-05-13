@@ -111,10 +111,13 @@ namespace Marvel {
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_PS.hlsl"));
+			//step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
+			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
+			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));
 
 
 			technique.addStep(step);
@@ -125,6 +128,7 @@ namespace Marvel {
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Shadow_VS.hlsl");
+			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));

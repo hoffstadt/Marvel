@@ -17,7 +17,6 @@ namespace Marvel {
 		
 		addBindable(std::make_shared<mvShadowSampler>(graphics));
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
-		addBindable(std::make_shared<mvRasterizer>(graphics, false));
 
 		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
 		addBindableResource<mvBindable>("map");

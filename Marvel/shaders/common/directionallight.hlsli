@@ -14,7 +14,7 @@ cbuffer mvFogCBuf : register(b3)
     float3 FogColor;
 };
 
-float3 Fog(const in float dist, uniform float fogstart, uniform float fogrange, const in float3 fogcolor, const in float3 litcolor)
+float3 Fog(const in float dist, uniform float fogstart, uniform float fogrange, uniform float3 fogcolor, const in float3 litcolor)
 {
     float s = saturate((dist - fogstart) / fogrange);
     return litcolor + s*(fogcolor - litcolor);
