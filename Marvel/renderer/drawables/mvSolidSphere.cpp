@@ -107,10 +107,10 @@ namespace Marvel {
 			step.addBindable(buf);
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Phong_VS.hlsl");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_VS.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Phong_PS.hlsl"));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 		}

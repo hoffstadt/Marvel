@@ -14,117 +14,97 @@ namespace Marvel {
 		std::unique_ptr<mvBuffer>              bufferRaw;
 
 		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-		auto& root = layout.getRoot();
+		auto& rootStruct = layout.getRoot();
+		rootStruct->add(Float3, std::string("materialColor"));
+		rootStruct->add(Float3, std::string("specularColor"));
+		rootStruct->add(Float, std::string("specularWeight"));
+		rootStruct->add(Float, std::string("specularGloss"));
+		rootStruct->add(Float, std::string("normalMapWeight"));
+		rootStruct->add(Bool, std::string("useTextureMap"));
+		rootStruct->add(Bool, std::string("useNormalMap"));
+		rootStruct->add(Bool, std::string("useSpecularMap"));
+		rootStruct->add(Bool, std::string("useGlossAlpha"));
+		rootStruct->finalize(0);
+
+		bool hasAlpha = false;
+
+		bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+
+		bufferRaw->getElement("useTextureMap").setIfExists(false);
+		bufferRaw->getElement("useNormalMap").setIfExists(false);
+		bufferRaw->getElement("useSpecularMap").setIfExists(false);
+		bufferRaw->getElement("useGlossAlpha").setIfExists(false);
+
+		bufferRaw->getElement("normalMapWeight").setIfExists(1.0f);
+		bufferRaw->getElement("specularWeight").setIfExists(1.0f);
+		
+
+		aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
+		material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+		bufferRaw->getElement("materialColor") = reinterpret_cast<glm::vec3&>(diffuseColor);
+
+		aiColor3D specularColor = { 0.18f,0.18f,0.18f };
+		//aiColor3D specularColor = { 0.0f,0.0f,0.0f };
+		material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+		bufferRaw->getElement("specularColor") = reinterpret_cast<glm::vec3&>(specularColor);
+
+		float gloss = 8.0f;
+		material.Get(AI_MATKEY_SHININESS, gloss);
+		bufferRaw->getElement("specularGloss") = gloss;
 
 		{
 			mvTechnique phong;
 			mvStep step("lambertian");
-			std::string shaderCode = "Phong";
 			aiString texFileName;
 
 			// create vertex layout
 			m_layout.append(ElementType::Position3D);
 			m_layout.append(ElementType::Normal);
-
-			bool hasTexture = false;
-			bool hasGlossAlpha = false;
-			bool hasAlpha = false;
+			m_layout.append(ElementType::Tangent);
+			m_layout.append(ElementType::Bitangent);
+			m_layout.append(ElementType::Texture2D);
 
 			// diffuse
 			if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 			{
-				hasTexture = true;
-				shaderCode += "Dif";
-				m_layout.append(ElementType::Texture2D);
+				bufferRaw->getElement("useTextureMap").setIfExists(true);
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 				step.addBindable(texture);
-
-				if (texture->hasAlpha())
-				{
-					hasAlpha = true;
-					shaderCode += "Msk";
-				}
+				hasAlpha = texture->hasAlpha();
 			}
-			else
-				root->add(Float3, std::string("materialColor"));
+				
+
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, hasAlpha));
 
 			// specular
 			if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 			{
-				hasTexture = true;
-				shaderCode += "Spc";
-				m_layout.append(ElementType::Texture2D);
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
 				step.addBindable(texture);
 				//hasGlossAlpha = texture->hasAlpha();
-				hasGlossAlpha = false;
-
-				root->add(Bool, std::string("useGlossAlpha"));
-				root->add(Bool, std::string("useSpecularMap"));
-
+				bufferRaw->getElement("useSpecularMap").setIfExists(true);
 			}
-			root->add(Float3, std::string("specularColor"));
-			root->add(Float, std::string("specularWeight"));
-			root->add(Float, std::string("specularGloss"));
 
 			// normals
 			if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 			{
-				hasTexture = true;
-				shaderCode += "Nrm";
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
 				step.addBindable(texture);
-				m_layout.append(ElementType::Texture2D);
-				m_layout.append(ElementType::Tangent);
-				m_layout.append(ElementType::Bitangent);
-				root->add(Bool, std::string("useNormalMap"));
-				root->add(Float, std::string("normalMapWeight"));
+				bufferRaw->getElement("useNormalMap").setIfExists(true);
+				
 			}
 
-			root->finalize(0);
-
-			bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
-			bufferRaw->getElement("useGlossAlpha").setIfExists(hasGlossAlpha);
-			bufferRaw->getElement("useSpecularMap").setIfExists(true);
-			bufferRaw->getElement("specularWeight").setIfExists(1.0f);
-			bufferRaw->getElement("useNormalMap").setIfExists(true);
-			bufferRaw->getElement("normalMapWeight").setIfExists(1.0f);
-
-			if (auto r = bufferRaw->getElement("materialColor"); r.exists())
-			{
-				aiColor3D color = { 0.45f,0.45f,0.85f };
-				material.Get(AI_MATKEY_COLOR_DIFFUSE, color);
-				r = reinterpret_cast<glm::vec3&>(color);
-			}
-
-			if (auto r = bufferRaw->getElement("specularColor"); r.exists())
-			{
-				aiColor3D color = { 0.18f,0.18f,0.18f };
-				material.Get(AI_MATKEY_COLOR_SPECULAR, color);
-				r = reinterpret_cast<glm::vec3&>(color);
-			}
-
-			if (auto r = bufferRaw->getElement("specularGloss"); r.exists())
-			{
-				float gloss = 8.0f;
-				material.Get(AI_MATKEY_SHININESS, gloss);
-				r = gloss;
-			}
-
-			buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+			buf = std::make_shared<mvPixelConstantBuffer>(graphics, *rootStruct.get(), 1, bufferRaw.get());
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + shaderCode + "_VS.hlsl");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
 
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + shaderCode + "_PS.hlsl"));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
 			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
 			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, true));
-
-			if (hasTexture)
-				step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 
 			step.addBindable(buf);
 

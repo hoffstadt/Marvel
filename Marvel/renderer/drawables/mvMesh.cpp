@@ -37,7 +37,7 @@ namespace Marvel {
 		const Marvel::mvVertexLayout& vertexLayout = mat.getLayout();
 		
 		std::vector<float> verticies;
-		verticies.reserve(mesh.mNumVertices * 6);
+		verticies.reserve(mesh.mNumVertices * 14);
 		std::vector<unsigned int> indicies;
 		indicies.reserve(mesh.mNumFaces * 3);
 
@@ -46,39 +46,24 @@ namespace Marvel {
 		// a more robust system is needed.
 		for (size_t i = 0; i < mesh.mNumVertices; i++)
 		{
-			if (vertexLayout.hasElement(ElementType::Position3D))
-			{
-				verticies.push_back(mesh.mVertices[i].x * scale);
-				verticies.push_back(mesh.mVertices[i].y * scale);
-				verticies.push_back(mesh.mVertices[i].z * scale);
-			}
+			verticies.push_back(mesh.mVertices[i].x * scale);
+			verticies.push_back(mesh.mVertices[i].y * scale);
+			verticies.push_back(mesh.mVertices[i].z * scale);
 
-			if (vertexLayout.hasElement(ElementType::Normal))
-			{
-				verticies.push_back(mesh.mNormals[i].x);
-				verticies.push_back(mesh.mNormals[i].y);
-				verticies.push_back(mesh.mNormals[i].z);
-			}
+			verticies.push_back(mesh.mNormals[i].x);
+			verticies.push_back(mesh.mNormals[i].y);
+			verticies.push_back(mesh.mNormals[i].z);
 
-			if (vertexLayout.hasElement(ElementType::Texture2D))
-			{
-				verticies.push_back(mesh.mTextureCoords[0][i].x);
-				verticies.push_back(mesh.mTextureCoords[0][i].y);
-			}
+			verticies.push_back(mesh.mTangents[i].x);
+			verticies.push_back(mesh.mTangents[i].y);
+			verticies.push_back(mesh.mTangents[i].z);
 
-			if (vertexLayout.hasElement(ElementType::Tangent))
-			{
-				verticies.push_back(mesh.mTangents[i].x);
-				verticies.push_back(mesh.mTangents[i].y);
-				verticies.push_back(mesh.mTangents[i].z);
-			}
+			verticies.push_back(mesh.mBitangents[i].x);
+			verticies.push_back(mesh.mBitangents[i].y);
+			verticies.push_back(mesh.mBitangents[i].z);
 
-			if (vertexLayout.hasElement(ElementType::Bitangent))
-			{
-				verticies.push_back(mesh.mBitangents[i].x);
-				verticies.push_back(mesh.mBitangents[i].y);
-				verticies.push_back(mesh.mBitangents[i].z);
-			}
+			verticies.push_back(mesh.mTextureCoords[0][i].x);
+			verticies.push_back(mesh.mTextureCoords[0][i].y);
 		}
 
 		for (int i = 0; i < mesh.mNumFaces; i++)
