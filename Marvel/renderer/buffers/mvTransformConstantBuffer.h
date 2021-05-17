@@ -34,7 +34,7 @@ namespace Marvel {
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
-		Transforms m_transforms;
+		Transforms m_transforms = {};
 
 	};
 
