@@ -54,8 +54,6 @@ int main()
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 10.0f);
-    //mvCube cube2(graphics, "testcube2", { 1.0f, 0.0f, 0.5f });
-    //cube2.setPosition(0.0f, 5.0f, 5.0f);
 
     // timer
     Marvel::mvTimer timer;
@@ -79,7 +77,6 @@ int main()
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
             model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
-            //cube2.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
@@ -103,17 +100,14 @@ int main()
         dlightManager.bind(graphics, camera.getMatrix());
 
         cube.submit(*graph);
-        //cube2.submit(*graph);
         model.submit(*graph);
         lightManager.submit(*graph);
-        //lightcamera->submit(*graph);
+        lightcamera->submit(*graph);
         
         graph->execute(graphics);
 
-
         static mvModelProbe probe(graphics, "Model Probe");
 
-        
         probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         dlightManager.show_imgui_windows();
