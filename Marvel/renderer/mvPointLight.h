@@ -40,6 +40,33 @@ namespace Marvel {
 	class mvPointLightManager
 	{
 
+		struct PointLightInfo
+		{
+			int lightCount = 3;
+			glm::vec3 ambient = {0.05f, 0.05f, 0.05f};
+			//-------------------------- ( 16 bytes )
+
+			glm::vec3 viewLightPos[3] = { glm::vec3{ 0.0f, 0.0f, 0.0f}, glm::vec3{ 0.0f, 0.0f, 0.0f} , glm::vec3{ 0.0f, 0.0f, 0.0f } };
+			//-------------------------- ( 64 bytes )
+
+			glm::vec3 diffuseColor[3] = { glm::vec3{ 1.0f, 1.0f, 1.0f}, glm::vec3{ 1.0f, 1.0f, 1.0f} , glm::vec3{ 1.0f, 1.0f, 1.0f } };
+			//-------------------------- ( 64 bytes )
+
+			alignas(16) float diffuseIntensity[3] = {1.0f, 1.0f, 1.0f};
+			//-------------------------- ( 64 bytes )
+
+			alignas(16) float attConst[3] = { 1.0f, 1.0f, 1.0f};
+			//-------------------------- ( 64 bytes )
+
+			alignas(16) float attLin[3] = {0.045f, 0.045f, 0.045f};
+			//-------------------------- ( 64 bytes )
+
+			alignas(16) float attQuad[3] = {0.0075f, 0.0075f, 0.0075f};
+			//-------------------------- ( 64 bytes )
+
+			//-------------------------- ( 400 bytes )
+		};
+
 	public:
 
 		static constexpr int MaxLights = 3;
@@ -59,8 +86,8 @@ namespace Marvel {
 	private:
 
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
-		std::unique_ptr<mvDynamicBuffer>       m_bufferData;
 		std::vector<mvPointLight>              m_lights;
+		PointLightInfo                         m_info = {};
 
 	};
 

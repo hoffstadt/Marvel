@@ -28,11 +28,9 @@ namespace Marvel {
 		struct mvMaterialBuffer
 		{
 			alignas(16) glm::vec3 materialColor = {0.45f, 0.45f, 0.85f};
-			//float padding1 = 0.0f;
 			//-------------------------- ( 16 bytes )
 
 			alignas(16) glm::vec3 specularColor = {0.18f, 0.18f, 0.18f};
-			//float specularWeight = 1.0f;
 			//-------------------------- ( 16 bytes )
 
 			float specularGloss = 8.0f;
