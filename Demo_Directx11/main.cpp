@@ -14,36 +14,64 @@ template <typename T>
 using mvComPtr = Microsoft::WRL::ComPtr<T>;
 
 //-----------------------------------------------------------------------------
+// Constant Buffer Struct
+//-----------------------------------------------------------------------------
+struct ConstantBuffer
+{
+    float x_offset = 0.0f;
+    float y_offset = 0.0f;
+    float padding[2] = { 0.0f, 0.0f };
+};
+
+//-----------------------------------------------------------------------------
 // Variables
 //-----------------------------------------------------------------------------
-static HWND                             g_hwnd;
-static mvComPtr<ID3D11Device>           g_device;
-static mvComPtr<ID3D11DeviceContext>    g_context;
-static mvComPtr<IDXGISwapChain>         g_swapChain;
-static mvComPtr<ID3D11Texture2D>        g_frameBuffer;
-static mvComPtr<ID3D11RenderTargetView> g_frameBufferView;
-static mvComPtr<ID3DBlob>               g_vsBlob;
-static mvComPtr<ID3D11VertexShader>     g_vertexShader;
-static mvComPtr<ID3D11PixelShader>      g_pixelShader;
-static mvComPtr<ID3D11InputLayout>      g_inputLayout;
-static mvComPtr<ID3D11Buffer>           g_vertexBuffer;
-static mvComPtr<ID3D11Buffer>           g_indexBuffer;
-static UINT                             g_numVerts;
-static UINT                             g_stride;
-static UINT                             g_offset;
-static const int                        g_width = 1024;
-static const int                        g_height = 768;
+static HWND                               g_hwnd;
+static mvComPtr<ID3D11Device>             g_device;
+static mvComPtr<ID3D11DeviceContext>      g_context;
+static mvComPtr<IDXGISwapChain>           g_swapChain;
+static mvComPtr<ID3D11Texture2D>          g_frameBuffer;
+static mvComPtr<ID3D11RenderTargetView>   g_frameBufferView;
+static mvComPtr<ID3DBlob>                 g_vsBlob;
+static mvComPtr<ID3D11VertexShader>       g_vertexShader;
+static mvComPtr<ID3D11PixelShader>        g_pixelShader;
+static mvComPtr<ID3D11InputLayout>        g_inputLayout;
+static mvComPtr<ID3D11Buffer>             g_vertexBuffer;
+static mvComPtr<ID3D11Buffer>             g_indexBuffer;
+static mvComPtr<ID3D11ShaderResourceView> g_textureView;
+static mvComPtr<ID3D11SamplerState>       g_sampler;
+static mvComPtr<ID3D11Buffer>             g_constantBuffer;
+static UINT                               g_numVerts;
+static UINT                               g_stride;
+static UINT                               g_offset;
+static const int                          g_width = 1024;
+static const int                          g_height = 768;
+static ConstantBuffer                     g_vertexOffset = { 0.0f, 0.0f };
 
 //-----------------------------------------------------------------------------
 // Vertex Data and Index Data
 //-----------------------------------------------------------------------------
-static const float g_vertexData[] = { // x, y, r, g, b, a
-     0.0f,  0.5f, 1.f, 1.f, 1.f, 1.f,
-     0.5f, -0.5f, 1.f, 1.f, 1.f, 1.f,
-    -0.5f, -0.5f, 1.f, 1.f, 1.f, 1.f
+static const float g_vertexData[] = { // x, y, u, v
+     -0.5f,  0.5f, 0.0f, 0.0f,
+     -0.5f, -0.5f, 0.0f, 1.0f,
+      0.5f, -0.5f, 1.0f, 1.0f,
+      0.5f,  0.5f, 1.0f, 0.0f,
 };
 
-static const unsigned short g_indices[3] = { 0, 1, 2 };
+static const unsigned short g_indices[] = { 
+    2, 1, 0,
+    3, 2, 0
+};
+
+//-----------------------------------------------------------------------------
+// Image Data
+//-----------------------------------------------------------------------------
+unsigned char image[] = {
+    255,   0,   0, 255,
+      0, 255,   0, 255,
+      0,   0, 255, 255,
+    255,   0, 255, 255
+};
 
 //-----------------------------------------------------------------------------
 // Windows Procedure
@@ -197,7 +225,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {
             { "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "Color", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            { "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
 
         HRESULT hResult = g_device->CreateInputLayout(inputElementDesc, ARRAYSIZE(inputElementDesc), 
@@ -209,7 +237,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
     // Create Vertex Buffer
     //-----------------------------------------------------------------------------
     {
-        g_stride = 6 * sizeof(float);
+        g_stride = 4 * sizeof(float);
         g_numVerts = sizeof(g_vertexData) / g_stride;
         g_offset = 0;
 
@@ -232,7 +260,7 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
         // Fill in a buffer description.
         D3D11_BUFFER_DESC bufferDesc = {};
         bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        bufferDesc.ByteWidth = UINT(sizeof(unsigned short) * 3);
+        bufferDesc.ByteWidth = UINT(sizeof(unsigned short) * 6);
         bufferDesc.StructureByteStride = sizeof(unsigned short);
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         bufferDesc.CPUAccessFlags = 0u;
@@ -244,6 +272,72 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
 
         // Create the buffer with the device.
         g_device->CreateBuffer(&bufferDesc, &InitData, g_indexBuffer.GetAddressOf());
+    }
+
+    //-----------------------------------------------------------------------------
+    // Create Sampler
+    //-----------------------------------------------------------------------------
+    {
+        D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+
+
+        g_device->CreateSamplerState(&samplerDesc, g_sampler.GetAddressOf());
+    }
+
+    //-----------------------------------------------------------------------------
+    // Create Texture
+    //-----------------------------------------------------------------------------
+    {
+        
+        mvComPtr<ID3D11Texture2D> texture;
+
+        D3D11_TEXTURE2D_DESC textureDesc = {};
+        textureDesc.Width = 2;
+        textureDesc.Height = 2;
+        textureDesc.MipLevels = 0;
+        textureDesc.ArraySize = 1;
+        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.SampleDesc.Quality = 0;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+        textureDesc.CPUAccessFlags = 0;
+        textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+
+        g_device->CreateTexture2D(&textureDesc, nullptr, texture.GetAddressOf());
+
+        g_context->UpdateSubresource(texture.Get(), 0u, nullptr, image, 8, 0u);
+
+        // create the resource view on the texture
+        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = textureDesc.Format;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = 1;
+
+
+        g_device->CreateShaderResourceView(texture.Get(), &srvDesc, g_textureView.GetAddressOf());
+
+        g_context->GenerateMips(g_textureView.Get());
+    }
+
+    //-----------------------------------------------------------------------------
+    // Create Constant Buffer
+    //-----------------------------------------------------------------------------
+    {
+        D3D11_BUFFER_DESC cbd;
+        cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        cbd.Usage = D3D11_USAGE_DYNAMIC;
+        cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        cbd.MiscFlags = 0u;
+        cbd.ByteWidth = sizeof(ConstantBuffer);
+        cbd.StructureByteStride = 0u;
+
+        D3D11_SUBRESOURCE_DATA csd = {};
+        csd.pSysMem = &g_vertexOffset;
+        g_device->CreateBuffer(&cbd, &csd, g_constantBuffer.GetAddressOf());
+
     }
 
     //-----------------------------------------------------------------------------
@@ -262,6 +356,12 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
             DispatchMessageW(&msg);
         }
 
+        // update constant buffer (every frame)
+        D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+        g_context->Map(g_constantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource);
+        memcpy(mappedSubresource.pData, &g_vertexOffset, sizeof(ConstantBuffer));
+        g_context->Unmap(g_constantBuffer.Get(), 0u);
+
         // clear render target
         float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         g_context->ClearRenderTargetView(g_frameBufferView.Get(), backgroundColor);
@@ -274,6 +374,9 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
 
         // bind frame buffer
         g_context->OMSetRenderTargets(1, g_frameBufferView.GetAddressOf(), nullptr);
+
+        // bind constant buffer
+        g_context->VSSetConstantBuffers(0u, 1u, g_constantBuffer.GetAddressOf());
 
         // bind primitive topology
         g_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -289,8 +392,12 @@ int main(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, 
         g_context->IASetIndexBuffer(g_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
         g_context->IASetVertexBuffers(0, 1, g_vertexBuffer.GetAddressOf(), &g_stride, &g_offset);
 
+        // bind sampler and texture
+        g_context->PSSetSamplers(0u, 1, g_sampler.GetAddressOf());
+        g_context->PSSetShaderResources(0u, 1, g_textureView.GetAddressOf());
+
         // draw
-        g_context->DrawIndexed(3, 0u, 0u);
+        g_context->DrawIndexed(6, 0u, 0u);
 
         // swap front and back buffers
         g_swapChain->Present(1, 0);
@@ -307,6 +414,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_ESCAPE)
             DestroyWindow(hwnd);
+        if (wparam == VK_UP)
+            g_vertexOffset.y_offset += 0.01f;
+        if (wparam == VK_DOWN)
+            g_vertexOffset.y_offset -= 0.01f;
+        if (wparam == VK_LEFT)
+            g_vertexOffset.x_offset -= 0.01f;
+        if (wparam == VK_RIGHT)
+            g_vertexOffset.x_offset += 0.01f;
         break;
     }
     case WM_DESTROY:
