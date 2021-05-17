@@ -27,6 +27,11 @@ namespace Marvel {
 		m_bindables.push_back(std::move(bindable));
 	}
 
+	void mvPass::addBuffer(std::shared_ptr<mvBuffer> buffer)
+	{
+		m_buffers.push_back(std::move(buffer));
+	}
+
 	const std::string& mvPass::getName() const
 	{
 		return m_name;

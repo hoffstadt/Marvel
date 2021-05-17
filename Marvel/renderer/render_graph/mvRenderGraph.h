@@ -66,7 +66,7 @@ namespace Marvel {
 
 		std::vector <std::unique_ptr<mvPass>>  m_passes;
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
-		std::unique_ptr<mvBuffer>              m_bufferData;
+		std::unique_ptr<mvDynamicBuffer>       m_bufferData;
 
 		std::vector<std::unique_ptr<mvPassResource>> m_resources;
 		std::vector<std::unique_ptr<mvPassProduct>> m_products;

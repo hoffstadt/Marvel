@@ -13,22 +13,29 @@ namespace Marvel {
     class mvDrawable;
 
     //-----------------------------------------------------------------------------
-    // mvBindable
+    // mvBuffer
     //-----------------------------------------------------------------------------
-    class mvBindable
+    class mvBuffer
     {
+
+        // to set parent
+        friend class mvStep;
 
     public:
 
-        virtual ~mvBindable() = default;
+        virtual ~mvBuffer() = default;
 
         virtual void bind(mvGraphics& graphics) = 0;
 
         virtual std::string getUniqueIdentifier() const
         {
-            //assert(false);
+            assert(false);
             return "";
         }
+
+    protected:
+
+        const mvDrawable* m_parent;
 
     };
 

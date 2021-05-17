@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include "mvMath.h"
 #include "mvCommonBindables.h"
+#include "mvCommonBuffers.h"
 #include "mvTechnique.h"
 
 namespace Marvel {
@@ -45,10 +46,11 @@ namespace Marvel {
 		
 	protected:
 
-		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
-		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
-		std::shared_ptr<mvTopology>     m_topology;
-		std::vector<mvTechnique>        m_techniques;
+		std::shared_ptr<mvIndexBuffer>             m_indexBuffer;
+		std::shared_ptr<mvVertexBuffer>            m_vertexBuffer;
+		//std::shared_ptr<mvTransformConstantBuffer> m_transforms;
+		std::shared_ptr<mvTopology>                m_topology;
+		std::vector<mvTechnique>                   m_techniques;
 
 	};
 

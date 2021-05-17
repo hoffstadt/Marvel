@@ -132,14 +132,14 @@ namespace Marvel {
 	};
 
 	//-----------------------------------------------------------------------------
-	// mvBuffer
+	// mvDynamicBuffer
 	//-----------------------------------------------------------------------------
-	class mvBuffer
+	class mvDynamicBuffer
 	{
 
 	public:
 
-		mvBuffer(mvBufferLayout&& layout);
+		mvDynamicBuffer(mvBufferLayout&& layout);
 
 		mvBufferElement getElement(const std::string& key);
 

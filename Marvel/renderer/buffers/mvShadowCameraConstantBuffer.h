@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "mvBindable.h"
+#include "mvBuffer.h"
 #include "mvConstantBuffer.h"
 #include "mvMath.h"
 
@@ -11,23 +11,26 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	class mvDrawable;
 	class mvGraphics;
+	class mvCamera;
 
 	//-----------------------------------------------------------------------------
 	// mvTransformUniform
 	//-----------------------------------------------------------------------------
-	class mvSkyBoxTransformConstantBuffer : public mvBindable
+	class mvShadowCameraConstantBuffer : public mvBuffer
 	{
 
 	public:
 
-		mvSkyBoxTransformConstantBuffer(mvGraphics& graphics);
+		mvShadowCameraConstantBuffer(mvGraphics& graphics);
 
 		void bind(mvGraphics& graphics) override;
+		void setCamera(const mvCamera* camera);
 
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
-		std::unique_ptr<mvBuffer>               m_bufferRaw;
+		std::unique_ptr<mvDynamicBuffer>        m_bufferRaw;
+		const mvCamera*                         m_camera = nullptr;
 
 	};
 

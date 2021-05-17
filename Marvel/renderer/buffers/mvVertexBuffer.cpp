@@ -1,6 +1,5 @@
 #include "mvVertexBuffer.h"
-#include "mvBindableRegistry.h"
-
+#include "mvBufferRegistry.h"
 
 namespace Marvel
 {
@@ -8,11 +7,11 @@ namespace Marvel
 	std::shared_ptr<mvVertexBuffer> mvVertexBuffer::Request(mvGraphics& graphics, const std::string& name, const std::vector<float>& vbuf, const mvVertexLayout& layout, bool dynamic)
 	{
 		std::string ID = mvVertexBuffer::GenerateUniqueIdentifier(name, layout, dynamic);
-		if (auto bindable = mvBindableRegistry::GetBindable(ID))
-			return std::dynamic_pointer_cast<mvVertexBuffer>(bindable);
-		auto bindable = std::make_shared<mvVertexBuffer>(graphics, name, vbuf, layout, dynamic);
-		mvBindableRegistry::AddBindable(ID, bindable);
-		return bindable;
+		if (auto buffer = mvBufferRegistry::GetBuffer(ID))
+			return std::dynamic_pointer_cast<mvVertexBuffer>(buffer);
+		auto buffer = std::make_shared<mvVertexBuffer>(graphics, name, vbuf, layout, dynamic);
+		mvBufferRegistry::AddBuffer(ID, buffer);
+		return buffer;
 	}
 
 	std::string mvVertexBuffer::GenerateUniqueIdentifier(const std::string& name, const mvVertexLayout& layout, bool dynamic)

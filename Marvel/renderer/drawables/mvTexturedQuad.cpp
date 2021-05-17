@@ -28,7 +28,7 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
 			0, 1, 2,
 				0, 3, 1
 		}, false);
@@ -40,9 +40,9 @@ namespace Marvel {
 		step.addBindable(vshader);
 		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongDif_PS.hlsl"));
-		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 		step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 		step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path, 0u));
+		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 		mvTechnique technique;
 		technique.addStep(step);

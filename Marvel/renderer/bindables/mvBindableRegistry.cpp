@@ -10,7 +10,6 @@ namespace Marvel {
 	{
 		// pixel shaders
 		m_bindables.try_emplace("null_ps", std::make_shared<mvNullPixelShader>(graphics));
-		m_bindables.try_emplace("transCBuf", std::make_shared<mvTransformConstantBuffer>(graphics));
 	}
 
 	std::shared_ptr<mvBindable> mvBindableRegistry::GetBindable(const std::string& ID)

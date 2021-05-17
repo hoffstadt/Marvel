@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "mvBindable.h"
+#include "mvBuffer.h"
 #include "mvConstantBuffer.h"
 #include "mvMath.h"
 
@@ -15,7 +15,7 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// mvTransformUniform
 	//-----------------------------------------------------------------------------
-	class mvTransformConstantBuffer : public mvBindable
+	class mvTransformConstantBuffer : public mvBuffer
 	{
 
 	public:
@@ -27,7 +27,7 @@ namespace Marvel {
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
-		std::unique_ptr<mvBuffer>               m_bufferRaw;
+		std::unique_ptr<mvDynamicBuffer>        m_bufferRaw;
 
 	};
 

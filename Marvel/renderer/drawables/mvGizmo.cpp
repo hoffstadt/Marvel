@@ -37,7 +37,7 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
 			0, 1,
 				2, 3,
 				4, 5
@@ -51,7 +51,7 @@ namespace Marvel {
 		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Gizmo_ps.hlsl"));
 		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-		step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 		mvTechnique technique;
 		technique.addStep(std::move(step));

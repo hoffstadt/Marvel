@@ -12,7 +12,7 @@ namespace Marvel {
 		root->add(Matrix, std::string("viewProj"));
 		root->finalize(0);
 
-		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 		m_bufferRaw->getElement("viewProj") = glm::identity<glm::mat4>();
 
 		m_buf = std::make_unique<mvVertexConstantBuffer>(graphics, *root.get(), 0, m_bufferRaw.get());

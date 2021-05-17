@@ -1,6 +1,7 @@
 #include "mvSkyboxPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
+#include "mvCommonBuffers.h"
 
 namespace Marvel {
 
@@ -16,7 +17,7 @@ namespace Marvel {
 		auto vshader = std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_VS.hlsl").c_str());
 		addBindable(vshader);
 		addBindable(std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-		addBindable(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
+		addBuffer(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
 
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
@@ -42,7 +43,7 @@ namespace Marvel {
 		}, vl);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
 			0, 2, 1, 2, 3, 1,
 				1, 3, 5, 3, 7, 5,
 				2, 6, 3, 3, 6, 7,
@@ -63,6 +64,9 @@ namespace Marvel {
 
 		m_vertexBuffer->bind(graphics);
 		m_indexBuffer->bind(graphics);
+
+		for (auto& buffer : m_buffers)
+			buffer->bind(graphics);
 
 		//m_passes[1].execute(graphics);
 		for (auto& bind : m_bindables)

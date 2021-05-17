@@ -77,10 +77,10 @@ namespace Marvel {
 
 
 		// create vertex buffer
-		m_vertexBuffer = mvBindableRegistry::Request<mvVertexBuffer>(graphics, name, verticies, vertexLayout, false);
+		m_vertexBuffer = mvBufferRegistry::Request<mvVertexBuffer>(graphics, name, verticies, vertexLayout, false);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
 
 		auto techniques = mat.getTechniques();
 

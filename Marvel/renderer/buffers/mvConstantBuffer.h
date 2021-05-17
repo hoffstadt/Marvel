@@ -3,18 +3,18 @@
 #include <d3dcompiler.h>
 #include <assert.h>
 #include "mvComPtr.h"
-#include "mvBindable.h"
-#include "mvGraphics.h"
 #include "mvBuffer.h"
+#include "mvGraphics.h"
+#include "mvDynamicBuffer.h"
 
 namespace Marvel {
 
-    class mvConstantBuffer : public mvBindable
+    class mvConstantBuffer : public mvBuffer
     {
 
     public:
 
-        mvConstantBuffer(mvGraphics& graphics, const mvBufferLayoutEntry& layoutRoot, UINT slot, const mvBuffer* buffer)
+        mvConstantBuffer(mvGraphics& graphics, const mvBufferLayoutEntry& layoutRoot, UINT slot, const mvDynamicBuffer* buffer)
             :
             m_slot(slot)
         {
@@ -70,7 +70,7 @@ namespace Marvel {
         }
 
         template<>
-        void update(mvGraphics& graphics, const mvBuffer& buffer)
+        void update(mvGraphics& graphics, const mvDynamicBuffer& buffer)
         {
             D3D11_MAPPED_SUBRESOURCE mappedSubresource;
             graphics.getContext()->Map(m_constantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource);

@@ -59,7 +59,7 @@ namespace Marvel {
 	private:
 
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
-		std::unique_ptr<mvBuffer>              m_bufferData;
+		std::unique_ptr<mvDynamicBuffer>       m_bufferData;
 		std::vector<mvPointLight>              m_lights;
 
 	};

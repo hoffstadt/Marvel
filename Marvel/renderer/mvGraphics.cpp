@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <d3d11sdklayers.h>
 #include "mvCommonBindables.h"
+#include "mvCommonBuffers.h"
 
 namespace Marvel {
 
@@ -53,6 +54,7 @@ namespace Marvel {
         m_target = std::make_shared<mvRenderTarget>(*this, m_frameBuffer.Get());
 
         mvBindableRegistry::Initialize(*this);
+        mvBufferRegistry::Initialize(*this);
 
         m_imguiManager = std::make_unique<mvImGuiManager>(hwnd, *this);
         

@@ -61,7 +61,7 @@ namespace Marvel {
 
 		root->finalize(0);
 
-		m_bufferData = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferData = std::make_unique<mvDynamicBuffer>(std::move(layout));
 		m_bufferData->getElement("viewLightPos") = ViewLightPos();
 		m_bufferData->getElement("ambient") = glm::vec3{ 0.05f, 0.05f, 0.05f };
 		m_bufferData->getElement("diffuseColor") = Diffuse();

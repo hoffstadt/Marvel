@@ -1,11 +1,11 @@
 #pragma once
 #include <memory>
-#include "mvBindable.h"
+#include "mvBuffer.h"
 #include "mvVertexLayout.h"
 
 namespace Marvel
 {
-	class mvVertexBuffer : public mvBindable
+	class mvVertexBuffer : public mvBuffer
 	{
 
 	public:

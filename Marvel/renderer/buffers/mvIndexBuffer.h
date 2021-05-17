@@ -2,12 +2,12 @@
 #include <d3d11.h>
 #include <vector>
 #include <assert.h>
-#include "mvBindable.h"
+#include "mvBuffer.h"
 #include "mvComPtr.h"
 
 namespace Marvel
 {
-	class mvIndexBuffer : public mvBindable
+	class mvIndexBuffer : public mvBuffer
 	{
 
 	public:

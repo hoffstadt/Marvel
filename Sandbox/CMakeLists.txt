@@ -19,6 +19,7 @@ target_include_directories(sandbox
 		"../Marvel/renderer"
 		"../Marvel/geometry"
 		"../Marvel/renderer/bindables"
+		"../Marvel/renderer/buffers"
 		"../Marvel/renderer/drawables"
 		"../Marvel/renderer/passes"
 		"../Marvel/renderer/render_graph"

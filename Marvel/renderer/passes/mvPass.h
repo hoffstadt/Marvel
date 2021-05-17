@@ -5,6 +5,7 @@
 #include <string>
 #include "mvJob.h"
 #include "mvBindable.h"
+#include "mvBuffer.h"
 #include "mvPassResource.h"
 #include "mvPassProduct.h"
 
@@ -38,6 +39,7 @@ namespace Marvel{
 		void               reset      ();
 		void               releaseBuffers();
 		void               addBindable(std::shared_ptr<mvBindable> bindable);
+		void               addBuffer(std::shared_ptr<mvBuffer> buffer);
 		const std::string& getName    () const;
 		bool               isLinked() const;
 
@@ -67,6 +69,7 @@ namespace Marvel{
 
 		std::vector<mvJob>                       m_jobs;
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;
+		std::vector<std::shared_ptr<mvBuffer>>   m_buffers;
 		std::string                              m_name;
 		std::shared_ptr<mvDepthStencil>          m_depthStencil;
 		std::shared_ptr<mvRenderTarget>          m_renderTarget;

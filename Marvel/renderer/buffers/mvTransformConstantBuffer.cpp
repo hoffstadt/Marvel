@@ -14,7 +14,7 @@ namespace Marvel {
 		root->add(Matrix, std::string("modelViewProject"));
 		root->finalize(0);
 
-		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 		m_bufferRaw->getElement("model") = glm::identity<glm::mat4>();
 		m_bufferRaw->getElement("modelView") = glm::identity<glm::mat4>();
 		m_bufferRaw->getElement("modelViewProject") = glm::identity<glm::mat4>();

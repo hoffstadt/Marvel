@@ -1,4 +1,4 @@
-#include "mvBuffer.h"
+#include "mvDynamicBuffer.h"
 
 namespace Marvel {
 
@@ -228,7 +228,7 @@ namespace Marvel {
 		return m_entry->exists();
 	}
 
-	mvBuffer::mvBuffer(mvBufferLayout&& layout)
+	mvDynamicBuffer::mvDynamicBuffer(mvBufferLayout&& layout)
 		:
 		m_layoutRoot(layout.getRoot()),
 		m_bytes(m_layoutRoot->getEndingOffset())
@@ -236,17 +236,17 @@ namespace Marvel {
 
 	}
 
-	mvBufferElement mvBuffer::getElement(const std::string& key)
+	mvBufferElement mvDynamicBuffer::getElement(const std::string& key)
 	{
 		return mvBufferElement(&(*m_layoutRoot).getEntry(key), m_bytes.data(), 0u);
 	}
 
-	size_t mvBuffer::getSizeInBytes() const
+	size_t mvDynamicBuffer::getSizeInBytes() const
 	{
 		return m_bytes.size();
 	}
 
-	const char* mvBuffer::getData() const
+	const char* mvDynamicBuffer::getData() const
 	{
 		return m_bytes.data();
 	}

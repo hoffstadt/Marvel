@@ -78,10 +78,10 @@ namespace Marvel {
 		}
 
 		// create vertex buffer
-		m_vertexBuffer = mvBindableRegistry::Request<mvVertexBuffer>(graphics, name, vertices, vl, false);
+		m_vertexBuffer = mvBufferRegistry::Request<mvVertexBuffer>(graphics, name, vertices, vl, false);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
 		mvTechnique technique;
 		{
@@ -95,7 +95,7 @@ namespace Marvel {
 			root->add(Float, std::string("specularGloss"));
 			root->finalize(0);
 
-			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 
 			bufferRaw->getElement("materialColor").setIfExists(color);
 			bufferRaw->getElement("specularColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
@@ -103,17 +103,15 @@ namespace Marvel {
 			bufferRaw->getElement("specularGloss").setIfExists(20.0f);
 
 			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
-
-			step.addBindable(buf);
+			step.addBuffer(buf);
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_VS.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_PS.hlsl"));
-			//step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
@@ -131,7 +129,7 @@ namespace Marvel {
 			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			technique.addStep(step);
 		}
 		addTechnique(technique);

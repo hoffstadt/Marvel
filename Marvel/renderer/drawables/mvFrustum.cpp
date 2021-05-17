@@ -17,7 +17,7 @@ namespace Marvel {
 		setVertices(graphics, name, width, height, nearZ, farZ);
 
 		// create index buffer
-		m_indexBuffer = mvBindableRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
 			0, 1,
 			1, 2,
 			2, 3,
@@ -41,13 +41,13 @@ namespace Marvel {
 			root->add(Float3, std::string("materialColor"));
 			root->finalize(0);
 
-			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 
 			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f,0.2f,0.2f });
 
 			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
 
-			step.addBindable(buf);
+			step.addBuffer(buf);
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
@@ -58,8 +58,8 @@ namespace Marvel {
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			//step.addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthReversed));
 
 			
@@ -75,13 +75,13 @@ namespace Marvel {
 			root->add(Float3, std::string("materialColor"));
 			root->finalize(0);
 
-			std::unique_ptr<mvBuffer> bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 
 			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 0.0f,1.0f,0.2f });
 
 			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
 
-			step.addBindable(buf);
+			step.addBuffer(buf);
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
@@ -92,9 +92,9 @@ namespace Marvel {
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
 			step.addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthReversed));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 			technique.addStep(std::move(step));
 		}

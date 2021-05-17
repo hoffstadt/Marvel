@@ -10,7 +10,7 @@ namespace Marvel {
 		mvPass(name)
 	{
 		m_shadowCBuf = std::make_shared<mvShadowCameraConstantBuffer>(graphics);
-		addBindable(m_shadowCBuf);
+		addBuffer(m_shadowCBuf);
 
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
@@ -29,7 +29,7 @@ namespace Marvel {
 	void mvLambertianPass::execute(mvGraphics& graphics) const
 	{
 
-		m_shadowCBuf->bind(graphics);
+		//m_shadowCBuf->bind(graphics);
 		m_camera->bind(graphics);
 
 		if (m_renderTarget)

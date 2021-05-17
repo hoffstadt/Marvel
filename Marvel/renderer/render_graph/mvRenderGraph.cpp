@@ -78,7 +78,7 @@ namespace Marvel {
 		root->add(Float3, "FogColor");
 		root->finalize(0);
 
-		m_bufferData = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferData = std::make_unique<mvDynamicBuffer>(std::move(layout));
 		m_bufferData->getElement("FogColor") = glm::vec3{ 1.0f, 1.0f, 1.0f };
 		m_bufferData->getElement("FogRange") = 100.0f;
 		m_bufferData->getElement("FogStart") = 10.0f;

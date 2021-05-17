@@ -1,6 +1,7 @@
 #include "mvMaterial.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
+#include "mvCommonBuffers.h"
 #include "assimp/Importer.hpp"
 #include "assimp/Scene.h"
 #include "assimp/postprocess.h"
@@ -83,12 +84,13 @@ namespace Marvel {
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
 			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
-			step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
+			//step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, m_materialBuffer.hasAlpha));
 			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
 			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 
-			step.addBindable(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
+			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
 
 			phong.addStep(step);
 			m_techniques.push_back(phong);
@@ -119,7 +121,7 @@ namespace Marvel {
 			{
 				step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
 			}
-			step.addBindable(std::make_shared<mvTransformConstantBuffer>(graphics));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			map.addStep(step);
 			m_techniques.push_back(map);
 		}

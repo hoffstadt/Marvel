@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include "mvBindable.h"
+#include "mvBuffer.h"
 
 namespace Marvel {
 
@@ -35,10 +36,12 @@ namespace Marvel {
 		void bind(mvGraphics& graphics, const mvDrawable* parent) const;
 
 		void addBindable(std::shared_ptr<mvBindable> bindable);
+		void addBuffer(std::shared_ptr<mvBuffer> buffer);
 		
 	private:
 
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;
+		std::vector<std::shared_ptr<mvBuffer>>   m_buffers;
 		mvPass*                                  m_pass = nullptr;
 		std::string                              m_targetPass;
 

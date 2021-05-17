@@ -1,17 +1,17 @@
 #include "mvIndexBuffer.h"
 #include "mvGraphics.h"
-#include "mvBindableRegistry.h"
+#include "mvBufferRegistry.h"
 
 namespace Marvel
 {
     std::shared_ptr<mvIndexBuffer> mvIndexBuffer::Request(mvGraphics& graphics, const std::string& name, const std::vector<unsigned int>& indices, bool dynamic)
     {
         std::string ID = GenerateUniqueIdentifier(name, dynamic);
-        if (auto bindable = mvBindableRegistry::GetBindable(ID))
-            return std::dynamic_pointer_cast<mvIndexBuffer>(bindable);
-        auto bindable = std::make_shared<mvIndexBuffer>(graphics, name, indices, dynamic);
-        mvBindableRegistry::AddBindable(ID, bindable);
-        return bindable;
+        if (auto buffer = mvBufferRegistry::GetBuffer(ID))
+            return std::dynamic_pointer_cast<mvIndexBuffer>(buffer);
+        auto buffer = std::make_shared<mvIndexBuffer>(graphics, name, indices, dynamic);
+        mvBufferRegistry::AddBuffer(ID, buffer);
+        return buffer;
     }
 
     std::string mvIndexBuffer::GenerateUniqueIdentifier(const std::string& name, bool dynamic)

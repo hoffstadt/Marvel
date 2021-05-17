@@ -21,13 +21,22 @@ namespace Marvel {
 		m_bindables.push_back(std::move(bindable));
 	}
 
+	void mvStep::addBuffer(std::shared_ptr<mvBuffer> buffer)
+	{
+		m_buffers.push_back(std::move(buffer));
+	}
+
 	void mvStep::bind(mvGraphics& graphics, const mvDrawable* parent) const
 	{
-		for (auto& bindable : m_bindables)
+
+		for (auto& buffer : m_buffers)
 		{
-			bindable->m_parent = parent;
-			bindable->bind(graphics);
+			buffer->m_parent = parent;
+			buffer->bind(graphics);
 		}
+
+		for (auto& bindable : m_bindables)
+			bindable->bind(graphics);
 	}
 
 	void mvStep::submit(const mvDrawable& drawable) const

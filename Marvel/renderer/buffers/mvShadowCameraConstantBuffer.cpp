@@ -13,7 +13,7 @@ namespace Marvel {
 		root->add(Matrix, std::string("shadowPosition"));
 		root->finalize(0);
 
-		m_bufferRaw = std::make_unique<mvBuffer>(std::move(layout));
+		m_bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
 		m_bufferRaw->getElement("shadowPosition") = glm::identity<glm::mat4>();
 
 		m_buf = std::make_unique<mvVertexConstantBuffer>(graphics, *root.get(), 1, m_bufferRaw.get());
