@@ -18,6 +18,13 @@ namespace Marvel {
 	class mvTransformConstantBuffer : public mvBuffer
 	{
 
+		struct Transforms
+		{
+			glm::mat4 model = glm::identity<glm::mat4>();
+			glm::mat4 modelView = glm::identity<glm::mat4>();
+			glm::mat4 modelViewProjection = glm::identity<glm::mat4>();
+		};
+
 	public:
 
 		mvTransformConstantBuffer(mvGraphics& graphics);
@@ -27,7 +34,7 @@ namespace Marvel {
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
-		std::unique_ptr<mvDynamicBuffer>        m_bufferRaw;
+		Transforms m_transforms;
 
 	};
 
