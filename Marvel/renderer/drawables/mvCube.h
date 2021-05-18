@@ -30,6 +30,7 @@ namespace Marvel {
 		float m_xangle = 0.0f;
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
+		mvMaterial::mvMaterialBuffer m_materialBuffer;
 
 	};
 

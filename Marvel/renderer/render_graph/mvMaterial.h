@@ -25,6 +25,8 @@ namespace Marvel {
 	class mvMaterial
 	{
 
+	public:
+
 		struct mvMaterialBuffer
 		{
 			alignas(16) glm::vec3 materialColor = {0.45f, 0.45f, 0.85f};

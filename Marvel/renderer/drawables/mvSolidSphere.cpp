@@ -18,6 +18,9 @@ namespace Marvel {
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
 		vl.append(ElementType::Normal);
+		vl.append(ElementType::Tangent);
+		vl.append(ElementType::Bitangent);
+		vl.append(ElementType::Texture2D);
 
 		std::vector<float> verticies;
 		std::vector<unsigned int> indicies;
@@ -37,6 +40,15 @@ namespace Marvel {
 			nverticies.push_back(normals[i]);
 			nverticies.push_back(normals[i+1]);
 			nverticies.push_back(normals[i+2]);
+
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
+			nverticies.push_back(0.0f);
 		}
 
 		// create vertex buffer
@@ -87,30 +99,15 @@ namespace Marvel {
 		// phong
 		else
 		{
-			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-			auto& root = layout.getRoot();
-			root->add(Float3, std::string("materialColor"));
-			root->add(Float3, std::string("specularColor"));
-			root->add(Float, std::string("specularWeight"));
-			root->add(Float, std::string("specularGloss"));
-			root->finalize(0);
-
-			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
-
-			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
-			bufferRaw->getElement("specularColor").setIfExists(glm::vec3{ 1.0f, 1.0f, 1.0f });
-			bufferRaw->getElement("specularWeight").setIfExists(1.0f);
-			bufferRaw->getElement("specularGloss").setIfExists(8.0f);
-
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
 
 			step.addBuffer(buf);
 
 			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_VS.hlsl");
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
 			step.addBindable(vshader);
 			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongProcedural_PS.hlsl"));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
 			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 		}
