@@ -110,34 +110,6 @@ namespace Marvel {
         renderTarget->bindAsBuffer(graphics, this);
     }
 
-    mvInputDepthStencil::mvInputDepthStencil(mvGraphics& graphics, int width, int height, UINT slot, Usage usage)
-        : 
-        mvDepthStencil(graphics, width, height, true, usage),
-        m_slot(slot)
-    {
-        mvComPtr<ID3D11Resource> pRes;
-        m_DSV->GetResource(pRes.GetAddressOf());
-
-        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = MapUsageColored(usage);
-        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MostDetailedMip = 0;
-        srvDesc.Texture2D.MipLevels = 1;
-        graphics.getDevice()->CreateShaderResourceView(pRes.Get(), &srvDesc, m_shaderResourceView.GetAddressOf());
-    }
-
-    mvInputDepthStencil::mvInputDepthStencil(mvGraphics& graphics, UINT slot, Usage usage)
-        :
-        mvInputDepthStencil(graphics, graphics.getWidth(), graphics.getHeight(), slot, usage)
-    {
-
-    }
-
-    void mvInputDepthStencil::bind(mvGraphics& graphics)
-    {
-        graphics.getContext()->PSSetShaderResources(m_slot, 1u, m_shaderResourceView.GetAddressOf());
-    }
-
     mvOutputDepthStencil::mvOutputDepthStencil(mvGraphics& graphics, int width, int height)
         :
         mvDepthStencil(graphics, width, height)

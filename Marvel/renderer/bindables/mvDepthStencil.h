@@ -50,26 +50,6 @@ namespace Marvel {
 	};
 
 	//-----------------------------------------------------------------------------
-	// mvInputDepthStencil
-	//-----------------------------------------------------------------------------
-	class mvInputDepthStencil : public mvDepthStencil
-	{
-
-	public:
-
-		mvInputDepthStencil(mvGraphics& graphics, int width, int height, UINT slot, Usage usage = Usage::DepthStencil);
-		mvInputDepthStencil(mvGraphics& graphics, UINT slot, Usage usage = Usage::DepthStencil);
-
-		void bind(mvGraphics& graphics) override;
-
-	private:
-
-		UINT m_slot;
-		mvComPtr<ID3D11ShaderResourceView> m_shaderResourceView;
-
-	};
-
-	//-----------------------------------------------------------------------------
 	// mvOutputDepthStencil
 	//-----------------------------------------------------------------------------
 	class mvOutputDepthStencil : public mvDepthStencil

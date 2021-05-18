@@ -125,7 +125,6 @@ namespace Marvel {
 		ImGui::Text("Orientation");
 		dcheck(ImGui::SliderAngle("Pitch", &m_pitch, 0.995f * -90.0f, 0.995f * 90.0f), rotDirty);
 		dcheck(ImGui::SliderAngle("Yaw", &m_yaw, -180.0f, 180.0f), rotDirty);
-		//m_proj.RenderWidgets(gfx);
 
 		if (rotDirty)
 		{

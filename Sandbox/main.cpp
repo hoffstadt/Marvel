@@ -44,7 +44,7 @@ int main()
 
     // create camera
     mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height, 0.5f, 400.0f, false);
-    mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 100, 100, 0.5f, 100.0f, true);
+    mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
 
     // create model
     mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);

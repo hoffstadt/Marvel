@@ -3,9 +3,13 @@
 #include <string>
 #include "mvBindable.h"
 #include "mvComPtr.h"
+#include "mvDepthStencil.h"
 
 namespace Marvel {
 
+	//-----------------------------------------------------------------------------
+	// mvTexture
+	//-----------------------------------------------------------------------------
 	class mvTexture : public mvBindable
 	{
 
@@ -30,6 +34,27 @@ namespace Marvel {
 		bool                               m_alpha = false;
 		std::string                        m_path;
 
+	};
+
+	//-----------------------------------------------------------------------------
+	// mvDepthTexture
+	//-----------------------------------------------------------------------------
+	class mvDepthTexture : public mvBindable
+	{
+
+	public:
+
+		mvDepthTexture(mvGraphics& graphics, UINT size, UINT slot = 0);
+
+		void bind(mvGraphics& graphics) override;
+
+		std::shared_ptr<mvOutputDepthStencil> getDepthBuffer()const;
+
+	private:
+
+		unsigned int m_slot;
+		mvComPtr<ID3D11ShaderResourceView> m_textureView;
+		std::shared_ptr<mvOutputDepthStencil> m_depthBuffer;
 	};
 
 }

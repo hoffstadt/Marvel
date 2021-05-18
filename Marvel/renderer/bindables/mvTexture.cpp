@@ -87,4 +87,49 @@ namespace Marvel {
     {
         return GenerateUniqueIdentifier(m_path, m_slot);
     }
+
+    mvDepthTexture::mvDepthTexture(mvGraphics& graphics, UINT size, UINT slot)
+        :
+        m_slot(slot)
+    {
+
+        // texture descriptor
+        D3D11_TEXTURE2D_DESC textureDesc = {};
+        textureDesc.Width = size;
+        textureDesc.Height = size;
+        textureDesc.MipLevels = 1;
+        textureDesc.ArraySize = 1;
+        textureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.SampleDesc.Quality = 0;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL;
+        textureDesc.CPUAccessFlags = 0;
+
+        // create the texture resource
+        mvComPtr<ID3D11Texture2D> pTexture;
+        graphics.getDevice()->CreateTexture2D(&textureDesc, nullptr, &pTexture);
+
+        // create the resource view on the texture
+        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = 1;
+        graphics.getDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, m_textureView.GetAddressOf());
+
+        // make render target resources for capturing shadow map
+
+        m_depthBuffer = std::make_shared<mvOutputDepthStencil>(graphics, pTexture, 0);
+    }
+
+    void mvDepthTexture::bind(mvGraphics& graphics)
+    {
+        graphics.getContext()->PSSetShaderResources(m_slot, 1u, m_textureView.GetAddressOf());
+    }
+
+    std::shared_ptr<mvOutputDepthStencil> mvDepthTexture::getDepthBuffer() const
+    {
+        return m_depthBuffer;
+    }
 }
