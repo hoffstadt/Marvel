@@ -48,14 +48,13 @@ namespace Marvel {
 			ImGui::SliderFloat("Z", &m_info.viewLightPos[id].z, -60.0f, 60.0f, "%.1f");
 
 			ImGui::Text("Intensity/Color");
-			ImGui::SliderFloat("Intensity", &m_info.diffuseIntensity[id], 0.01f, 2.0f, "%.2f");
-			ImGui::ColorEdit3("Diffuse Color", &m_info.diffuseColor[id].x);
-			ImGui::ColorEdit3("Ambient", &m_info.ambient.x);
+			ImGui::SliderFloat("Intensity", &m_info.diffuseIntensity[id*4], 0.01f, 2.0f, "%.2f");
+			ImGui::ColorEdit3("Diffuse Color", &m_info.diffuseColor[id * 4].x);
 
 			ImGui::Text("Falloff");
-			ImGui::SliderFloat("Constant", &m_info.attConst[id], 0.05f, 10.0f, "%.2f");
-			ImGui::SliderFloat("Linear", &m_info.attLin[id], 0.0001f, 4.0f, "%.4f");
-			ImGui::SliderFloat("Quadratic", &m_info.attQuad[id], 0.0000001f, 10.0f, "%.7f");
+			ImGui::SliderFloat("Constant", &m_info.attConst[id * 4], 0.05f, 10.0f, "%.2f");
+			ImGui::SliderFloat("Linear", &m_info.attLin[id * 4], 0.0001f, 4.0f, "%.4f");
+			ImGui::SliderFloat("Quadratic", &m_info.attQuad[id * 4], 0.0000001f, 10.0f, "%.7f");
 		}
 		ImGui::End();
 
@@ -66,19 +65,20 @@ namespace Marvel {
 	void mvPointLightManager::bind(mvGraphics& graphics, glm::mat4 view)
 	{
 		
-		glm::vec3 posCopy[3];
+		glm::vec4 posCopy[3];
 		posCopy[0] = m_info.viewLightPos[0];
 		posCopy[1] = m_info.viewLightPos[1];
 		posCopy[2] = m_info.viewLightPos[2];
 
 		for (int i = 0; i<m_lights.size(); i++)
 		{
-			glm::vec4 out = view * glm::vec4(m_info.viewLightPos[i], 1.0f);
+			glm::vec4 out = view * m_info.viewLightPos[i];
 			m_info.viewLightPos[i].x = out.x;
 			m_info.viewLightPos[i].y = out.y;
 			m_info.viewLightPos[i].z = out.z;
 		}
 
+		m_info.lightCount = m_lights.size();
 		m_buffer->update(graphics, m_info);
 		m_buffer->bind(graphics);
 

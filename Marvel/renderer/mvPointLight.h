@@ -42,29 +42,51 @@ namespace Marvel {
 
 		struct PointLightInfo
 		{
-			int lightCount = 3;
-			glm::vec3 ambient = {0.05f, 0.05f, 0.05f};
+
+			int lightCount = 0;
 			//-------------------------- ( 16 bytes )
 
-			glm::vec3 viewLightPos[3] = { glm::vec3{ 0.0f, 0.0f, 0.0f}, glm::vec3{ 0.0f, 0.0f, 0.0f} , glm::vec3{ 0.0f, 0.0f, 0.0f } };
-			//-------------------------- ( 64 bytes )
+			alignas(16) glm::vec4 viewLightPos[3] = {
+				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f}, 
+				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f} , 
+				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f} };
+			//-------------------------- ( 48 bytes )
 
-			glm::vec3 diffuseColor[3] = { glm::vec3{ 1.0f, 1.0f, 1.0f}, glm::vec3{ 1.0f, 1.0f, 1.0f} , glm::vec3{ 1.0f, 1.0f, 1.0f } };
-			//-------------------------- ( 64 bytes )
+			glm::vec4 diffuseColor[3] = { 
+				glm::vec4{ 1.0f, 1.0f, 1.0f, 0.0f}, 
+				glm::vec4{ 1.0f, 1.0f, 1.0f, 0.0f} , 
+				glm::vec4{ 1.0f, 1.0f, 1.0f, 0.0f } };
+			//-------------------------- ( 48 bytes )
 
-			alignas(16) float diffuseIntensity[3] = {1.0f, 1.0f, 1.0f};
-			//-------------------------- ( 64 bytes )
+			float diffuseIntensity[3*4] = { 
+				1.0f, 0.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f,
+			};
+			//-------------------------- ( 48 bytes )
 
-			alignas(16) float attConst[3] = { 1.0f, 1.0f, 1.0f};
-			//-------------------------- ( 64 bytes )
+			float attConst[3*4] = { 
+				1.0f, 0.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f,
+			};
+			//-------------------------- ( 48 bytes )
 
-			alignas(16) float attLin[3] = {0.045f, 0.045f, 0.045f};
-			//-------------------------- ( 64 bytes )
+			float attLin[3*4] = {
+				0.045f, 0.0f, 0.0f, 0.0f,
+				0.045f, 0.0f, 0.0f, 0.0f,
+				0.045f, 0.0f, 0.0f, 0.0f,
+			};
+			//-------------------------- ( 48 bytes )
 
-			alignas(16) float attQuad[3] = {0.0075f, 0.0075f, 0.0075f};
-			//-------------------------- ( 64 bytes )
+			float attQuad[3*4] = {
+				0.0075f, 0.0f, 0.0f, 0.0f,
+				0.0075f, 0.0f, 0.0f, 0.0f,
+				0.0075f, 0.0f, 0.0f, 0.0f,
+			};
+			//-------------------------- ( 48 bytes )
 
-			//-------------------------- ( 400 bytes )
+			//-------------------------- ( 6*48 + 16 = 304 bytes )
 		};
 
 	public:

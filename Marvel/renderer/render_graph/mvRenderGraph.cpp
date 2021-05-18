@@ -71,18 +71,7 @@ namespace Marvel {
 
 		bake();
 
-		mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-		auto& root = layout.getRoot();
-		root->add(Float, "FogStart");
-		root->add(Float, "FogRange");
-		root->add(Float3, "FogColor");
-		root->finalize(0);
-
-		m_bufferData = std::make_unique<mvDynamicBuffer>(std::move(layout));
-		m_bufferData->getElement("FogColor") = glm::vec3{ 1.0f, 1.0f, 1.0f };
-		m_bufferData->getElement("FogRange") = 100.0f;
-		m_bufferData->getElement("FogStart") = 10.0f;
-		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, *root.get(), 3, m_bufferData.get());
+		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 3, &m_globalSettings);
 	}
 
 	void mvRenderGraph::execute(mvGraphics& graphics) const
@@ -131,22 +120,22 @@ namespace Marvel {
 
 	void mvRenderGraph::bind(mvGraphics& graphics)
 	{
-		m_buffer->update(graphics, *m_bufferData);
+		m_buffer->update(graphics, m_globalSettings);
 		m_buffer->bind(graphics);
 	}
 
 	void mvRenderGraph::show_imgui_window()
 	{
-		float& FogRange = m_bufferData->getElement("FogRange");
-		float& FogStart = m_bufferData->getElement("FogStart");
-		glm::vec3& FogColor = m_bufferData->getElement("FogColor");
 
-		if (ImGui::Begin("Render Graph"))
+		if (ImGui::Begin("Scene"))
 		{
+			ImGui::Text("Environment");
+			ImGui::ColorEdit3("Ambient Color", &m_globalSettings.ambientColor.x);
+
 			ImGui::Text("Fog");
-			ImGui::SliderFloat("Fog Start", &FogStart,  0.0f, 100.0f, "%.1f");
-			ImGui::SliderFloat("Fog Range", &FogRange,  0.0f, 100.0f, "%.1f");
-			ImGui::ColorEdit3("Fog Color", &FogColor.x);
+			ImGui::SliderFloat("Fog Start", &m_globalSettings.fogStart,  0.0f, 100.0f, "%.1f");
+			ImGui::SliderFloat("Fog Range", &m_globalSettings.fogRange,  0.0f, 100.0f, "%.1f");
+			ImGui::ColorEdit3("Fog Color", &m_globalSettings.fogColor.x);
 		}
 		ImGui::End();
 	}

@@ -23,6 +23,20 @@ namespace Marvel {
 	class mvRenderGraph
 	{
 
+		struct GlobalSettings
+		{
+			
+			float fogStart = 10.0f;
+			glm::vec3 fogColor = { 1.0f, 1.0f, 1.0f };
+			//-------------------------- ( 16 bytes )
+
+			float fogRange = 100.0f;
+			glm::vec3 ambientColor = { 0.05f, 0.05f, 0.05f };
+			//-------------------------- ( 16 bytes )
+
+			//-------------------------- ( 2*16 = 32 bytes )
+		};
+
 	public:
 
 		mvRenderGraph(mvGraphics& graphics, const char* skybox);
@@ -66,7 +80,7 @@ namespace Marvel {
 
 		std::vector <std::unique_ptr<mvPass>>  m_passes;
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
-		std::unique_ptr<mvDynamicBuffer>       m_bufferData;
+		GlobalSettings                         m_globalSettings = {};
 
 		std::vector<std::unique_ptr<mvPassResource>> m_resources;
 		std::vector<std::unique_ptr<mvPassProduct>> m_products;
