@@ -18,12 +18,12 @@ namespace Marvel {
 	}
 
 	mvCamera::mvCamera(mvGraphics& graphics, const std::string& name, glm::vec3 homePos, float homePitch, float homeYaw,
-		float width, float height, float nearZ, float farZ)
+		float width, float height, float nearZ, float farZ, bool ortho)
 		:
 		m_pos(homePos),
 		m_pitch(homePitch),
 		m_yaw(homeYaw),
-		m_proj(graphics, name, width, height, nearZ, farZ)
+		m_proj(graphics, name, width, height, nearZ, farZ, ortho)
 	{
 		m_proj.setPos(homePos.x, homePos.y, homePos.z);
 		m_proj.setRotation(homePitch, homeYaw, 0.0f);

@@ -18,7 +18,7 @@ namespace Marvel {
 	public:
 
 		mvProjection(mvGraphics& graphics, const std::string& name, float width, float height,
-			float nearZ, float farZ);
+			float nearZ, float farZ, bool ortho);
 
 		glm::mat4 getMatrix() const;
 

@@ -2,13 +2,13 @@
 
 namespace Marvel {
 
-	mvProjection::mvProjection(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ)
+	mvProjection::mvProjection(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ, bool ortho)
 		:
 		m_width(width),
 		m_height(height),
 		m_nearZ(nearZ),
 		m_farZ(farZ),
-		m_frustum(graphics, name, width, height, nearZ, farZ)
+		m_frustum(graphics, name, width, height, nearZ, farZ, !ortho)
 	{
 
 	}

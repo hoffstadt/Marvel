@@ -19,7 +19,7 @@ namespace Marvel {
 	public:
 
 		mvCamera(mvGraphics& graphics, const std::string& name, glm::vec3 homePos = { 0.0f,0.0f, 0.0f },
-			float homePitch = 0.0f, float homeYaw = 0.0f, float width = 1.0f, float height = 1.0f, float nearZ = 0.5f, float farZ = 400.0f);
+			float homePitch = 0.0f, float homeYaw = 0.0f, float width = 1.0f, float height = 1.0f, float nearZ = 0.5f, float farZ = 400.0f, bool ortho = false);
 
 		glm::mat4 getMatrix() const;
 		glm::mat4 getProjection() const;

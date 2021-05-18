@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvFrustum::mvFrustum(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ)
+	mvFrustum::mvFrustum(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ, bool normalize)
 	{
 
 		// create topology
@@ -17,18 +17,26 @@ namespace Marvel {
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
 
-		if (width > height)
+		if (normalize)
 		{
-			height = height / width;
-			width = 1.0f;
-		}
-		else
-		{
-			width = width / height;
-			height = 1.0f;
+			if (width > height)
+			{
+				height = height / width;
+				width = 1.0f;
+			}
+			else
+			{
+				width = width / height;
+				height = 1.0f;
+			}
 		}
 
-		const float zRatio = farZ / nearZ;
+		float zRatio = 0.0f;
+		if (normalize)
+			zRatio = farZ / nearZ;
+		else
+			zRatio = 1.0f;
+
 		const float nearX = width / 2.0f;
 		const float nearY = height / 2.0f;
 		const float farX = nearX * zRatio;

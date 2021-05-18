@@ -14,7 +14,7 @@ namespace Marvel {
 
 	public:
 
-		mvFrustum(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ);
+		mvFrustum(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ, bool normalize);
 
 		void setPos(float x, float y, float z);
 		void setRotation(float x, float y, float z);
