@@ -5,7 +5,9 @@
 Texture2D   ColorTexture    : register(t0);
 Texture2D   SpecularTexture : register(t1);
 Texture2D   NormalTexture   : register(t2);
-TextureCube ShadowMap       : register(t3);
+TextureCube ShadowMap1      : register(t3);
+TextureCube ShadowMap2      : register(t4);
+TextureCube ShadowMap3      : register(t5);
 
 // samplers
 SamplerState           Sampler       : register(s0);
@@ -17,8 +19,41 @@ cbuffer mvMaterialCBuf          : register(b1) { mvMaterial material; };
 cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLightManager DirectionalLight; };
 cbuffer mvSceneCBuf             : register(b3) { mvScene Scene; };
 
+//TextureCube GetShadowMap(int index)
+//{
+//    switch (index)
+//    {
+//        case(0):
+//            return ShadowMap1;
+//        case(1):
+//            return ShadowMap2;
+//        case(2):
+//            return ShadowMap3;
+//        default:
+//            return ShadowMap1;
+//    }
+//}
+
+float GetShadowLevel(int index, float4 pos)
+{
+    if(index == 0)
+    {
+        return Shadow(pos, ShadowMap1, ShadowSampler);
+    }
+    if (index == 1)
+    {
+        return Shadow(pos, ShadowMap2, ShadowSampler);
+    }
+    if (index == 2)
+    {
+        return Shadow(pos, ShadowMap3, ShadowSampler);
+    }
+    
+    return Shadow(pos, ShadowMap1, ShadowSampler);
+}
+
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, 
-    float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
+    float2 tc : Texcoord, float4 spos[3] : shadowPosition) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
@@ -66,12 +101,16 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         }
     }
      
-    const float shadowLevel = Shadow(spos, ShadowMap, ShadowSampler);
-    if (shadowLevel != 0.0f)
+    // point lights
+    for (int i = 0; i < PointLight.LightCount; i++)
     {
-        for (int i = 0; i < PointLight.LightCount; i++)
+            
+            
+        const float shadowLevel = GetShadowLevel(i, spos[i]);
+            
+        if (shadowLevel != 0.0f)
         {
-    
+            
 	        // fragment to light vector data
             const LightVectorData lv = CalculateLightVectorData(PointLight.viewLightPos[i], viewFragPos);
     
@@ -83,21 +122,19 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
             // specular
             specularReflected += Speculate(
-                PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
-                lv.vec, viewFragPos, att, specularPowerLoaded);
+            PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
+            lv.vec, viewFragPos, att, specularPowerLoaded);
             
+            // scale by shadow level
+            diffuse *= shadowLevel;
+            specularReflected *= shadowLevel;
         }
+  
+    }
         
-        // scale by shadow level
-        diffuse *= shadowLevel;
-        specularReflected *= shadowLevel;
-    }
-    else
-    {
-        diffuse = specularReflected = 0.0f;
-    }
     
-    for (int i = 0; i < 1; i++)
+    // directional lights
+    for (int i = 0; i < DirectionalLight.LightCount; i++)
     {
         
 	    // diffuse
@@ -111,6 +148,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
 
 	// final color
     float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   
-    return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
+    return float4(litColor, 1.0f);
+    //return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
 
 }

@@ -19,7 +19,9 @@ namespace Marvel {
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
 
 		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
-		addBindableResource<mvBindable>("map");
+		addBindableResource<mvBindable>("map1");
+		addBindableResource<mvBindable>("map2");
+		addBindableResource<mvBindable>("map3");
 		
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
@@ -49,9 +51,18 @@ namespace Marvel {
 		m_camera = &cam;
 	}
 
-	void mvLambertianPass::bindShadowCamera(const mvCamera& cam)
+	void mvLambertianPass::bindShadowCamera1(const mvCamera& cam)
 	{
-		m_shadowCBuf->setCamera(&cam);
+		m_shadowCBuf->setCamera1(&cam);
 	}
 
+	void mvLambertianPass::bindShadowCamera2(const mvCamera& cam)
+	{
+		m_shadowCBuf->setCamera2(&cam);
+	}
+
+	void mvLambertianPass::bindShadowCamera3(const mvCamera& cam)
+	{
+		m_shadowCBuf->setCamera3(&cam);
+	}
 }

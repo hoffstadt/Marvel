@@ -20,7 +20,7 @@ namespace Marvel {
 
 	public:
 
-		mvShadowMappingPass(mvGraphics& graphics, const std::string& name);
+		mvShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot);
 
 		void execute(mvGraphics& graphics) const override;
 

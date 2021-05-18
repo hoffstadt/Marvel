@@ -21,7 +21,13 @@ namespace Marvel {
 
 		struct ShadowCameraInfo
 		{
-			glm::mat4 shadowPosition = glm::identity<glm::mat4>();
+			glm::mat4 shadowPosition[3] =
+			{ 
+				glm::identity<glm::mat4>(),
+				glm::identity<glm::mat4>(),
+				glm::identity<glm::mat4>()
+			};
+
 		};
 
 	public:
@@ -29,12 +35,16 @@ namespace Marvel {
 		mvShadowCameraConstantBuffer(mvGraphics& graphics);
 
 		void bind(mvGraphics& graphics) override;
-		void setCamera(const mvCamera* camera);
+		void setCamera1(const mvCamera* camera);
+		void setCamera2(const mvCamera* camera);
+		void setCamera3(const mvCamera* camera);
 
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
-		const mvCamera*                         m_camera = nullptr;
+		const mvCamera*                         m_camera1 = nullptr;
+		const mvCamera*                         m_camera2 = nullptr;
+		const mvCamera*                         m_camera3 = nullptr;
 		ShadowCameraInfo                        m_buffer;
 
 	};

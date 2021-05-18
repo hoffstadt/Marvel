@@ -15,7 +15,7 @@ namespace Marvel {
         samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 
         bool hwPcf = true;
-        bool bilin = true;
+        bool bilin = false;
 
         if (hwPcf)
         {

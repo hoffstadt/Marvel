@@ -5,13 +5,13 @@
 
 namespace Marvel {
 
-	mvShadowMappingPass::mvShadowMappingPass(mvGraphics& graphics, const std::string& name)
+	mvShadowMappingPass::mvShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot)
 		:
 		mvPass(name)
 	{
 
 		UINT size = 1000;
-		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, 3);
+		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, slot);
 
 		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
 		addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));

@@ -109,7 +109,30 @@ namespace Marvel {
 		}
 
 		{
-			mvStep step("shadow");
+			mvStep step("shadow1");
+
+			// create vertex shader
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+			step.addBindable(vshader);
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			technique.addStep(step);
+		}
+		{
+			mvStep step("shadow2");
+
+			// create vertex shader
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+			step.addBindable(vshader);
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			technique.addStep(step);
+		}
+
+		{
+			mvStep step("shadow3");
 
 			// create vertex shader
 			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");

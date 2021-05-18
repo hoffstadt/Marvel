@@ -151,6 +151,8 @@ namespace Marvel {
         ID3D11ShaderResourceView* const pSRV[6] = { NULL };
         m_deviceContext->PSSetShaderResources(0, 1, pSRV);
         m_deviceContext->PSSetShaderResources(3, 6, pSRV); // depth map
+        m_deviceContext->PSSetShaderResources(4, 6, pSRV); // depth map
+        m_deviceContext->PSSetShaderResources(5, 6, pSRV); // depth map
 
         m_imguiManager->beginFrame();
     }

@@ -24,7 +24,9 @@ namespace Marvel {
 		void execute(mvGraphics& graphics) const override;
 
 		void bindMainCamera(const mvCamera& cam);
-		void bindShadowCamera(const mvCamera& cam);
+		void bindShadowCamera1(const mvCamera& cam);
+		void bindShadowCamera2(const mvCamera& cam);
+		void bindShadowCamera3(const mvCamera& cam);
 
 	private:
 

@@ -49,7 +49,7 @@ namespace Marvel {
 
 			ImGui::Text("Intensity/Color");
 			ImGui::SliderFloat("Intensity", &m_info.diffuseIntensity[id*4], 0.01f, 2.0f, "%.2f");
-			ImGui::ColorEdit3("Diffuse Color", &m_info.diffuseColor[id * 4].x);
+			ImGui::ColorEdit3("Diffuse Color", &m_info.diffuseColor[id].x);
 
 			ImGui::Text("Falloff");
 			ImGui::SliderFloat("Constant", &m_info.attConst[id * 4], 0.05f, 10.0f, "%.2f");

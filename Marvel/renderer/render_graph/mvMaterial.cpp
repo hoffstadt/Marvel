@@ -98,31 +98,89 @@ namespace Marvel {
 
 		{
 			mvTechnique map;
-			mvStep step("shadow");
-
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
-			if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
 			{
-				aiString texFileName;
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				mvStep step("shadow1");
+
+				// create vertex shader
+				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+				step.addBindable(vshader);
+				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
+				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
-					step.addBindable(texture);
-					step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
-					step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
-				}
+					aiString texFileName;
+					if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+					{
+						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+						step.addBindable(texture);
+						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
+						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+					}
 
+				}
+				else
+				{
+					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+				}
+				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+				map.addStep(step);
 			}
-			else
+
 			{
-				step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+				mvStep step("shadow2");
+
+				// create vertex shader
+				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+				step.addBindable(vshader);
+				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
+				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
+				{
+					aiString texFileName;
+					if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+					{
+						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+						step.addBindable(texture);
+						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
+						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+					}
+
+				}
+				else
+				{
+					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+				}
+				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+				map.addStep(step);
 			}
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			map.addStep(step);
+
+			{
+				mvStep step("shadow3");
+
+				// create vertex shader
+				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
+				step.addBindable(vshader);
+				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
+				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
+				{
+					aiString texFileName;
+					if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+					{
+						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+						step.addBindable(texture);
+						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
+						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+					}
+
+				}
+				else
+				{
+					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
+				}
+				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+				map.addStep(step);
+			}
 			m_techniques.push_back(map);
 		}
 		
