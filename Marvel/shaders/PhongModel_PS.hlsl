@@ -119,7 +119,7 @@ float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
         diffuse = specularReflected = 0.0f;
     }
     
-    for (int i = 0; i < dLightCount; i++)
+    for (int i = 0; i < 1; i++)
     {
         
 	    // diffuse
