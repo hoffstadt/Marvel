@@ -47,5 +47,6 @@ git clone --recursive https://github.com/hoffstadt/Marvel
 5. Run _Build All_.
 
 ## Gallery
+![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_3.png)
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_1.png)
 ![](https://github.com/hoffstadt/DearPyGui/blob/assets/3d_demo_2.png)
