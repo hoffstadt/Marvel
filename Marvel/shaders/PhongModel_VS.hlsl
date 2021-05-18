@@ -1,5 +1,15 @@
 #include "common/transform.hlsli"
-#include "common/shadow.hlsli"
+
+cbuffer ShadowTransformCBuf : register(b1)
+{
+    matrix shadowPosition;
+};
+
+float4 ToShadowHomoSpace(const in float3 pos, uniform matrix modelTransform)
+{
+    const float4 world = mul(float4(pos, 1.0f), modelTransform);
+    return mul(world, shadowPosition);
+}
 
 struct VSOut
 {

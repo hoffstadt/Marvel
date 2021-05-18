@@ -1,52 +1,31 @@
-#include "common/operations.hlsli"
-#include "common/pointlight.hlsli"
-#include "common/pshadow.hlsli"
-#include "common/directionallight.hlsli"
-
-struct Material
-{
-    float3 materialColor;
-    //-------------------------- ( 16 bytes )
-    
-    float3 specularColor;
-    float specularWeight;
-    //-------------------------- ( 16 bytes )
-   
-    float specularGloss;
-    float normalMapWeight;
-    bool  useTextureMap;
-    bool useNormalMap;
-    //-------------------------- ( 16 bytes )
-    
-    bool useSpecularMap;
-    bool useGlossAlpha;
-    bool hasAlpha;
-    //-------------------------- ( 16 bytes )
-    //-------------------------- ( 4 * 16 = 64 bytes )
-};
-
-cbuffer Material : register(b1)
-{
-    Material mat;
-};
+#include "common/cbuffers.hlsli"
+#include "common/equations.hlsli"
 
 // textures
-Texture2D ColorTexture    : register(t0);
-Texture2D SpecularTexture : register(t1);
-Texture2D NormalTexture   : register(t2);
+Texture2D   ColorTexture    : register(t0);
+Texture2D   SpecularTexture : register(t1);
+Texture2D   NormalTexture   : register(t2);
+TextureCube ShadowMap       : register(t3);
 
 // samplers
-SamplerState Sampler : register(s0);
+SamplerState           Sampler       : register(s0);
+SamplerComparisonState ShadowSampler : register(s1);
+
+// constant buffers
+cbuffer mvPointLightManagerCBuf : register(b0) { mvPointLightManager PointLight; };
+cbuffer mvMaterialCBuf          : register(b1) { mvMaterial material; };
+cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLightManager DirectionalLight; };
+cbuffer mvSceneCBuf             : register(b3) { mvScene Scene; };
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, 
-float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
+    float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
-    float3 specularReflectedColor = mat.specularColor;
-    float3 materialColor = mat.materialColor;
+    float3 specularReflectedColor = material.specularColor;
+    float3 materialColor = materialColor;
 
-    if(mat.hasAlpha)
+    if (material.hasAlpha)
     {
         // sample diffuse texture
         const float4 dtex = ColorTexture.Sample(Sampler, tc);
@@ -63,49 +42,48 @@ float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
         materialColor = dtex.rgb;
     }
 
-    
     // normalize the mesh normal
     viewNormal = normalize(viewNormal);
     
     // replace normal with mapped if normal mapping enabled
-    if (mat.useNormalMap)
+    if (material.useNormalMap)
     {
         const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, NormalTexture, Sampler);
-        viewNormal = lerp(viewNormal, mappedNormal, mat.normalMapWeight);
+        viewNormal = lerp(viewNormal, mappedNormal, material.normalMapWeight);
     }
     
     // specular parameter determination (mapped or uniform)
-    float specularPowerLoaded = mat.specularGloss;
+    float specularPowerLoaded = material.specularGloss;
     
-    if (mat.useSpecularMap)
+    if (material.useSpecularMap)
     {
         const float4 specularSample = SpecularTexture.Sample(Sampler, tc);
         specularReflectedColor = specularSample.rgb;
         
-        if (mat.useGlossAlpha)
+        if (material.useGlossAlpha)
         {
             specularPowerLoaded = pow(2.0f, specularSample.a * 13.0f);
         }
     }
      
-    const float shadowLevel = Shadow(spos);
+    const float shadowLevel = Shadow(spos, ShadowMap, ShadowSampler);
     if (shadowLevel != 0.0f)
     {
-        for (int i = 0; i < LightCount; i++)
+        for (int i = 0; i < PointLight.LightCount; i++)
         {
     
 	        // fragment to light vector data
-            const LightVectorData lv = CalculateLightVectorData(viewLightPos[i], viewFragPos);
+            const LightVectorData lv = CalculateLightVectorData(PointLight.viewLightPos[i], viewFragPos);
     
 	        // attenuation
-            const float att = Attenuate(attConst[i], attLin[i], attQuad[i], lv.dist);
+            const float att = Attenuate(PointLight.attConst[i], PointLight.attLin[i], PointLight.attQuad[i], lv.dist);
     
 	        // diffuse
-            diffuse += Diffuse(diffuseColor[i], diffuseIntensity[i], att, lv.dir, viewNormal);
+            diffuse += Diffuse(PointLight.diffuseColor[i], PointLight.diffuseIntensity[i], att, lv.dir, viewNormal);
     
             // specular
             specularReflected += Speculate(
-                diffuseColor[i] * diffuseIntensity[i] * specularReflectedColor, mat.specularWeight, viewNormal,
+                PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
                 lv.vec, viewFragPos, att, specularPowerLoaded);
             
         }
@@ -123,16 +101,16 @@ float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
     {
         
 	    // diffuse
-        diffuse += Diffuse(ddiffuseColor[i], ddiffuseIntensity[i], 1.0f, -normalize(viewLightDir[i]), viewNormal);
+        diffuse += Diffuse(DirectionalLight.diffuseColor[i], DirectionalLight.diffuseIntensity[i], 1.0f, -normalize(DirectionalLight.viewLightDir[i]), viewNormal);
     
         // specular
         specularReflected += Speculate(
-            ddiffuseColor[i] * ddiffuseIntensity[i] * specularReflectedColor, mat.specularWeight, viewNormal,
-            -normalize(viewLightDir[i]), viewFragPos, 1.0f, specularPowerLoaded);
+            DirectionalLight.diffuseColor[i] * DirectionalLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
+            -normalize(DirectionalLight.viewLightDir[i]), viewFragPos, 1.0f, specularPowerLoaded);
     }
 
 	// final color
-    float3 litColor = saturate((diffuse + ambient) * materialColor + specularReflected);   
-    return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), FogStart, FogRange, FogColor, litColor), 1.0f);
+    float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   
+    return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
 
 }
