@@ -14,97 +14,6 @@ namespace Marvel {
 		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 		// create vertex buffer
-		setVertices(graphics, name, width, height, nearZ, farZ);
-
-		// create index buffer
-		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
-			0, 1,
-			1, 2,
-			2, 3,
-			3, 0,
-			4, 5,
-			5, 6,
-			6, 7,
-			7, 4,
-			0, 4,
-			1, 5,
-			2, 6,
-			3, 7,
-		}, false);
-
-		mvTechnique technique;
-		{
-			mvStep step("lambertian");
-
-			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-			auto& root = layout.getRoot();
-			root->add(Float3, std::string("materialColor"));
-			root->finalize(0);
-
-			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
-
-			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f,0.2f,0.2f });
-
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
-
-			step.addBuffer(buf);
-
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
-			step.addBindable(vshader);
-
-			mvVertexLayout vl;
-			vl.append(ElementType::Position3D);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
-			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			//step.addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthReversed));
-
-			
-			technique.addStep(std::move(step));
-			
-		}
-
-		{
-			mvStep step("overlay");
-
-			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
-			auto& root = layout.getRoot();
-			root->add(Float3, std::string("materialColor"));
-			root->finalize(0);
-
-			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
-
-			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 0.0f,1.0f,0.2f });
-
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
-
-			step.addBuffer(buf);
-
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
-			step.addBindable(vshader);
-
-			mvVertexLayout vl;
-			vl.append(ElementType::Position3D);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
-			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
-			step.addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthReversed));
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-
-			technique.addStep(std::move(step));
-		}
-
-		addTechnique(technique);
-
-	}
-
-	void mvFrustum::setVertices(mvGraphics& graphics, const std::string& name, float width, float height, float nearZ, float farZ)
-	{
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
 
@@ -125,17 +34,66 @@ namespace Marvel {
 		const float farX = nearX * zRatio;
 		const float farY = nearY * zRatio;
 
-		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{
-			-nearX,  nearY, nearZ,
-			 nearX,  nearY, nearZ,
-			 nearX, -nearY, nearZ,
-			-nearX, -nearY, nearZ,
-			 -farX,   farY,  farZ,
-			  farX,   farY,  farZ,
-			  farX,  -farY,  farZ,
-			 -farX,  -farY,  farZ
+		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name+"frust", std::vector<float>{
+			-nearX, nearY, nearZ,
+				nearX, nearY, nearZ,
+				nearX, -nearY, nearZ,
+				-nearX, -nearY, nearZ,
+				-farX, farY, farZ,
+				farX, farY, farZ,
+				farX, -farY, farZ,
+				-farX, -farY, farZ
 
 		}, vl);
+
+		 //create index buffer
+		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name + "frust", std::vector<unsigned int>{
+			0u, 1u,
+			1u, 2u,
+			2u, 3u,
+			3u, 0u,
+			4u, 5u,
+			5u, 6u,
+			6u, 7u,
+			7u, 4u,
+			0u, 4u,
+			1u, 5u,
+			2u, 6u,
+			3u, 7u,
+		}, false);
+
+		mvTechnique technique;
+
+		{
+			mvStep step("overlay");
+
+			mvBufferLayout layout(std::make_shared<mvBufferLayoutEntry>(Struct));
+			auto& root = layout.getRoot();
+			root->add(Float3, std::string("materialColor"));
+			root->finalize(0);
+
+			std::unique_ptr<mvDynamicBuffer> bufferRaw = std::make_unique<mvDynamicBuffer>(std::move(layout));
+
+			bufferRaw->getElement("materialColor").setIfExists(glm::vec3{ 1.0f,1.0f,0.2f });
+
+			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
+
+			step.addBuffer(buf);
+
+			// create vertex shader
+			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
+			step.addBindable(vshader);
+
+			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
+			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+			technique.addStep(std::move(step));
+		}
+
+		addTechnique(technique);
+
 	}
 
 	void mvFrustum::setPos(float x, float y, float z)

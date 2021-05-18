@@ -26,7 +26,7 @@ namespace Marvel {
 		m_proj(graphics, name, width, height, nearZ, farZ)
 	{
 		m_proj.setPos(homePos.x, homePos.y, homePos.z);
-		m_proj.setRotation(0.0f, 0.0f, 0.0f);
+		m_proj.setRotation(homePitch, homeYaw, 0.0f);
 	}
 
 	void mvCamera::setPos(float x, float y, float z)
