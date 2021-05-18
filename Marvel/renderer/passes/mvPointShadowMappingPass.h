@@ -13,14 +13,14 @@ namespace Marvel {
 	class mvCubeDepthTexture;
 
 	//-----------------------------------------------------------------------------
-	// mvLambertianPass
+	// mvPointShadowMappingPass
 	//-----------------------------------------------------------------------------
-	class mvShadowMappingPass : public mvPass
+	class mvPointShadowMappingPass : public mvPass
 	{
 
 	public:
 
-		mvShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot);
+		mvPointShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot);
 
 		void execute(mvGraphics& graphics) const override;
 

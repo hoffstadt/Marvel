@@ -1,11 +1,11 @@
-#include "mvShadowMappingPass.h"
+#include "mvPointShadowMappingPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCamera.h"
 
 namespace Marvel {
 
-	mvShadowMappingPass::mvShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot)
+	mvPointShadowMappingPass::mvPointShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot)
 		:
 		mvPass(name)
 	{
@@ -37,7 +37,7 @@ namespace Marvel {
 		m_depthStencil = m_depthCube->getDepthBuffer(0);
 	}
 
-	void mvShadowMappingPass::execute(mvGraphics& graphics) const
+	void mvPointShadowMappingPass::execute(mvGraphics& graphics) const
 	{
 		graphics.setProjection(glm::perspectiveLH(PI / 2.0f, 1.0f, 0.5f, 100.0f));
 		for (size_t i = 0; i < 6; i++)
@@ -53,7 +53,7 @@ namespace Marvel {
 
 			d->clear(graphics);
 
-			const_cast<mvShadowMappingPass*>(this)->m_depthStencil = std::move(d);
+			const_cast<mvPointShadowMappingPass*>(this)->m_depthStencil = std::move(d);
 			m_depthStencil->bindAsBuffer(graphics);
 
 			for (auto& bind : m_bindables)
@@ -64,7 +64,7 @@ namespace Marvel {
 		}
 	}
 
-	void mvShadowMappingPass::bindShadowCamera(const mvCamera& cam)
+	void mvPointShadowMappingPass::bindShadowCamera(const mvCamera& cam)
 	{
 		m_shadowCamera = &cam;
 	}

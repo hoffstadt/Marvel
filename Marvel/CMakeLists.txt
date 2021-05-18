@@ -74,7 +74,7 @@ target_sources(marvel
 		"renderer/passes/mvLambertianPass.cpp"
 		"renderer/passes/mvSkyboxPass.cpp"
 		"renderer/passes/mvOverlayPass.cpp"
-		"renderer/passes/mvShadowMappingPass.cpp"
+		"renderer/passes/mvPointShadowMappingPass.cpp"
 		"renderer/passes/mvClearBufferPass.cpp"
 
 		#implot

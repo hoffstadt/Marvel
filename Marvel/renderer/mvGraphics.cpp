@@ -153,6 +153,7 @@ namespace Marvel {
         m_deviceContext->PSSetShaderResources(3, 6, pSRV); // depth map
         m_deviceContext->PSSetShaderResources(4, 6, pSRV); // depth map
         m_deviceContext->PSSetShaderResources(5, 6, pSRV); // depth map
+        m_deviceContext->PSSetShaderResources(6, 1, pSRV); // depth map
 
         m_imguiManager->beginFrame();
     }

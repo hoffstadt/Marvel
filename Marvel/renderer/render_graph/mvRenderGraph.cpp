@@ -5,7 +5,7 @@
 #include "mvPass.h"
 #include "mvLambertianPass.h"
 #include "mvSkyboxPass.h"
-#include "mvShadowMappingPass.h"
+#include "mvPointShadowMappingPass.h"
 #include "mvClearBufferPass.h"
 #include "mvOverlayPass.h"
 #include "mvGraphics.h"
@@ -38,21 +38,22 @@ namespace Marvel {
 			addPass(std::move(pass));
 		}
 
-
 		{
-			auto pass = std::make_unique<mvShadowMappingPass>(graphics, "shadow1", 3);
+			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow1", 3);
 			addPass(std::move(pass));
 		}
 
 		{
-			auto pass = std::make_unique<mvShadowMappingPass>(graphics, "shadow2", 4);
+			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow2", 4);
 			addPass(std::move(pass));
 		}
 
 		{
-			auto pass = std::make_unique<mvShadowMappingPass>(graphics, "shadow3", 5);
+			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow3", 5);
 			addPass(std::move(pass));
 		}
+
+
 
 		{
 			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");

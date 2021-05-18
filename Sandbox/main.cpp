@@ -4,7 +4,7 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
-#include "mvShadowMappingPass.h"
+#include "mvPointShadowMappingPass.h"
 #include "mvLambertianPass.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
@@ -34,8 +34,7 @@ int main()
     // create render graph
     auto graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
 
-    mvDirectionLightManager dlightManager(graphics);
-    dlightManager.addLight(graphics, { 0.0f, -1.0f, 0.0f });
+    auto directionLight = mvDirectionLight(graphics, { 0.0f, -1.0f, 0.0f });
 
     mvPointLightManager lightManager(graphics);
     lightManager.addLight(graphics, "light0", { 0.0f, 5.0f, 0.0f });
@@ -85,9 +84,9 @@ int main()
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera1(*lightManager.getLight(0).getCamera());
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera2(*lightManager.getLight(1).getCamera());
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera3(*lightManager.getLight(2).getCamera());
-            static_cast<mvShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
-            static_cast<mvShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
-            static_cast<mvShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
+            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
+            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
+            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
         }
 
         const auto dt = timer.mark() * 1.0f;
@@ -100,14 +99,14 @@ int main()
         static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera1(*lightManager.getLight(0).getCamera());
         static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera2(*lightManager.getLight(1).getCamera());
         static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera3(*lightManager.getLight(2).getCamera());
-        static_cast<mvShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
-        static_cast<mvShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
-        static_cast<mvShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
+        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
+        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
+        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
 
         graph->bind(graphics);
 
         lightManager.bind(graphics, camera.getMatrix());
-        dlightManager.bind(graphics, camera.getMatrix());
+        directionLight.bind(graphics, camera.getMatrix());
 
         cube.submit(*graph);
         model.submit(*graph);
@@ -120,7 +119,7 @@ int main()
 
         probe.spawnWindow(model);
         lightManager.show_imgui_windows();
-        dlightManager.show_imgui_windows();
+        directionLight.show_imgui_window();
         graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
 

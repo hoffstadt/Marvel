@@ -9,6 +9,7 @@ TextureCube ShadowMap1      : register(t3);
 TextureCube ShadowMap2      : register(t4);
 TextureCube ShadowMap3      : register(t5);
 
+
 // samplers
 SamplerState           Sampler       : register(s0);
 SamplerComparisonState ShadowSampler : register(s1);
@@ -16,23 +17,8 @@ SamplerComparisonState ShadowSampler : register(s1);
 // constant buffers
 cbuffer mvPointLightManagerCBuf : register(b0) { mvPointLightManager PointLight; };
 cbuffer mvMaterialCBuf          : register(b1) { mvMaterial material; };
-cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLightManager DirectionalLight; };
+cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLight DirectionalLight; };
 cbuffer mvSceneCBuf             : register(b3) { mvScene Scene; };
-
-//TextureCube GetShadowMap(int index)
-//{
-//    switch (index)
-//    {
-//        case(0):
-//            return ShadowMap1;
-//        case(1):
-//            return ShadowMap2;
-//        case(2):
-//            return ShadowMap3;
-//        default:
-//            return ShadowMap1;
-//    }
-//}
 
 float GetShadowLevel(int index, float4 pos)
 {
@@ -131,20 +117,16 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         }
   
     }
-        
     
     // directional lights
-    for (int i = 0; i < DirectionalLight.LightCount; i++)
-    {
-        
-	    // diffuse
-        diffuse += Diffuse(DirectionalLight.diffuseColor[i], DirectionalLight.diffuseIntensity[i], 1.0f, -normalize(DirectionalLight.viewLightDir[i]), viewNormal);
+
+	// diffuse
+    diffuse += Diffuse(DirectionalLight.diffuseColor, DirectionalLight.diffuseIntensity, 1.0f, -normalize(DirectionalLight.viewLightDir), viewNormal);
     
-        // specular
-        specularReflected += Speculate(
-            DirectionalLight.diffuseColor[i] * DirectionalLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
-            -normalize(DirectionalLight.viewLightDir[i]), viewFragPos, 1.0f, specularPowerLoaded);
-    }
+    // specular
+    specularReflected += Speculate(
+        DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor, material.specularWeight, viewNormal,
+        -normalize(DirectionalLight.viewLightDir), viewFragPos, 1.0f, specularPowerLoaded);
 
 	// final color
     float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   

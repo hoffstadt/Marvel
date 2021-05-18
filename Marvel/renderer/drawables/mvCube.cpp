@@ -142,6 +142,7 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			technique.addStep(step);
 		}
+
 		addTechnique(technique);
 
 	}

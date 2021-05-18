@@ -181,6 +181,7 @@ namespace Marvel {
 				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 				map.addStep(step);
 			}
+
 			m_techniques.push_back(map);
 		}
 		

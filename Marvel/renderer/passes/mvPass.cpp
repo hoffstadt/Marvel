@@ -8,7 +8,7 @@ namespace Marvel {
 	mvPass::mvPass(const std::string& name)
 	{
 		m_name = name;
-		m_bindables.reserve(12);
+		m_bindables.reserve(16);
 	}
 
 	void mvPass::addJob(mvJob job)
