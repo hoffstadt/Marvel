@@ -48,8 +48,6 @@ namespace Marvel {
 
 		std::shared_ptr<mvIndexBuffer>             m_indexBuffer;
 		std::shared_ptr<mvVertexBuffer>            m_vertexBuffer;
-		//std::shared_ptr<mvTransformConstantBuffer> m_transforms;
-		std::shared_ptr<mvTopology>                m_topology;
 		std::vector<mvTechnique>                   m_techniques;
 
 	};

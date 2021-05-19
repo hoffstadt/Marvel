@@ -21,6 +21,8 @@ namespace Marvel
 
 		void bind(mvGraphics& graphics) override;
 
+		void set(mvGraphics& graphics) { bind(graphics); }
+
 		void update(mvGraphics& graphics);
 
 		bool isDynamic() const;

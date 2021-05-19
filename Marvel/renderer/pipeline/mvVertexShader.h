@@ -1,7 +1,6 @@
 #pragma once
 #include <d3d11.h>
 #include "mvComPtr.h"
-#include "mvBindable.h"
 
 namespace Marvel {
 
@@ -13,20 +12,20 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// mvVertexShader
 	//-----------------------------------------------------------------------------
-	class mvVertexShader : public mvBindable
+	class mvVertexShader
 	{
 
 	public:
 
-		static std::shared_ptr<mvVertexShader> Request(mvGraphics& graphics, const std::string& path);
-		static std::string                     GenerateUniqueIdentifier(const std::string& path);
+		static mvVertexShader* Request(mvGraphics& graphics, const std::string& path);
+		static std::string     GenerateUniqueIdentifier(const std::string& path);
 
 	public:
 
 		mvVertexShader(mvGraphics& graphics, const std::string& path);
 
-		void bind(mvGraphics& graphics) override;
-		std::string getUniqueIdentifier() const override;
+		void set(mvGraphics& graphics);
+		std::string getUniqueIdentifier() const;
 
 		ID3DBlob* getBlob() const;
 

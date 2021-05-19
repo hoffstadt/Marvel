@@ -1,10 +1,9 @@
 #pragma once
-#include "mvBindable.h"
 #include "mvGraphics.h"
 
 namespace Marvel
 {
-	class mvViewport : public mvBindable
+	class mvViewport
 	{
 	public:
 		mvViewport(mvGraphics& graphics)
@@ -22,7 +21,7 @@ namespace Marvel
 			vp.TopLeftX = 0.0f;
 			vp.TopLeftY = 0.0f;
 		}
-		void bind(mvGraphics& graphics) override
+		void set(mvGraphics& graphics)
 		{
 			graphics.getContext()->RSSetViewports(1u, &vp);
 		}

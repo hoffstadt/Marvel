@@ -3,18 +3,24 @@
 #include <assert.h>
 #include "mvGraphics.h"
 #include "mvMarvelUtils.h"
-#include "mvBindableRegistry.h"
 
 namespace Marvel {
 
-    std::shared_ptr<mvVertexShader> mvVertexShader::Request(mvGraphics& graphics, const std::string& path)
+    mvVertexShader* mvVertexShader::Request(mvGraphics& graphics, const std::string& path)
     {
-        std::string ID = mvVertexShader::GenerateUniqueIdentifier(path);
-        if (auto bindable = mvBindableRegistry::GetBindable(ID))
-            return std::dynamic_pointer_cast<mvVertexShader>(bindable);
-        auto bindable = std::make_shared<mvVertexShader>(graphics, path);
-        mvBindableRegistry::AddBindable(ID, bindable);
-        return bindable;
+        static std::vector<std::unique_ptr<mvVertexShader>> states;
+
+        std::string ID = GenerateUniqueIdentifier(path);
+
+        for (auto& state : states)
+        {
+            if (state->getUniqueIdentifier() == ID)
+                return state.get();
+        }
+
+        states.push_back(std::move(std::make_unique<mvVertexShader>(graphics, path)));
+
+        return states.back().get();
     }
 
     std::string mvVertexShader::GenerateUniqueIdentifier(const std::string& path)
@@ -43,7 +49,7 @@ namespace Marvel {
         assert(SUCCEEDED(hResult));
 	}
 
-    void mvVertexShader::bind(mvGraphics& graphics)
+    void mvVertexShader::set(mvGraphics& graphics)
     {
         graphics.getContext()->VSSetShader(m_vertexShader.Get(), nullptr, 0);
     }

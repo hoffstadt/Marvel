@@ -1,7 +1,11 @@
 #pragma once
-#include <d3d11.h>
+
+#include <d3d11_1.h>
+#include <vector>
+#include <string>
+#include <memory>
 #include "mvComPtr.h"
-#include "mvBindable.h"
+
 
 namespace Marvel {
 
@@ -11,25 +15,30 @@ namespace Marvel {
 	class mvGraphics;
 
 	//-----------------------------------------------------------------------------
-	// mvGeometryShader
+	// mvBlendState
 	//-----------------------------------------------------------------------------
-	class mvGeometryShader : public mvBindable
+	class mvBlendState
 	{
 
 	public:
 
-		mvGeometryShader(mvGraphics& graphics, const char* path);
+		static mvBlendState* Request(mvGraphics& graphics, bool blend);
+		static std::string GenerateUniqueIdentifier(bool blend);
 
-        void bind(mvGraphics& graphics) override;
+	public:
 
-        ID3DBlob* getBlob();
-
+		void set(mvGraphics& graphics);
 
 	private:
 
-		mvComPtr<ID3D11GeometryShader> m_geometryShader;
-		mvComPtr<ID3DBlob>             m_blob;
+		mvBlendState(mvGraphics& graphics, bool blend);
 
+		std::string getUniqueIdentifier() const;
+
+	private:
+
+		mvComPtr<ID3D11BlendState> m_state;
+		bool m_blend = false;
 	};
 
 }

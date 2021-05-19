@@ -2,7 +2,6 @@
 #include "mvGraphics.h"
 #include "mvIndexBuffer.h"
 #include "mvVertexBuffer.h"
-#include "mvTopology.h"
 #include "mvRenderGraph.h"
 
 namespace Marvel {
@@ -11,7 +10,6 @@ namespace Marvel {
 	{
 		m_indexBuffer->bind(graphics);
 		m_vertexBuffer->bind(graphics);
-		m_topology->bind(graphics);
 	}
 
 	void mvDrawable::addTechnique(mvTechnique technique)

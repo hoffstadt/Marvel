@@ -3,7 +3,6 @@
 #include <assert.h>
 #include "mvMarvelUtils.h"
 #include "mvGraphics.h"
-#include "mvBindable.h"
 
 namespace Marvel {
 
@@ -30,7 +29,7 @@ namespace Marvel {
 
 		}
 
-        void mvGeometryShader::bind(mvGraphics& graphics)
+        void mvGeometryShader::set(mvGraphics& graphics)
         {
             graphics.getContext()->GSSetShader(m_geometryShader.Get(), nullptr, 0);
         }

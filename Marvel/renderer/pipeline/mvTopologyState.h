@@ -1,6 +1,6 @@
 #pragma once
-#include <d3d11.h>
-#include "mvBindable.h"
+
+#include <d3d11_1.h>
 
 namespace Marvel {
 
@@ -10,21 +10,20 @@ namespace Marvel {
 	class mvGraphics;
 
 	//-----------------------------------------------------------------------------
-	// mvTopology
+	// mvTopologyState
 	//-----------------------------------------------------------------------------
-	class mvTopology : public mvBindable
+	class mvTopologyState
 	{
 
 	public:
 
-		mvTopology(mvGraphics& graphics, D3D11_PRIMITIVE_TOPOLOGY type);
+		mvTopologyState(D3D11_PRIMITIVE_TOPOLOGY type);
 
-		void bind(mvGraphics& graphics) override;
+		void set(mvGraphics& graphics);
 
 	private:
 
 		D3D11_PRIMITIVE_TOPOLOGY m_type;
-
 	};
 
 }

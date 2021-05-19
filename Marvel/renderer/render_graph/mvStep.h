@@ -5,6 +5,7 @@
 #include <string>
 #include "mvBindable.h"
 #include "mvBuffer.h"
+#include "mvPipeline.h"
 
 namespace Marvel {
 
@@ -44,6 +45,7 @@ namespace Marvel {
 		std::vector<std::shared_ptr<mvBuffer>>   m_buffers;
 		mvPass*                                  m_pass = nullptr;
 		std::string                              m_targetPass;
+		mvPipeline*                              m_pipeline;
 
 	};
 

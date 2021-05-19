@@ -8,8 +8,6 @@ namespace Marvel {
 
 	void mvBindableRegistry::Initialize(mvGraphics& graphics)
 	{
-		// pixel shaders
-		m_bindables.try_emplace("null_ps", std::make_shared<mvNullPixelShader>(graphics));
 	}
 
 	std::shared_ptr<mvBindable> mvBindableRegistry::GetBindable(const std::string& ID)

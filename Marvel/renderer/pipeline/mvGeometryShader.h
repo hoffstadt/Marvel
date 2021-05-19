@@ -1,6 +1,6 @@
 #pragma once
 #include <d3d11.h>
-#include "mvBindable.h"
+#include "mvComPtr.h"
 
 namespace Marvel {
 
@@ -10,17 +10,24 @@ namespace Marvel {
 	class mvGraphics;
 
 	//-----------------------------------------------------------------------------
-	// mvNullGeometryShader
+	// mvGeometryShader
 	//-----------------------------------------------------------------------------
-	class mvNullGeometryShader : public mvBindable
+	class mvGeometryShader
 	{
 
 	public:
 
-		mvNullGeometryShader(mvGraphics& graphics);
+		mvGeometryShader(mvGraphics& graphics, const char* path);
 
-        void bind(mvGraphics& graphics) override;
+        void set(mvGraphics& graphics);
 
+        ID3DBlob* getBlob();
+
+
+	private:
+
+		mvComPtr<ID3D11GeometryShader> m_geometryShader;
+		mvComPtr<ID3DBlob>             m_blob;
 
 	};
 

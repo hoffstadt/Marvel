@@ -104,6 +104,8 @@ namespace Marvel {
 			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
 			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));
 
+			mvPipelineInfo pipelineInfo;
+
 
 			technique.addStep(step);
 		}

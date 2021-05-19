@@ -1,20 +1,27 @@
 #include "mvPixelShader.h"
 #include <d3dcompiler.h>
 #include <assert.h>
+#include <vector>
 #include "mvMarvelUtils.h"
 #include "mvGraphics.h"
-#include "mvBindableRegistry.h"
 
 namespace Marvel {
 
-    std::shared_ptr<mvPixelShader> mvPixelShader::Request(mvGraphics& graphics, const std::string& path)
+    mvPixelShader* mvPixelShader::Request(mvGraphics& graphics, const std::string& path)
     {
-        std::string ID = mvPixelShader::GenerateUniqueIdentifier(path);
-        if (auto bindable = mvBindableRegistry::GetBindable(ID))
-            return std::dynamic_pointer_cast<mvPixelShader>(bindable);
-        auto bindable = std::make_shared<mvPixelShader>(graphics, path);
-        mvBindableRegistry::AddBindable(ID, bindable);
-        return bindable;
+        static std::vector<std::unique_ptr<mvPixelShader>> states;
+
+        std::string ID = GenerateUniqueIdentifier(path);
+
+        for (auto& state : states)
+        {
+            if (state->getUniqueIdentifier() == ID)
+                return state.get();
+        }
+
+        states.push_back(std::move(std::make_unique<mvPixelShader>(graphics, path)));
+
+        return states.back().get();
     }
 
     std::string mvPixelShader::GenerateUniqueIdentifier(const std::string& path)
@@ -44,7 +51,7 @@ namespace Marvel {
 
     }
 
-    void mvPixelShader::bind(mvGraphics& graphics)
+    void mvPixelShader::set(mvGraphics& graphics)
     {
         graphics.getContext()->PSSetShader(m_pixelShader.Get(), nullptr, 0);
     }
