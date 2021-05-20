@@ -12,12 +12,6 @@ namespace Marvel {
 
 		UINT size = 1000;
 		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, slot);
-
-		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
-		addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));
-		addBindable(std::make_shared<mvViewport>(graphics, size, size));
-		addBindable(std::make_shared<mvShadowRasterizer>(graphics, 50, 2.0f, 0.1f));
-
 		issueProduct(std::make_unique<mvBindPassProduct<mvCubeDepthTexture>>("map", m_depthCube));
 		
 		m_cameraDirections.push_back(glm::vec3{ 1.0f, 0.0f, 0.0f });

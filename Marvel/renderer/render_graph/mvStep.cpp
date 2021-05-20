@@ -28,6 +28,7 @@ namespace Marvel {
 
 	void mvStep::bind(mvGraphics& graphics, const mvDrawable* parent) const
 	{
+		m_pipeline->set(graphics);
 
 		for (auto& buffer : m_buffers)
 		{
@@ -43,6 +44,11 @@ namespace Marvel {
 	{
 		assert(m_pass != nullptr);
 		m_pass->addJob(mvJob(this, &drawable));
+	}
+
+	void mvStep::registerPipeline(mvGraphics& graphics, mvPipelineInfo& info)
+	{
+		m_pipeline = mvPipeline::Request(graphics, info);
 	}
 
 }

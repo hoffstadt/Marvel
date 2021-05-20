@@ -18,6 +18,7 @@ target_include_directories(sandbox
 		"../Marvel/shaders"
 		"../Marvel/renderer"
 		"../Marvel/geometry"
+		"../Marvel/renderer/pipeline"
 		"../Marvel/renderer/bindables"
 		"../Marvel/renderer/buffers"
 		"../Marvel/renderer/drawables"

@@ -10,9 +10,6 @@ namespace Marvel {
 	mvPointCloud::mvPointCloud(mvGraphics& graphics, const std::string& name, glm::vec3 color)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -38,13 +35,20 @@ namespace Marvel {
 
 		step.addBuffer(buf);
 
-		// create vertex shader
-		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
-		step.addBindable(vshader);
-		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
-		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+		mvPipelineInfo pipeline;
+
+		pipeline.vertexShader = graphics.getShaderRoot() + "Solid_VS.hlsl";
+		pipeline.pixelShader = graphics.getShaderRoot() + "Solid_PS.hlsl";
+		pipeline.geometryShader = "";
+		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+		pipeline.vertexLayout = vl;
+		pipeline.rasterizerStateCull = false;
+		pipeline.rasterizerStateHwPCF = false;
+		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+		step.registerPipeline(graphics, pipeline);
 
 		mvTechnique technique;
 		technique.addStep(step);

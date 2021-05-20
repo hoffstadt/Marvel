@@ -15,7 +15,7 @@ namespace Marvel {
 				return state.get();
 		}
 
-		states.push_back(std::move(std::make_unique<mvSamplerState>(graphics, type, addressing, slot, hwPcf)));
+		states.emplace_back(new mvSamplerState(graphics, type, addressing, slot, hwPcf));
 
 		return states.back().get();
 	}
@@ -36,22 +36,6 @@ namespace Marvel {
 	{
 		// Create Sampler State
 		D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
-		samplerDesc.Filter = [type]() {
-			switch (type)
-			{
-			case Type::Anisotropic:
-				return D3D11_FILTER_ANISOTROPIC;
-
-			case Type::Point:
-				return D3D11_FILTER_MIN_MAG_MIP_POINT;
-
-			case Type::Bilinear:
-				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-
-			default:
-				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-			}
-		}();
 
 		switch (addressing)
 		{
@@ -77,8 +61,49 @@ namespace Marvel {
 			break;
 		}
 
-		if(hwPcf)
+		if (hwPcf)
+		{
+			samplerDesc.BorderColor[0] = 1.0f;
 			samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+			samplerDesc.Filter = [type]() {
+				switch (type)
+				{
+				case Type::Anisotropic:
+					return D3D11_FILTER_COMPARISON_ANISOTROPIC;
+
+				case Type::Point:
+					return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+
+				case Type::Bilinear:
+					return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+
+				default:
+					return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+				}
+			}();
+		}
+		else
+		{
+			samplerDesc.Filter = [type]() {
+				switch (type)
+				{
+				case Type::Anisotropic:
+					return D3D11_FILTER_ANISOTROPIC;
+
+				case Type::Point:
+					return D3D11_FILTER_MIN_MAG_MIP_POINT;
+
+				case Type::Bilinear:
+					return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+
+				default:
+					return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+				}
+			}();
+
+			samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+		}
 
 		HRESULT hResult = graphics.getDevice()->CreateSamplerState(&samplerDesc, m_state.GetAddressOf());
 		assert(SUCCEEDED(hResult));

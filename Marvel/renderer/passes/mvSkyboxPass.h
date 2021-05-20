@@ -11,6 +11,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvPipeline;
 
 	//-----------------------------------------------------------------------------
 	// mvLambertianPass
@@ -28,6 +29,7 @@ namespace Marvel {
 
 		std::shared_ptr<mvVertexBuffer> m_vertexBuffer;
 		std::shared_ptr<mvIndexBuffer>  m_indexBuffer;
+		mvPipeline*                     m_pipeline;
 
 	};
 

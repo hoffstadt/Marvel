@@ -9,7 +9,6 @@ TextureCube ShadowMap1      : register(t3);
 TextureCube ShadowMap2      : register(t4);
 TextureCube ShadowMap3      : register(t5);
 
-
 // samplers
 SamplerState           Sampler       : register(s0);
 SamplerComparisonState ShadowSampler : register(s1);

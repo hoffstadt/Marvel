@@ -49,9 +49,6 @@ namespace Marvel {
 				m_materialBuffer.hasAlpha = false;
 			}
 				
-
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, m_materialBuffer.hasAlpha));
-
 			// specular
 			if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 			{
@@ -78,18 +75,37 @@ namespace Marvel {
 				m_materialBuffer.useNormalMap = false;
 			}
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
+			mvPipelineInfo pipeline;
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.vertexLayout = m_layout;
+			pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+		    pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON : mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
 
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
-			//step.addBindable(mvBindableRegistry::GetBindable("transCBuf"));
+			mvSamplerStateInfo sampler
+			{
+				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
+				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP,
+				0u,
+				false
+			};
+
+			mvSamplerStateInfo shadowSampler
+			{
+				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT,
+				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER,
+				1u,
+				true
+			};
+
+			pipeline.samplers.push_back(sampler);
+			pipeline.samplers.push_back(shadowSampler);
+			step.registerPipeline(graphics, pipeline);
+
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, m_materialBuffer.hasAlpha));
-			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
-			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
-
 			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
 
 			phong.addStep(step);
@@ -101,11 +117,21 @@ namespace Marvel {
 			{
 				mvStep step("shadow1");
 
-				// create vertex shader
-				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-				step.addBindable(vshader);
-				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				mvPipelineInfo pipeline;
+				pipeline.viewportWidth = 1000;
+				pipeline.viewportHeight = 1000;
+				pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+				pipeline.geometryShader = "";
+				pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+				pipeline.vertexLayout = m_layout;
+				pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON : mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+				pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+				pipeline.rasterizerStateHwPCF = true;
+				pipeline.rasterizerStateDepthBias = 50;
+				pipeline.rasterizerStateSlopeBias = 2.0f;
+				pipeline.rasterizerStateClamp = 0.1f;
+
 				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
 				{
 					aiString texFileName;
@@ -113,27 +139,46 @@ namespace Marvel {
 					{
 						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 						step.addBindable(texture);
-						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
-						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+						pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
+
+						mvSamplerStateInfo sampler
+						{
+							mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
+							mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP,
+							0u,
+							false
+						};
+
+						pipeline.samplers.push_back(sampler);
 					}
 
 				}
-				else
-				{
-					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-				}
+
+				step.registerPipeline(graphics, pipeline);
+
 				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
 				map.addStep(step);
 			}
 
 			{
 				mvStep step("shadow2");
 
-				// create vertex shader
-				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-				step.addBindable(vshader);
-				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				mvPipelineInfo pipeline;
+				pipeline.viewportWidth = 1000;
+				pipeline.viewportHeight = 1000;
+				pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+				pipeline.geometryShader = "";
+				pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+				pipeline.vertexLayout = m_layout;
+				pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON : mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+				pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+				pipeline.rasterizerStateHwPCF = true;
+				pipeline.rasterizerStateDepthBias = 50;
+				pipeline.rasterizerStateSlopeBias = 2.0f;
+				pipeline.rasterizerStateClamp = 0.1f;
+
 				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
 				{
 					aiString texFileName;
@@ -141,27 +186,46 @@ namespace Marvel {
 					{
 						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 						step.addBindable(texture);
-						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
-						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+						pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
+
+						mvSamplerStateInfo sampler
+						{
+							mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
+							mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP,
+							0u,
+							false
+						};
+
+						pipeline.samplers.push_back(sampler);
 					}
 
 				}
-				else
-				{
-					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-				}
+
+				step.registerPipeline(graphics, pipeline);
+
 				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
 				map.addStep(step);
 			}
 
 			{
 				mvStep step("shadow3");
 
-				// create vertex shader
-				auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-				step.addBindable(vshader);
-				step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, m_layout, *vshader));
-				step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, m_materialBuffer.hasAlpha));
+				mvPipelineInfo pipeline;
+				pipeline.viewportWidth = 1000;
+				pipeline.viewportHeight = 1000;
+				pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+				pipeline.geometryShader = "";
+				pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+				pipeline.vertexLayout = m_layout;
+				pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON : mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+				pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+				pipeline.rasterizerStateHwPCF = true;
+				pipeline.rasterizerStateDepthBias = 50;
+				pipeline.rasterizerStateSlopeBias = 2.0f;
+				pipeline.rasterizerStateClamp = 0.1f;
+
 				if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
 				{
 					aiString texFileName;
@@ -169,16 +233,25 @@ namespace Marvel {
 					{
 						auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 						step.addBindable(texture);
-						step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongShadow_PS.hlsl"));
-						step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+						pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
+
+						mvSamplerStateInfo sampler
+						{
+							mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
+							mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP,
+							0u,
+							false
+						};
+
+						pipeline.samplers.push_back(sampler);
 					}
 
 				}
-				else
-				{
-					step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-				}
+
+				step.registerPipeline(graphics, pipeline);
+
 				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
 				map.addStep(step);
 			}
 

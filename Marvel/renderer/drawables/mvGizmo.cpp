@@ -10,9 +10,6 @@ namespace Marvel {
 	mvGizmo::mvGizmo(mvGraphics& graphics, const std::string& name)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -45,13 +42,21 @@ namespace Marvel {
 
 		mvStep step("overlay");
 
-		// create vertex shader
-		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Gizmo_vs.hlsl");
-		step.addBindable(vshader);
-		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Gizmo_ps.hlsl"));
-		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+		mvPipelineInfo pipeline;
+
+		pipeline.vertexShader = graphics.getShaderRoot() + "Gizmo_vs.hlsl";
+		pipeline.pixelShader = graphics.getShaderRoot() + "Gizmo_ps.hlsl";
+		pipeline.geometryShader = "";
+		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED;
+		pipeline.vertexLayout = vl;
+		pipeline.rasterizerStateCull = false;
+		pipeline.rasterizerStateHwPCF = false;
+		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+		step.registerPipeline(graphics, pipeline);
 
 		mvTechnique technique;
 		technique.addStep(std::move(step));

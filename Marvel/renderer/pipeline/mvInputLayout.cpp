@@ -16,7 +16,7 @@ namespace Marvel {
 				return state.get();
 		}
 
-		states.push_back(std::move(std::make_unique<mvInputLayout>(graphics, vertexLayout, vertexShader)));
+		states.emplace_back(new mvInputLayout(graphics, vertexLayout, vertexShader));
 
 		return states.back().get();
 	}

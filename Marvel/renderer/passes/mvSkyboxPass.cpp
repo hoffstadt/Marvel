@@ -2,6 +2,7 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCommonBuffers.h"
+#include "mvPipeline.h"
 
 namespace Marvel {
 
@@ -9,14 +10,36 @@ namespace Marvel {
 		:
 		mvPass(name)
 	{
+
+		// create vertex layout
+		mvVertexLayout vl;
+		vl.append(ElementType::Position3D);
+
+		mvPipelineInfo pipeline;
+
+		pipeline.vertexShader = graphics.getShaderRoot() + "Skybox_VS.hlsl";
+		pipeline.pixelShader = graphics.getShaderRoot() + "Skybox_PS.hlsl";
+		pipeline.geometryShader = "";
+		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		pipeline.vertexLayout = vl;
+		pipeline.rasterizerStateCull = false;
+		pipeline.rasterizerStateHwPCF = false;
+		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_FIRST;
+
+		mvSamplerStateInfo sampler
+		{
+			mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_BILINEAR,
+			mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER,
+			0u,
+			false
+		};
+
+		pipeline.samplers.push_back(sampler);
+
+		m_pipeline = mvPipeline::Request(graphics, pipeline);
+
 		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
-		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::DepthFirst));
-		addBindable(std::make_shared<mvSampler>(graphics, mvSampler::Type::Bilinear));
-		addBindable(std::make_shared<mvRasterizer>(graphics, true));
-		addBindable(std::make_shared<mvPixelShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_PS.hlsl").c_str()));
-		auto vshader = std::make_shared<mvVertexShader>(graphics, std::string(graphics.getShaderRoot() + "Skybox_VS.hlsl").c_str());
-		addBindable(vshader);
-		addBindable(std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 		addBuffer(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
 
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
@@ -24,9 +47,7 @@ namespace Marvel {
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
 
-		// create vertex layout
-		mvVertexLayout vl;
-		vl.append(ElementType::Position3D);
+
 
 		constexpr float side = 1.0f / 2.0f;
 
@@ -52,11 +73,13 @@ namespace Marvel {
 				0, 1, 4, 1, 5, 4
 		}, false);
 
-		addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
 	}
 
 	void mvSkyboxPass::execute(mvGraphics& graphics) const
 	{
+
+		m_pipeline->set(graphics);
+
 		if (m_renderTarget)
 			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());
 		else

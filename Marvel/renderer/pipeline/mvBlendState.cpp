@@ -14,13 +14,13 @@ namespace Marvel {
 
 		std::string ID = GenerateUniqueIdentifier(blend);
 
-		for (auto& state : states)
+		for (const auto& state : states)
 		{
 			if (state->getUniqueIdentifier() == ID)
 				return state.get();
 		}
 
-		states.push_back(std::move(std::make_unique<mvBlendState>(graphics, blend)));
+		states.emplace_back(new mvBlendState(graphics, blend));
 
 		return states.back().get();
 	}

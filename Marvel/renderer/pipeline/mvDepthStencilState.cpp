@@ -20,7 +20,7 @@ namespace Marvel {
 				return state.get();
 		}
 
-		states.push_back(std::move(std::make_unique<mvDepthStencilState>(graphics, mode)));
+		states.emplace_back(new mvDepthStencilState(graphics, mode));
 
 		return states.back().get();
 	}

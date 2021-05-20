@@ -19,7 +19,7 @@ namespace Marvel {
                 return state.get();
         }
 
-        states.push_back(std::move(std::make_unique<mvPixelShader>(graphics, path)));
+        states.emplace_back(new mvPixelShader(graphics, path));
 
         return states.back().get();
     }

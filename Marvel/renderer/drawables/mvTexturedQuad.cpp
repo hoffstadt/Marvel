@@ -9,10 +9,6 @@ namespace Marvel {
 	mvTexturedQuad::mvTexturedQuad(mvGraphics& graphics, const std::string& name, const std::string& path)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -36,13 +32,13 @@ namespace Marvel {
 		mvStep step("lambertian");
 
 		// create vertex shader
-		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongDif_VS.hlsl");
-		step.addBindable(vshader);
-		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongDif_PS.hlsl"));
-		step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
-		step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path, 0u));
-		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+		//auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongDif_VS.hlsl");
+		//step.addBindable(vshader);
+		//step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+		//step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongDif_PS.hlsl"));
+		//step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
+		//step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path, 0u));
+		//step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 		mvTechnique technique;
 		technique.addStep(step);

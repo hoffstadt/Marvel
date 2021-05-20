@@ -37,8 +37,11 @@ namespace Marvel {
 		id.append("$depthStencilState_");
 		id.append(std::to_string((int)info.depthStencilStateFlags));
 
-		id.append("$rasterizerStateFlags_");
-		id.append(std::to_string((int)info.rasterizerStateFlags));
+		id.append("$rasterizerStateCull_");
+		id.append(std::to_string(info.rasterizerStateCull));
+
+		id.append("$rasterizerStateHwPCF_");
+		id.append(std::to_string(info.rasterizerStateHwPCF));
 
 		id.append("$rasterizerDepthBias_");
 		id.append(std::to_string(info.rasterizerStateDepthBias));
@@ -82,7 +85,7 @@ namespace Marvel {
 				return state.get();
 		}
 
-		pipelines.push_back(std::move(std::make_unique<mvPipeline>(graphics, info)));
+		pipelines.emplace_back(new mvPipeline(graphics, info));
 
 		return pipelines.back().get();
 	}
@@ -93,60 +96,105 @@ namespace Marvel {
 	{
 		m_topologyState = new mvTopologyState(info.topology);
 
-		m_viewport = new mvViewport(graphics, info.viewportWidth, info.viewportHeight);
 
+		if(info.viewportWidth > 0 || info.viewportHeight > 0)
+			m_viewport = new mvViewport(graphics, info.viewportWidth, info.viewportHeight);
+
+		assert(!info.vertexShader.empty());
 		m_vertexShader = mvVertexShader::Request(graphics, info.vertexShader);
 		
 		if (!info.pixelShader.empty())
 			m_pixelShader = mvPixelShader::Request(graphics, info.pixelShader);
 
+		assert(info.depthStencilStateFlags != mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_NONE);
+		switch (info.depthStencilStateFlags)
+		{
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Off);
+			break;
 
-		auto dssMode = mvDepthStencilState::Mode::Off;
-		if((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF)
-			dssMode = mvDepthStencilState::Mode::Off;
-		else if ((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_WRITE)
-			dssMode = mvDepthStencilState::Mode::Write;
-		else if ((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_MASK)
-			dssMode = mvDepthStencilState::Mode::Mask;
-		else if ((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_OFF)
-			dssMode = mvDepthStencilState::Mode::DepthOff;
-		else if ((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED)
-			dssMode = mvDepthStencilState::Mode::DepthReversed;
-		else if ((int)info.depthStencilStateFlags & (int)mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_FIRST)
-			dssMode = mvDepthStencilState::Mode::DepthFirst;
-		m_depthStencilState = mvDepthStencilState::Request(graphics, dssMode);
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_WRITE:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Write);
+			break;
 
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_MASK:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Mask);
+			break;
+
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_OFF:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthOff);
+			break;
+
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthReversed);
+			break;
+
+		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_FIRST:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthFirst);
+			break;
+
+		default:
+			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Off);
+		}
+
+		if (info.rasterizerStateHwPCF)
+		{
+			assert(info.rasterizerStateDepthBias != 117);
+			assert(info.rasterizerStateSlopeBias != 117.0f);
+			assert(info.rasterizerStateClamp != 117.0f);
+		}
 		m_rasterizerState = mvRasterizerState::Request(graphics,
-			(int)info.rasterizerStateFlags & (int)mvRasterizerStateFlags::MV_RASTERIZER_STATE_CULL,
-			(int)info.rasterizerStateFlags & (int)mvRasterizerStateFlags::MV_RASTERIZER_STATE_HWPCF,
+			info.rasterizerStateCull,
+			info.rasterizerStateHwPCF,
 			info.rasterizerStateDepthBias,
 			info.rasterizerStateSlopeBias,
 			info.rasterizerStateClamp);
 
-		m_blendState = mvBlendState::Request(graphics, (int)info.blendStateFlags & (int)mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON);
+		assert(info.blendStateFlags != mvBlendStateFlags::MV_BLEND_STATE_BLEND_NONE);
+		m_blendState = mvBlendState::Request(graphics, info.blendStateFlags == mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON);
 
 		for (const auto& sampler : info.samplers)
 		{
-			mvSamplerState::Type type;
-			mvSamplerState::Addressing addressing;
+			assert(sampler.type != mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_NONE);
+			assert(sampler.addressing != mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_NONE);
 
-			if ((int)sampler.type & (int)mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC)
+			mvSamplerState::Type type = mvSamplerState::Type::Anisotropic;
+			mvSamplerState::Addressing addressing = mvSamplerState::Addressing::Wrap;
+
+			switch (sampler.type)
+			{
+			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC:
 				type = mvSamplerState::Type::Anisotropic;
-			else if ((int)sampler.type & (int)mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_BILINEAR)
-				type = mvSamplerState::Type::Bilinear;
-			else if ((int)sampler.type & (int)mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT)
-				type = mvSamplerState::Type::Point;
+				break;
 
-			if ((int)sampler.addressing & (int)mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER)
+			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_BILINEAR:
+				type = mvSamplerState::Type::Bilinear;
+				break;
+
+			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT:
+				type = mvSamplerState::Type::Point;
+				break;
+			}
+
+			switch (sampler.addressing)
+			{
+			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER:
 				addressing = mvSamplerState::Addressing::Border;
-			else if ((int)sampler.addressing & (int)mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP)
+				break;
+
+			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP:
 				addressing = mvSamplerState::Addressing::Wrap;
-			else if ((int)sampler.addressing & (int)mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_MIRROR)
+				break;
+
+			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_MIRROR:
 				addressing = mvSamplerState::Addressing::Mirror;
+				break;
+			}
 
 			m_samplerStates.push_back(mvSamplerState::Request(graphics, type, addressing, sampler.slot, sampler.hardwarePCF));
 		}
 
+		assert(info.vertexLayout.getElementCount() > 0);
 		m_inputLayout = mvInputLayout::Request(graphics, info.vertexLayout, *m_vertexShader);
 
 	}
@@ -186,7 +234,8 @@ namespace Marvel {
 
 		// rasterizer stage
 		// --------------------------------------------------------------------
-		m_viewport->set(graphics);
+		if(m_viewport)
+			m_viewport->set(graphics);
 		m_rasterizerState->set(graphics);
 		for (auto samplerState : m_samplerStates)
 			samplerState->set(graphics);

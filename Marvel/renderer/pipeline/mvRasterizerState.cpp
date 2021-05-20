@@ -23,7 +23,7 @@ namespace Marvel {
 				return state.get();
 		}
 
-		states.push_back(std::move(std::make_unique<mvRasterizerState>(graphics, cull, hwpcf, depthBias, slopeBias, clamp)));
+		states.emplace_back(new mvRasterizerState(graphics, cull, hwpcf, depthBias, slopeBias, clamp));
 
 		return states.back().get();
 	}
@@ -43,14 +43,19 @@ namespace Marvel {
 	{
 
 		D3D11_RASTERIZER_DESC rasterDesc = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
-		rasterDesc.CullMode = cull ? D3D11_CULL_BACK : D3D11_CULL_NONE;
-
+		
 		if (m_hwpcf)
 		{
 			rasterDesc.DepthBias = m_depthBias;
 			rasterDesc.SlopeScaledDepthBias = m_slopeBias;
 			rasterDesc.DepthBiasClamp = m_clamp;
 		}
+		else
+		{
+			rasterDesc.CullMode = cull ? D3D11_CULL_BACK : D3D11_CULL_NONE;
+		}
+
+		graphics.getDevice()->CreateRasterizerState(&rasterDesc, m_state.GetAddressOf());
 	}
 
 	void mvRasterizerState::set(mvGraphics& graphics)

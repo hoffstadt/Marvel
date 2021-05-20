@@ -10,9 +10,6 @@ namespace Marvel {
 	mvSolidModel::mvSolidModel(mvGraphics& graphics, const std::string& name, std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -39,13 +36,20 @@ namespace Marvel {
 
 		step.addBuffer(buf);
 
-		// create vertex shader
-		auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Phong_VS.hlsl");
-		step.addBindable(vshader);
-		step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-		step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Phong_PS.hlsl"));
-		step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+		mvPipelineInfo pipeline;
+
+		pipeline.vertexShader = graphics.getShaderRoot() + "Phong_VS.hlsl";
+		pipeline.pixelShader = graphics.getShaderRoot() + "Phong_PS.hlsl";
+		pipeline.geometryShader = "";
+		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		pipeline.vertexLayout = vl;
+		pipeline.rasterizerStateCull = true;
+		pipeline.rasterizerStateHwPCF = false;
+		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+		step.registerPipeline(graphics, pipeline);
 
 		mvTechnique technique;
 		technique.addStep(step);

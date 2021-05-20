@@ -10,7 +10,6 @@ namespace Marvel {
 		mvPass(name)
 	{
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
-		//addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 	}
 

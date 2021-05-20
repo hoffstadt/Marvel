@@ -10,9 +10,6 @@ namespace Marvel {
 	mvCube::mvCube(mvGraphics& graphics, const std::string& name, glm::vec3 color)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -89,23 +86,44 @@ namespace Marvel {
 		{
 			mvStep step("lambertian");
 
+			mvPipelineInfo pipeline;
+
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.vertexLayout = vl;
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			
+			mvSamplerStateInfo sampler
+			{
+				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
+				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_MIRROR,
+				0u,
+				false
+			};
+
+			mvSamplerStateInfo shadowSampler
+			{
+				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT,
+				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER,
+				1u,
+				true
+			};
+
+			pipeline.samplers.push_back(sampler);
+			pipeline.samplers.push_back(shadowSampler);
+
+			step.registerPipeline(graphics, pipeline);
+
 			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
 			step.addBuffer(buf);
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBindable(mvBindableRegistry::Request<mvSampler>(graphics, mvSampler::Type::Anisotropic, false, 0u));
 			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
-			step.addBindable(mvBindableRegistry::Request<mvRasterizer>(graphics, false));
-			step.addBindable(mvBindableRegistry::Request<mvBlender>(graphics, false));
-
-			mvPipelineInfo pipelineInfo;
-
 
 			technique.addStep(step);
 		}
@@ -113,22 +131,50 @@ namespace Marvel {
 		{
 			mvStep step("shadow1");
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			mvPipelineInfo pipeline;
+
+			pipeline.viewportWidth = 1000;
+			pipeline.viewportHeight = 1000;
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+			pipeline.pixelShader = "";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.vertexLayout = vl;
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = true;
+			pipeline.rasterizerStateDepthBias = 50;
+			pipeline.rasterizerStateSlopeBias = 2.0f;
+			pipeline.rasterizerStateClamp = 0.1f;
+			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+			step.registerPipeline(graphics, pipeline);
+
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			technique.addStep(step);
 		}
 		{
 			mvStep step("shadow2");
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			mvPipelineInfo pipeline;
+
+			pipeline.viewportWidth = 1000;
+			pipeline.viewportHeight = 1000;
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+			pipeline.pixelShader = "";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.vertexLayout = vl;
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = true;
+			pipeline.rasterizerStateDepthBias = 50;
+			pipeline.rasterizerStateSlopeBias = 2.0f;
+			pipeline.rasterizerStateClamp = 0.1f;
+			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+			step.registerPipeline(graphics, pipeline);
+
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			technique.addStep(step);
 		}
@@ -136,11 +182,25 @@ namespace Marvel {
 		{
 			mvStep step("shadow3");
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongShadow_VS.hlsl");
-			step.addBindable(mvBindableRegistry::GetBindable("null_ps"));
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			mvPipelineInfo pipeline;
+
+			pipeline.viewportWidth = 1000;
+			pipeline.viewportHeight = 1000;
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+			pipeline.pixelShader = "";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.vertexLayout = vl;
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = true;
+			pipeline.rasterizerStateDepthBias = 50;
+			pipeline.rasterizerStateSlopeBias = 2.0f;
+			pipeline.rasterizerStateClamp = 0.1f;
+			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+			step.registerPipeline(graphics, pipeline);
+
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			technique.addStep(step);
 		}

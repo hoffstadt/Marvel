@@ -14,9 +14,7 @@ namespace Marvel {
 
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
-		
-		addBindable(std::make_shared<mvShadowSampler>(graphics));
-		addBindable(std::make_shared<mvStencil>(graphics, mvStencil::Mode::Off));
+	
 
 		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
 		addBindableResource<mvBindable>("map1");

@@ -38,6 +38,8 @@ namespace Marvel {
 
 		void addBindable(std::shared_ptr<mvBindable> bindable);
 		void addBuffer(std::shared_ptr<mvBuffer> buffer);
+
+		void registerPipeline(mvGraphics& graph, mvPipelineInfo& info);
 		
 	private:
 

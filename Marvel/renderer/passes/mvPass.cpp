@@ -39,7 +39,6 @@ namespace Marvel {
 
 	void mvPass::requestResource(std::unique_ptr<mvPassResource> resource)
 	{
-		
 		m_resources.push_back(std::move(resource));
 	}
 

@@ -28,9 +28,6 @@ namespace Marvel {
 
 		m_transform = glm::identity<glm::mat4>();
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		mvMaterial mat = mvMaterial(graphics, material, rootPath);
 
 		// create vertex layout

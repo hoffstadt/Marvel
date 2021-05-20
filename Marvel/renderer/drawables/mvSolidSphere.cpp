@@ -11,9 +11,6 @@ namespace Marvel {
 	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, const std::string& name, float radius, glm::vec3 color, int simple)
 	{
 
-		// create topology
-		m_topology = std::make_shared<mvTopology>(graphics, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -75,41 +72,55 @@ namespace Marvel {
 
 			step.addBuffer(buf);
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "Solid_VS.hlsl");
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "Solid_PS.hlsl"));
-			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+			mvPipelineInfo pipeline;
+
+			pipeline.vertexShader = graphics.getShaderRoot() + "Solid_VS.hlsl";
+			pipeline.pixelShader = graphics.getShaderRoot() + "Solid_PS.hlsl";
+			pipeline.geometryShader = "";
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+			step.registerPipeline(graphics, pipeline);
 		}
 
 		// flat shade
 		else if(simple == 2)
 		{
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "vs_flat.hlsl");
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "ps_flat.hlsl"));
-			step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			//// create vertex shader
+			//auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "vs_flat.hlsl");
+			//step.addBindable(vshader);
+			//step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
+			//step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "ps_flat.hlsl"));
+			//step.addBindable(std::make_shared<mvGeometryShader>(graphics, "../../Marvel/shaders/gs_flat.hlsl"));
+			//step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 		}
 
 		// phong
 		else
 		{
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
+		//	std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
 
-			step.addBuffer(buf);
+		//	step.addBuffer(buf);
+		//	step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
-			// create vertex shader
-			auto vshader = mvBindableRegistry::Request<mvVertexShader>(graphics, graphics.getShaderRoot() + "PhongModel_VS.hlsl");
-			step.addBindable(vshader);
-			step.addBindable(mvBindableRegistry::Request<mvInputLayout>(graphics, vl, *vshader));
-			step.addBindable(mvBindableRegistry::Request<mvPixelShader>(graphics, graphics.getShaderRoot() + "PhongModel_PS.hlsl"));
-			step.addBindable(std::make_shared<mvNullGeometryShader>(graphics));
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+		//	mvPipelineInfo pipeline;
+
+		//	pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+		//	pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
+		//	pipeline.geometryShader = "";
+		//	pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		//	pipeline.vertexLayout = vl;
+		//	pipeline.rasterizerStateCull = true;
+		//	pipeline.rasterizerStateHwPCF = false;
+		//	pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+
+		//	step.registerPipeline(graphics, pipeline);
 		}
 
 

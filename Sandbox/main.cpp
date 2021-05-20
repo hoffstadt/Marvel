@@ -44,7 +44,7 @@ int main()
 
     // create camera
     mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height, 0.5f, 400.0f, false);
-    mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
+    //mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
 
     // create model
     mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
@@ -80,7 +80,7 @@ int main()
             lightManager.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
-            directionCamera.linkTechniques(*graph);
+            //directionCamera.linkTechniques(*graph);
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera1(*lightManager.getLight(0).getCamera());
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera2(*lightManager.getLight(1).getCamera());
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera3(*lightManager.getLight(2).getCamera());
@@ -112,7 +112,7 @@ int main()
         model.submit(*graph);
         lightManager.submit(*graph);
         //lightcamera->submit(*graph);
-        directionCamera.submit(*graph);
+        //directionCamera.submit(*graph);
         
         graph->execute(graphics);
 

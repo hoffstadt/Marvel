@@ -1,4 +1,5 @@
 #include "mvVertexShader.h"
+#include <vector>
 #include <d3dcompiler.h>
 #include <assert.h>
 #include "mvGraphics.h"
@@ -18,7 +19,7 @@ namespace Marvel {
                 return state.get();
         }
 
-        states.push_back(std::move(std::make_unique<mvVertexShader>(graphics, path)));
+        states.emplace_back(new mvVertexShader(graphics, path));
 
         return states.back().get();
     }

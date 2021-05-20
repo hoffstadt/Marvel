@@ -29,12 +29,14 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	enum class mvBlendStateFlags
 	{
+		MV_BLEND_STATE_BLEND_NONE,
 		MV_BLEND_STATE_BLEND_ON,
 		MV_BLEND_STATE_BLEND_OFF
 	};
 
 	enum class mvDepthStencilStateFlags
 	{
+		MV_DEPTH_STENCIL_STATE_NONE,
 		MV_DEPTH_STENCIL_STATE_OFF,
 		MV_DEPTH_STENCIL_STATE_WRITE,
 		MV_DEPTH_STENCIL_STATE_MASK,
@@ -43,14 +45,9 @@ namespace Marvel {
 		MV_DEPTH_STENCIL_STATE_DEPTH_FIRST
 	};
 
-	enum class mvRasterizerStateFlags
-	{
-		MV_RASTERIZER_STATE_CULL,
-		MV_RASTERIZER_STATE_HWPCF
-	};
-
 	enum class mvSamplerStateTypeFlags
 	{
+		MV_SAMPLER_STATE_TYPE_NONE,
 		MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
 		MV_SAMPLER_STATE_TYPE_BILINEAR,
 		MV_SAMPLER_STATE_TYPE_POINT
@@ -58,6 +55,7 @@ namespace Marvel {
 
 	enum class mvSamplerStateAddressingFlags
 	{
+		MV_SAMPLER_STATE_ADDRESS_NONE,
 		MV_SAMPLER_STATE_ADDRESS_BORDER,
 		MV_SAMPLER_STATE_ADDRESS_WRAP,
 		MV_SAMPLER_STATE_ADDRESS_MIRROR
@@ -80,18 +78,19 @@ namespace Marvel {
 		std::string                     geometryShader;
 		std::string                     pixelShader;
 					        
-		D3D11_PRIMITIVE_TOPOLOGY        topology;
+		D3D11_PRIMITIVE_TOPOLOGY        topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 								        
-		mvBlendStateFlags               blendStateFlags;
-		mvDepthStencilStateFlags        depthStencilStateFlags;
+		mvBlendStateFlags               blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_NONE;
+		mvDepthStencilStateFlags        depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_NONE;
 								       
-		mvRasterizerStateFlags          rasterizerStateFlags;
-		int                             rasterizerStateDepthBias;
-		float                           rasterizerStateSlopeBias;
-		float                           rasterizerStateClamp;
+		bool                            rasterizerStateCull = false;
+		bool                            rasterizerStateHwPCF = false;
+		int                             rasterizerStateDepthBias = -117;
+		float                           rasterizerStateSlopeBias = -117.0f;
+		float                           rasterizerStateClamp = -117.0f;
 								       
-		float                           viewportWidth;
-		float                           viewportHeight;
+		float                           viewportWidth = -1;
+		float                           viewportHeight = -1;
 
 		std::vector<mvSamplerStateInfo> samplers;
 
