@@ -53,8 +53,6 @@ namespace Marvel {
 			addPass(std::move(pass));
 		}
 
-
-
 		{
 			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
 			pass->linkResourceToProduct("map1", "shadow1", "map");

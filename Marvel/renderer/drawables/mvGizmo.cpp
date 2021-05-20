@@ -10,19 +10,62 @@ namespace Marvel {
 	mvGizmo::mvGizmo(mvGraphics& graphics, const std::string& name)
 	{
 
-		// create vertex layout
-		mvVertexLayout vl;
-		vl.append(ElementType::Position3D);
-		vl.append(ElementType::Color);
-
 		std::vector<float> verticies;
 		std::vector<unsigned int> indicies;
 		std::vector<float> normals;
 
+		mvStep step("overlay");
+
+		//-----------------------------------------------------------------------------
+		// additional buffers
+		//-----------------------------------------------------------------------------
+		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+		//-----------------------------------------------------------------------------
+		// pipeline state setup
+		//-----------------------------------------------------------------------------
+		mvPipelineInfo pipeline;
+
+		// input assembler stage
+		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+		pipeline.vertexLayout.append(ElementType::Position3D);
+		pipeline.vertexLayout.append(ElementType::Color);
+
+		// vertex shader stage
+		pipeline.vertexShader = graphics.getShaderRoot() + "Gizmo_vs.hlsl";
+
+		// geometry shader stage
+		pipeline.geometryShader = "";
+
+		// rasterizer stage
+		pipeline.viewportWidth = 0;  // use render target
+		pipeline.viewportHeight = 0; // use render target
+		pipeline.rasterizerStateCull = false;
+		pipeline.rasterizerStateHwPCF = false;
+		pipeline.rasterizerStateDepthBias = 0;    // not used
+		pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+		pipeline.rasterizerStateClamp = 0.0f;	  // not used
+
+		// pixel shader stage
+		pipeline.pixelShader = graphics.getShaderRoot() + "Gizmo_ps.hlsl";
+		pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+		pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+
+		// output merger stage
+		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::DEPTH_REVERSED;
+		pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+		// registers required pipeline
+		step.registerPipeline(graphics, pipeline);
+
+		mvTechnique technique;
+		technique.addStep(std::move(step));
+		addTechnique(technique);
+
 		// create vertex buffer
 		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{
-			    
-				0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+
+			0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 				1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 
 				0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -30,8 +73,8 @@ namespace Marvel {
 
 				0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 				0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f
-			
-		}, vl);
+
+		}, pipeline.vertexLayout);
 
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
@@ -39,28 +82,6 @@ namespace Marvel {
 				2, 3,
 				4, 5
 		}, false);
-
-		mvStep step("overlay");
-
-		step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-
-		mvPipelineInfo pipeline;
-
-		pipeline.vertexShader = graphics.getShaderRoot() + "Gizmo_vs.hlsl";
-		pipeline.pixelShader = graphics.getShaderRoot() + "Gizmo_ps.hlsl";
-		pipeline.geometryShader = "";
-		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED;
-		pipeline.vertexLayout = vl;
-		pipeline.rasterizerStateCull = false;
-		pipeline.rasterizerStateHwPCF = false;
-		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
-
-		step.registerPipeline(graphics, pipeline);
-
-		mvTechnique technique;
-		technique.addStep(std::move(step));
-		addTechnique(technique);
 
 	}
 

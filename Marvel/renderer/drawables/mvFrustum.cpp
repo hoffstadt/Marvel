@@ -95,8 +95,8 @@ namespace Marvel {
 			pipeline.vertexLayout = vl;
 			pipeline.rasterizerStateCull = false;
 			pipeline.rasterizerStateHwPCF = false;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::DEPTH_REVERSED;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
 
 			step.registerPipeline(graphics, pipeline);
 

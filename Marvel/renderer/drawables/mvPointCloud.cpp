@@ -46,7 +46,7 @@ namespace Marvel {
 		pipeline.vertexLayout = vl;
 		pipeline.rasterizerStateCull = false;
 		pipeline.rasterizerStateHwPCF = false;
-		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+		pipeline.blendStateFlags = mvBlendStateFlags::OFF;
 
 		step.registerPipeline(graphics, pipeline);
 

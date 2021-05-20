@@ -68,24 +68,45 @@ namespace Marvel {
 
 			bufferRaw->getElement("materialColor").setIfExists(color);
 
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get());
-
-			step.addBuffer(buf);
-
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, *root.get(), 1, bufferRaw.get()));
 
+			//-----------------------------------------------------------------------------
+			// pipeline state setup
+			//-----------------------------------------------------------------------------
 			mvPipelineInfo pipeline;
 
-			pipeline.vertexShader = graphics.getShaderRoot() + "Solid_VS.hlsl";
-			pipeline.pixelShader = graphics.getShaderRoot() + "Solid_PS.hlsl";
-			pipeline.geometryShader = "";
+			// input assembler stage
 			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 			pipeline.vertexLayout = vl;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
+
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "Solid_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 0;  // use render target
+			pipeline.viewportHeight = 0; // use render target
 			pipeline.rasterizerStateCull = true;
 			pipeline.rasterizerStateHwPCF = false;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			pipeline.rasterizerStateDepthBias = 0;    // not used
+			pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+			pipeline.rasterizerStateClamp = 0.0f;	  // not used
 
+			// pixel shader stage
+			pipeline.pixelShader = graphics.getShaderRoot() + "Solid_PS.hlsl";
+			// * no samplers
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 		}
 

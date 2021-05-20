@@ -82,131 +82,108 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
-		mvTechnique technique;
+		mvTechnique phong;
 		{
 			mvStep step("lambertian");
 
-			mvPipelineInfo pipeline;
-
-			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
-			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
-			pipeline.geometryShader = "";
-			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
-			pipeline.vertexLayout = vl;
-			pipeline.rasterizerStateCull = true;
-			pipeline.rasterizerStateHwPCF = false;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
-			
-			mvSamplerStateInfo sampler
-			{
-				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
-				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_MIRROR,
-				0u,
-				false
-			};
-
-			mvSamplerStateInfo shadowSampler
-			{
-				mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT,
-				mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER,
-				1u,
-				true
-			};
-
-			pipeline.samplers.push_back(sampler);
-			pipeline.samplers.push_back(shadowSampler);
-
-			step.registerPipeline(graphics, pipeline);
-
-			std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
-			step.addBuffer(buf);
-
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
 			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
 
-			technique.addStep(step);
-		}
-
-		{
-			mvStep step("shadow1");
-
+			//-----------------------------------------------------------------------------
+			// pipeline state setup
+			//-----------------------------------------------------------------------------
 			mvPipelineInfo pipeline;
 
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
+
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 0;  // use render target
+			pipeline.viewportHeight = 0; // use render target
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateDepthBias = 0;    // not used
+			pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+			pipeline.rasterizerStateClamp = 0.0f;	  // not used
+
+			// pixel shader stage
+			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
+
+			phong.addStep(step);
+		}
+
+		mvTechnique map;
+		{
+			//-----------------------------------------------------------------------------
+			// shadow mapping pipeline state setup
+			//-----------------------------------------------------------------------------
+			mvPipelineInfo pipeline;
+
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
+
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
 			pipeline.viewportWidth = 1000;
 			pipeline.viewportHeight = 1000;
-			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
-			pipeline.pixelShader = "";
-			pipeline.geometryShader = "";
-			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
-			pipeline.vertexLayout = vl;
-			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateCull = false;
 			pipeline.rasterizerStateHwPCF = true;
 			pipeline.rasterizerStateDepthBias = 50;
 			pipeline.rasterizerStateSlopeBias = 2.0f;
 			pipeline.rasterizerStateClamp = 0.1f;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
 
-			step.registerPipeline(graphics, pipeline);
-
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			technique.addStep(step);
-		}
-		{
-			mvStep step("shadow2");
-
-			mvPipelineInfo pipeline;
-
-			pipeline.viewportWidth = 1000;
-			pipeline.viewportHeight = 1000;
-			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+			// pixel shader stage
 			pipeline.pixelShader = "";
-			pipeline.geometryShader = "";
-			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
-			pipeline.vertexLayout = vl;
-			pipeline.rasterizerStateCull = true;
-			pipeline.rasterizerStateHwPCF = true;
-			pipeline.rasterizerStateDepthBias = 50;
-			pipeline.rasterizerStateSlopeBias = 2.0f;
-			pipeline.rasterizerStateClamp = 0.1f;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			// * no samplers
 
-			step.registerPipeline(graphics, pipeline);
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags =  mvBlendStateFlags::OFF;
 
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			technique.addStep(step);
+			for (int i = 1; i < 4; i++)
+			{
+				mvStep step("shadow" + std::to_string(i));
+
+				//-----------------------------------------------------------------------------
+				// additional buffers
+				//-----------------------------------------------------------------------------
+				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+				// registers required pipeline
+				step.registerPipeline(graphics, pipeline);
+
+				map.addStep(step);
+			}
 		}
 
-		{
-			mvStep step("shadow3");
-
-			mvPipelineInfo pipeline;
-
-			pipeline.viewportWidth = 1000;
-			pipeline.viewportHeight = 1000;
-			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
-			pipeline.pixelShader = "";
-			pipeline.geometryShader = "";
-			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF;
-			pipeline.vertexLayout = vl;
-			pipeline.rasterizerStateCull = true;
-			pipeline.rasterizerStateHwPCF = true;
-			pipeline.rasterizerStateDepthBias = 50;
-			pipeline.rasterizerStateSlopeBias = 2.0f;
-			pipeline.rasterizerStateClamp = 0.1f;
-			pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
-
-			step.registerPipeline(graphics, pipeline);
-
-			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			technique.addStep(step);
-		}
-
-		addTechnique(technique);
-
+		addTechnique(phong);
+		addTechnique(map);
 	}
 
 	glm::mat4 mvCube::getTransform() const

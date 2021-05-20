@@ -36,7 +36,7 @@ namespace Marvel {
 
 	private:
 
-		mutable glm::mat4 m_transform;
+		mutable glm::mat4 m_transform = glm::identity<glm::mat4>();
 
 	};
 

@@ -106,30 +106,30 @@ namespace Marvel {
 		if (!info.pixelShader.empty())
 			m_pixelShader = mvPixelShader::Request(graphics, info.pixelShader);
 
-		assert(info.depthStencilStateFlags != mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_NONE);
+		assert(info.depthStencilStateFlags != mvDepthStencilStateFlags::NONE);
 		switch (info.depthStencilStateFlags)
 		{
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_OFF:
+		case mvDepthStencilStateFlags::OFF:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Off);
 			break;
 
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_WRITE:
+		case mvDepthStencilStateFlags::WRITE:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Write);
 			break;
 
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_MASK:
+		case mvDepthStencilStateFlags::MASK:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::Mask);
 			break;
 
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_OFF:
+		case mvDepthStencilStateFlags::DEPTH_OFF:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthOff);
 			break;
 
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED:
+		case mvDepthStencilStateFlags::DEPTH_REVERSED:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthReversed);
 			break;
 
-		case mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_FIRST:
+		case mvDepthStencilStateFlags::DEPTH_FIRST:
 			m_depthStencilState = mvDepthStencilState::Request(graphics, mvDepthStencilState::Mode::DepthFirst);
 			break;
 
@@ -150,43 +150,43 @@ namespace Marvel {
 			info.rasterizerStateSlopeBias,
 			info.rasterizerStateClamp);
 
-		assert(info.blendStateFlags != mvBlendStateFlags::MV_BLEND_STATE_BLEND_NONE);
-		m_blendState = mvBlendState::Request(graphics, info.blendStateFlags == mvBlendStateFlags::MV_BLEND_STATE_BLEND_ON);
+		assert(info.blendStateFlags != mvBlendStateFlags::NONE);
+		m_blendState = mvBlendState::Request(graphics, info.blendStateFlags == mvBlendStateFlags::ON);
 
 		for (const auto& sampler : info.samplers)
 		{
-			assert(sampler.type != mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_NONE);
-			assert(sampler.addressing != mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_NONE);
+			assert(sampler.type != mvSamplerStateTypeFlags::NONE);
+			assert(sampler.addressing != mvSamplerStateAddressingFlags::NONE);
 
 			mvSamplerState::Type type = mvSamplerState::Type::Anisotropic;
 			mvSamplerState::Addressing addressing = mvSamplerState::Addressing::Wrap;
 
 			switch (sampler.type)
 			{
-			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_ANISOTROPIC:
+			case mvSamplerStateTypeFlags::ANISOTROPIC:
 				type = mvSamplerState::Type::Anisotropic;
 				break;
 
-			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_BILINEAR:
+			case mvSamplerStateTypeFlags::BILINEAR:
 				type = mvSamplerState::Type::Bilinear;
 				break;
 
-			case mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_POINT:
+			case mvSamplerStateTypeFlags::POINT:
 				type = mvSamplerState::Type::Point;
 				break;
 			}
 
 			switch (sampler.addressing)
 			{
-			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER:
+			case mvSamplerStateAddressingFlags::BORDER:
 				addressing = mvSamplerState::Addressing::Border;
 				break;
 
-			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_WRAP:
+			case mvSamplerStateAddressingFlags::WRAP:
 				addressing = mvSamplerState::Addressing::Wrap;
 				break;
 
-			case mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_MIRROR:
+			case mvSamplerStateAddressingFlags::MIRROR:
 				addressing = mvSamplerState::Addressing::Mirror;
 				break;
 			}
@@ -201,59 +201,83 @@ namespace Marvel {
 
 	void mvPipeline::set(mvGraphics& graphics)
 	{
-
+		//---------------------------------------------------------------------
 		// input assembler stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		m_topologyState->set(graphics);
 		m_inputLayout->set(graphics);
+		
+		// * bind vertex buffer (mvDrawable handles this)
+		// * bind index buffer  (mvDrawable handles this)
 
+		//---------------------------------------------------------------------
 		// vertex shader stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		m_vertexShader->set(graphics);
 
+		// * bind constant buffers (mvVertexConstantBuffer handles this)
+
+		//---------------------------------------------------------------------
 		// hull shader stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		graphics.getContext()->HSSetShader(nullptr, nullptr, 0);
 
+		//---------------------------------------------------------------------
 		// tessellator stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 
+		//---------------------------------------------------------------------
 		// domain shader stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		graphics.getContext()->DSSetShader(nullptr, nullptr, 0);
 
+		//---------------------------------------------------------------------
 		// geometry shader stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		if (m_geometryShader)
 			m_geometryShader->set(graphics);
 		else
 			graphics.getContext()->GSSetShader(nullptr, nullptr, 0);
 
+		//---------------------------------------------------------------------
 		// stream output stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 
+		//---------------------------------------------------------------------
 		// rasterizer stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		if(m_viewport)
 			m_viewport->set(graphics);
 		m_rasterizerState->set(graphics);
+
+
+		//---------------------------------------------------------------------
+		// pixel shader stage
+		//---------------------------------------------------------------------
+
 		for (auto samplerState : m_samplerStates)
 			samplerState->set(graphics);
 
-		// pixel shader stage
-		// --------------------------------------------------------------------
 		if(m_pixelShader)
 			m_pixelShader->set(graphics);
 		else
 			graphics.getContext()->PSSetShader(nullptr, nullptr, 0);
 
+		// * bind textures         (Handled with mvTexture/mvBindable system)
+        // * bind constant buffers (mvPixelConstantBuffer handles this)
+
+		//---------------------------------------------------------------------
 		// output merger stage
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		m_blendState->set(graphics);
 		m_depthStencilState->set(graphics);
 
+		// * bind depth stencil buffer (mvRenderGraph/mvDepthStencil handles this)
+		// * bind render target        (mvRenderGraph/mvRenderTarget handles this)
+
+		//---------------------------------------------------------------------
 		// compute shader
-		// --------------------------------------------------------------------
+		//---------------------------------------------------------------------
 		graphics.getContext()->CSSetShader(nullptr, nullptr, 0);
 
 	}

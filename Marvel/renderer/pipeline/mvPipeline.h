@@ -29,36 +29,36 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	enum class mvBlendStateFlags
 	{
-		MV_BLEND_STATE_BLEND_NONE,
-		MV_BLEND_STATE_BLEND_ON,
-		MV_BLEND_STATE_BLEND_OFF
+		NONE,
+		ON,
+		OFF
 	};
 
 	enum class mvDepthStencilStateFlags
 	{
-		MV_DEPTH_STENCIL_STATE_NONE,
-		MV_DEPTH_STENCIL_STATE_OFF,
-		MV_DEPTH_STENCIL_STATE_WRITE,
-		MV_DEPTH_STENCIL_STATE_MASK,
-		MV_DEPTH_STENCIL_STATE_DEPTH_OFF,
-		MV_DEPTH_STENCIL_STATE_DEPTH_REVERSED,
-		MV_DEPTH_STENCIL_STATE_DEPTH_FIRST
+		NONE,
+		OFF,
+		WRITE,
+		MASK,
+		DEPTH_OFF,
+		DEPTH_REVERSED,
+		DEPTH_FIRST
 	};
 
 	enum class mvSamplerStateTypeFlags
 	{
-		MV_SAMPLER_STATE_TYPE_NONE,
-		MV_SAMPLER_STATE_TYPE_ANISOTROPIC,
-		MV_SAMPLER_STATE_TYPE_BILINEAR,
-		MV_SAMPLER_STATE_TYPE_POINT
+		NONE,
+		ANISOTROPIC,
+		BILINEAR,
+		POINT
 	};
 
 	enum class mvSamplerStateAddressingFlags
 	{
-		MV_SAMPLER_STATE_ADDRESS_NONE,
-		MV_SAMPLER_STATE_ADDRESS_BORDER,
-		MV_SAMPLER_STATE_ADDRESS_WRAP,
-		MV_SAMPLER_STATE_ADDRESS_MIRROR
+		NONE,
+		BORDER,
+		WRAP,
+		MIRROR
 	};
 
 	//-----------------------------------------------------------------------------
@@ -74,27 +74,45 @@ namespace Marvel {
 
 	struct mvPipelineInfo
 	{
-		std::string                     vertexShader;
-		std::string                     geometryShader;
+		//-----------------------//
+		// input assembler stage //
+		//-----------------------//
+		D3D11_PRIMITIVE_TOPOLOGY topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		mvVertexLayout           vertexLayout;
+
+		//---------------------//
+		// vertex shader stage //
+		//---------------------//
+		std::string vertexShader;
+
+		//-----------------------//
+		// geometry shader stage //
+		//-----------------------//
+		std::string geometryShader;
+
+		//------------------//
+		// rasterizer stage	//
+		//------------------//
+		float viewportWidth            = -1;
+		float viewportHeight           = -1;
+		bool  rasterizerStateCull      = false;
+		bool  rasterizerStateHwPCF     = false;
+		int   rasterizerStateDepthBias = -117;
+		float rasterizerStateSlopeBias = -117.0f;
+		float rasterizerStateClamp     = -117.0f;
+
+		//--------------------//
+		// pixel shader stage //
+		//--------------------//
 		std::string                     pixelShader;
-					        
-		D3D11_PRIMITIVE_TOPOLOGY        topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-								        
-		mvBlendStateFlags               blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_NONE;
-		mvDepthStencilStateFlags        depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_NONE;
-								       
-		bool                            rasterizerStateCull = false;
-		bool                            rasterizerStateHwPCF = false;
-		int                             rasterizerStateDepthBias = -117;
-		float                           rasterizerStateSlopeBias = -117.0f;
-		float                           rasterizerStateClamp = -117.0f;
-								       
-		float                           viewportWidth = -1;
-		float                           viewportHeight = -1;
-
 		std::vector<mvSamplerStateInfo> samplers;
+					        
+		//---------------------//
+		// output merger stage //
+		//---------------------//
+		mvBlendStateFlags        blendStateFlags        = mvBlendStateFlags::NONE;
+		mvDepthStencilStateFlags depthStencilStateFlags = mvDepthStencilStateFlags::NONE;
 
-		mvVertexLayout                  vertexLayout;
 	};
 
 

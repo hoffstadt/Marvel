@@ -90,7 +90,6 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     for (int i = 0; i < PointLight.LightCount; i++)
     {
             
-            
         const float shadowLevel = GetShadowLevel(i, spos[i]);
             
         if (shadowLevel != 0.0f)

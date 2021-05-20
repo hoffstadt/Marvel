@@ -26,8 +26,6 @@ namespace Marvel {
 
 		const auto rootPath = path.parent_path().string() + "\\";
 
-		m_transform = glm::identity<glm::mat4>();
-
 		mvMaterial mat = mvMaterial(graphics, material, rootPath);
 
 		// create vertex layout

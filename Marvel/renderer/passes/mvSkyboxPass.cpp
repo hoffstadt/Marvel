@@ -11,43 +11,50 @@ namespace Marvel {
 		mvPass(name)
 	{
 
-		// create vertex layout
-		mvVertexLayout vl;
-		vl.append(ElementType::Position3D);
+		//-----------------------------------------------------------------------------
+		// additional buffers
+		//-----------------------------------------------------------------------------
+		addBuffer(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
+		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
 
+		//-----------------------------------------------------------------------------
+		// pipeline state setup
+		//-----------------------------------------------------------------------------
 		mvPipelineInfo pipeline;
 
-		pipeline.vertexShader = graphics.getShaderRoot() + "Skybox_VS.hlsl";
-		pipeline.pixelShader = graphics.getShaderRoot() + "Skybox_PS.hlsl";
-		pipeline.geometryShader = "";
+		// input assembler stage
 		pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		pipeline.vertexLayout = vl;
+		pipeline.vertexLayout.append(ElementType::Position3D);
+
+		// vertex shader stage
+		pipeline.vertexShader = graphics.getShaderRoot() + "Skybox_VS.hlsl";
+
+		// geometry shader stage
+		pipeline.geometryShader = "";
+
+		// rasterizer stage
+		pipeline.viewportWidth = 0;  // use render target
+		pipeline.viewportHeight = 0; // use render target
 		pipeline.rasterizerStateCull = false;
 		pipeline.rasterizerStateHwPCF = false;
-		pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
-		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::MV_DEPTH_STENCIL_STATE_DEPTH_FIRST;
+		pipeline.rasterizerStateDepthBias = 0;    // not used
+		pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+		pipeline.rasterizerStateClamp = 0.0f;	  // not used
 
-		mvSamplerStateInfo sampler
-		{
-			mvSamplerStateTypeFlags::MV_SAMPLER_STATE_TYPE_BILINEAR,
-			mvSamplerStateAddressingFlags::MV_SAMPLER_STATE_ADDRESS_BORDER,
-			0u,
-			false
-		};
+		// pixel shader stage
+		pipeline.pixelShader = graphics.getShaderRoot() + "Skybox_PS.hlsl";
+		pipeline.samplers.push_back({ mvSamplerStateTypeFlags::BILINEAR, mvSamplerStateAddressingFlags::BORDER, 0u, false });
 
-		pipeline.samplers.push_back(sampler);
+		// output merger stage
+		pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::DEPTH_FIRST;
+		pipeline.blendStateFlags = mvBlendStateFlags::OFF;
 
 		m_pipeline = mvPipeline::Request(graphics, pipeline);
-
-		addBindable(std::make_shared<mvCubeTexture>(graphics, skybox));
-		addBuffer(std::make_shared<mvSkyBoxTransformConstantBuffer>(graphics));
 
 		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
 		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
-
-
 
 		constexpr float side = 1.0f / 2.0f;
 
@@ -61,7 +68,7 @@ namespace Marvel {
 				side, -side, side,
 				-side, side, side,
 				side, side, side
-		}, vl);
+		}, pipeline.vertexLayout);
 
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, std::vector<unsigned int>{
