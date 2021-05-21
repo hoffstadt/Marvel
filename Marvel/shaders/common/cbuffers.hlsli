@@ -43,16 +43,17 @@ struct mvMaterial
     //-------------------------- ( 16 bytes )
     
     float3 specularColor;
-    float specularWeight;
+    float specularGloss;
     //-------------------------- ( 16 bytes )
    
-    float specularGloss;
+    
     float normalMapWeight;
     bool useTextureMap;
     bool useNormalMap;
+    bool useSpecularMap;
     //-------------------------- ( 16 bytes )
     
-    bool useSpecularMap;
+    
     bool useGlossAlpha;
     bool hasAlpha;
     //-------------------------- ( 16 bytes )

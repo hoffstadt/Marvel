@@ -11,17 +11,20 @@ namespace Marvel {
 	mvMaterial::mvMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path)
 	{
 		
+
+		auto phongMaterial = std::make_shared<mvPhongMaterialCBuf>(graphics, 1);
+
 		aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 		material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-		m_materialBuffer.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
+		phongMaterial->material.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
 
 		aiColor3D specularColor = { 0.18f,0.18f,0.18f };
 		material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-		m_materialBuffer.specularColor = { specularColor.r, specularColor.g, specularColor.b };
+		phongMaterial->material.specularColor = { specularColor.r, specularColor.g, specularColor.b };
 
 		float gloss = 8.0f;
 		material.Get(AI_MATKEY_SHININESS, gloss);
-		m_materialBuffer.specularGloss = gloss;
+		phongMaterial->material.specularGloss = gloss;
 
 		mvTechnique phong;
 		{
@@ -32,15 +35,15 @@ namespace Marvel {
 			// diffuse
 			if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 			{
-				m_materialBuffer.useTextureMap = true;
+				phongMaterial->material.useTextureMap = true;
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
 				step.addBindable(texture);
-				m_materialBuffer.hasAlpha = texture->hasAlpha();
+				phongMaterial->material.hasAlpha = texture->hasAlpha();
 			}
 			else
 			{
-				m_materialBuffer.useTextureMap = false;
-				m_materialBuffer.hasAlpha = false;
+				phongMaterial->material.useTextureMap = false;
+				phongMaterial->material.hasAlpha = false;
 			}
 				
 			// specular
@@ -49,27 +52,27 @@ namespace Marvel {
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
 				step.addBindable(texture);
 				//hasGlossAlpha = texture->hasAlpha();
-				m_materialBuffer.useSpecularMap = true;
+				phongMaterial->material.useSpecularMap = true;
 			}
 			else
-				m_materialBuffer.useSpecularMap = false;
+				phongMaterial->material.useSpecularMap = false;
 
 			// normals
 			if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 			{
 				auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
 				step.addBindable(texture);
-				m_materialBuffer.useNormalMap = true;
+				phongMaterial->material.useNormalMap = true;
 				
 			}
 			else
-				m_materialBuffer.useNormalMap = false;
+				phongMaterial->material.useNormalMap = false;
 
 			//-----------------------------------------------------------------------------
 			// additional buffers
 			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
+			step.addBuffer(phongMaterial);
 
 			//-----------------------------------------------------------------------------
 			// pipeline state setup
@@ -93,7 +96,7 @@ namespace Marvel {
 			// rasterizer stage
 			pipeline.viewportWidth = 0;  // use render target
 			pipeline.viewportHeight = 0; // use render target
-			pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+			pipeline.rasterizerStateCull = !phongMaterial->material.hasAlpha;
 			pipeline.rasterizerStateHwPCF = false;
 			pipeline.rasterizerStateDepthBias = 0;    // not used
 			pipeline.rasterizerStateSlopeBias = 0.0f; // not used
@@ -106,7 +109,7 @@ namespace Marvel {
 			
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
-		    pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
+		    pipeline.blendStateFlags = phongMaterial->material.hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
@@ -136,7 +139,7 @@ namespace Marvel {
 			// rasterizer stage
 			pipeline.viewportWidth = 1000;
 			pipeline.viewportHeight = 1000;
-			pipeline.rasterizerStateCull = !m_materialBuffer.hasAlpha;
+			pipeline.rasterizerStateCull = !phongMaterial->material.hasAlpha;
 			pipeline.rasterizerStateHwPCF = true;
 			pipeline.rasterizerStateDepthBias = 50;
 			pipeline.rasterizerStateSlopeBias = 2.0f;
@@ -144,7 +147,7 @@ namespace Marvel {
 
 			// pixel shader stage
 			aiString texFileName;
-			if (m_materialBuffer.useTextureMap && m_materialBuffer.hasAlpha)
+			if (phongMaterial->material.useTextureMap && phongMaterial->material.hasAlpha)
 			{
 				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 				{
@@ -155,7 +158,7 @@ namespace Marvel {
 
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
-			pipeline.blendStateFlags = m_materialBuffer.hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
+			pipeline.blendStateFlags = phongMaterial->material.hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
 
 			for (int i = 1; i < 4; i++)
 			{

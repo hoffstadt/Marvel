@@ -30,12 +30,18 @@ namespace Marvel {
         sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; //DXGI_SWAP_EFFECT_DISCARD;
         sd.Flags = 0;
 
+        UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#ifdef MV_DEBUG
+        creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif // MV_DEBUG
+
+
         // create device and front/back buffers, and swap chain and rendering context
         HRESULT hResult = D3D11CreateDeviceAndSwapChain(
             nullptr,
             D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
-            D3D11_CREATE_DEVICE_DEBUG,
+            creationFlags,
             nullptr,
             0,
             D3D11_SDK_VERSION,

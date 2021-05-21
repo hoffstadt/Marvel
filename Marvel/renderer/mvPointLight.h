@@ -44,9 +44,10 @@ namespace Marvel {
 		{
 
 			int lightCount = 0;
+			char _pad0[12];
 			//-------------------------- ( 16 bytes )
 
-			alignas(16) glm::vec4 viewLightPos[3] = {
+			glm::vec4 viewLightPos[3] = {
 				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f}, 
 				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f} , 
 				glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f} };

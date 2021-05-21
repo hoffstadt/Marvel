@@ -43,10 +43,19 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
     float3 specularReflectedColor = material.specularColor;
-    float3 materialColor = materialColor;
+    float3 materialColor = material.materialColor;
+    
+    if(material.useTextureMap)
+    {
+        // sample diffuse texture
+        const float4 dtex = ColorTexture.Sample(Sampler, tc);
+        
+        materialColor = dtex.rgb;
+    }
 
     if (material.hasAlpha)
     {
+
         // sample diffuse texture
         const float4 dtex = ColorTexture.Sample(Sampler, tc);
             
@@ -58,8 +67,6 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         {
             viewNormal = -viewNormal;
         }
-        
-        materialColor = dtex.rgb;
     }
 
     // normalize the mesh normal
@@ -106,7 +113,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
             // specular
             specularReflected += Speculate(
-            PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor, material.specularWeight, viewNormal,
+            PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor,1.0f, viewNormal,
             lv.vec, viewFragPos, att, specularPowerLoaded);
             
             // scale by shadow level
@@ -116,14 +123,14 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
   
     }
     
-    // directional lights
+    // directional light
 
 	// diffuse
     diffuse += Diffuse(DirectionalLight.diffuseColor, DirectionalLight.diffuseIntensity, 1.0f, -normalize(DirectionalLight.viewLightDir), viewNormal);
     
     // specular
     specularReflected += Speculate(
-        DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor, material.specularWeight, viewNormal,
+        DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor, 1.0f, viewNormal,
         -normalize(DirectionalLight.viewLightDir), viewFragPos, 1.0f, specularPowerLoaded);
 
 	// final color

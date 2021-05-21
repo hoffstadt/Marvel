@@ -1,7 +1,6 @@
 #pragma once
 #include "mvDrawable.h"
 #include <memory>
-#include "mvMaterial.h"
 
 namespace Marvel {
 
@@ -32,7 +31,6 @@ namespace Marvel {
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
 		glm::mat4 m_transform;
-		mvMaterial::mvMaterialBuffer m_materialBuffer;
 
 	};
 

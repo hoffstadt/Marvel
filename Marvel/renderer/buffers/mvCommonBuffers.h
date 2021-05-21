@@ -7,3 +7,4 @@
 #include "mvSkyBoxTransformConstantBuffer.h"
 #include "mvVertexBuffer.h"
 #include "mvIndexBuffer.h"
+#include "mvPhongMaterialCBuf.h"

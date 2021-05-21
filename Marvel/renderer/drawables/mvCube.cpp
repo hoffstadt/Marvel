@@ -10,6 +10,8 @@ namespace Marvel {
 	mvCube::mvCube(mvGraphics& graphics, const std::string& name, glm::vec3 color)
 	{
 
+		auto phongMaterial = std::make_shared<mvPhongMaterialCBuf>(graphics, 1);
+
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -17,6 +19,16 @@ namespace Marvel {
 		vl.append(ElementType::Tangent);
 		vl.append(ElementType::Bitangent);
 		vl.append(ElementType::Texture2D);
+
+		phongMaterial->material.materialColor = { 0.45f, 0.45f, 0.85f };
+		phongMaterial->material.specularColor = { 0.18f, 0.18f, 0.18f };
+		phongMaterial->material.specularGloss = 8.0f;
+		phongMaterial->material.normalMapWeight = 1.0f;
+		phongMaterial->material.useTextureMap = true;
+		phongMaterial->material.useNormalMap = false;
+		phongMaterial->material.useSpecularMap = false;
+		phongMaterial->material.useGlossAlpha = false;
+		phongMaterial->material.hasAlpha = false;
 
 		static const float side = 1.0f;
 		auto vertices = std::vector<float>{
@@ -90,7 +102,7 @@ namespace Marvel {
 			// additional buffers
 			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
-			step.addBuffer(std::make_shared<mvPixelConstantBuffer>(graphics, 1u, &m_materialBuffer));
+			step.addBuffer(phongMaterial);
 			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
 
 			//-----------------------------------------------------------------------------

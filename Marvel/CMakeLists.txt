@@ -3,6 +3,13 @@ cmake_minimum_required (VERSION 3.13)
 add_library(marvel)
 set_property(TARGET marvel PROPERTY CXX_STANDARD 17)
 
+target_compile_definitions(marvel
+
+	PRIVATE
+		$<$<CONFIG:Debug>:MV_DEBUG>
+		$<$<CONFIG:Release>:MV_RELEASE>
+)
+
 target_sources(marvel
 
 	PRIVATE
@@ -39,6 +46,7 @@ target_sources(marvel
 		"renderer/buffers/mvVertexBuffer.cpp"
 		"renderer/buffers/mvDynamicBuffer.cpp"
 		"renderer/buffers/mvVertexLayout.cpp"
+		"renderer/buffers/mvPhongMaterialCBuf.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
