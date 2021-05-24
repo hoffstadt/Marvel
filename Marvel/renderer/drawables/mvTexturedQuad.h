@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "mvDrawable.h"
-#include "mvMaterial.h"
+
 
 namespace Marvel {
 
@@ -13,7 +13,7 @@ namespace Marvel {
 
 	public:
 
-		mvTexturedQuad(mvGraphics& graphics, const std::string& name, const std::string& path);
+		mvTexturedQuad(mvGraphics& graphics, const std::string& name, glm::vec3 color);
 
 		glm::mat4 getTransform() const override;
 
@@ -29,6 +29,7 @@ namespace Marvel {
 		float m_xangle = 0.0f;
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
+
 
 	};
 

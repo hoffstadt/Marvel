@@ -42,7 +42,7 @@ int main()
     auto lightcamera = lightManager.getLight(0).getCamera();
 
     // create camera
-    mvCamera camera(graphics, "maincamera", {-13.5f, 6.0f, 3.5f}, 0.0f, PI / 2.0f, width, height, 0.5f, 400.0f, false);
+    mvCamera camera(graphics, "maincamera", { -13.5f, 6.0f, 3.5f }, 0.0f, PI / 2.0f, width, height, 0.5f, 400.0f, false);
     //mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
 
     // create model
@@ -53,6 +53,10 @@ int main()
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
     cube.setPosition(0.0f, 5.0f, 10.0f);
+
+    // create testing quad
+    mvTexturedQuad quad(graphics, "testquad", { 1.0f, 0.0f, 0.5f });
+    quad.setPosition(5.0f, 5.0f, 10.0f);
 
     // timer
     Marvel::mvTimer timer;
@@ -76,6 +80,7 @@ int main()
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
             model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
+            quad.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
@@ -108,11 +113,12 @@ int main()
         directionLight.bind(graphics, camera.getMatrix());
 
         cube.submit(*graph);
+        quad.submit(*graph);
         model.submit(*graph);
         lightManager.submit(*graph);
         //lightcamera->submit(*graph);
         //directionCamera.submit(*graph);
-        
+
         graph->execute(graphics);
 
         static mvModelProbe probe(graphics, "Model Probe");
@@ -122,11 +128,12 @@ int main()
         directionLight.show_imgui_window();
         graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
+        quad.show_imgui_windows("Test Quad");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
-            
+
         ////ImGui::SetNextWindowSize(ImVec2(300, 320));
         //if (ImGui::Begin("Light Camera", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         //{
