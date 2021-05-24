@@ -55,7 +55,7 @@ int main()
     cube.setPosition(0.0f, 5.0f, 10.0f);
 
     // create testing quad
-    mvTexturedQuad quad(graphics, "testquad", { 1.0f, 0.0f, 0.5f });
+    mvTexturedQuad quad(graphics, "testquad", "../../Resources/brickwall.jpg");
     quad.setPosition(5.0f, 5.0f, 10.0f);
 
     // timer

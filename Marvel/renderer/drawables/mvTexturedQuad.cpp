@@ -7,7 +7,7 @@
 
 namespace Marvel {
 
-	mvTexturedQuad::mvTexturedQuad(mvGraphics& graphics, const std::string& name, glm::vec3 color)
+	mvTexturedQuad::mvTexturedQuad(mvGraphics& graphics, const std::string& name, const std::string& path)
 	{
 
 		// create vertex layout
@@ -82,7 +82,7 @@ namespace Marvel {
 			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			step.addBuffer(phongMaterial);
-			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, "../../Resources/brickwall.jpg", 0u));
+			step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path, 0u));
 
 			//-----------------------------------------------------------------------------
 			// pipeline state setup
