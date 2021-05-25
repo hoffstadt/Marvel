@@ -278,7 +278,7 @@ namespace Marvel {
 		//---------------------------------------------------------------------
 		// compute shader
 		//---------------------------------------------------------------------
-		graphics.getContext()->CSSetShader(nullptr, nullptr, 0);
+		//graphics.getContext()->CSSetShader(nullptr, nullptr, 0);
 
 	}
 

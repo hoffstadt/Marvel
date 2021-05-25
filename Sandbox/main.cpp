@@ -13,6 +13,7 @@
 #include "mvModel.h"
 #include "mvRenderGraph.h"
 #include "mvModelProbe.h"
+#include "mvComputeShader.h"
 
 using namespace Marvel;
 
@@ -46,7 +47,7 @@ int main()
     //mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
     //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
 
@@ -57,6 +58,24 @@ int main()
     // create testing quad
     mvTexturedQuad quad(graphics, "testquad", "../../Resources/brickwall.jpg");
     quad.setPosition(5.0f, 5.0f, 10.0f);
+
+
+    // testing compute shaders
+    struct BufType { float f;};
+    BufType* inputRawBuffer = new BufType[1024];
+
+    for (int i = 0; i < 1024; ++i)
+        inputRawBuffer[i].f = 1.5f;
+
+    mvComputeShader computeShader(graphics, graphics.getShaderRoot() + "testcompute.hlsl");
+    mvComputeInputBuffer<BufType> inputBuffer(graphics, 0, inputRawBuffer, 1024);
+    mvComputeOutputBuffer<BufType> outputBuffer(graphics, 0, 1024);
+
+    inputBuffer.bind(graphics);
+    outputBuffer.bind(graphics);
+    computeShader.dispatch(graphics, 1024, 1, 1);
+
+    BufType* p = outputBuffer.getDataFromGPU(graphics);
 
     // timer
     Marvel::mvTimer timer;
@@ -78,7 +97,7 @@ int main()
             window.setResizedFlag(false);
 
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
-            model.linkTechniques(*graph);
+            //model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             quad.linkTechniques(*graph);
             lightManager.linkTechniques(*graph);
@@ -114,7 +133,7 @@ int main()
 
         cube.submit(*graph);
         quad.submit(*graph);
-        model.submit(*graph);
+        //model.submit(*graph);
         lightManager.submit(*graph);
         //lightcamera->submit(*graph);
         //directionCamera.submit(*graph);
@@ -123,7 +142,7 @@ int main()
 
         static mvModelProbe probe(graphics, "Model Probe");
 
-        probe.spawnWindow(model);
+        //probe.spawnWindow(model);
         lightManager.show_imgui_windows();
         directionLight.show_imgui_window();
         graph->show_imgui_window();

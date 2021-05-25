@@ -6,5 +6,6 @@
 #include "mvShadowCameraConstantBuffer.h"
 #include "mvSkyBoxTransformConstantBuffer.h"
 #include "mvVertexBuffer.h"
+#include "mvComputeBuffer.h"
 #include "mvIndexBuffer.h"
 #include "mvPhongMaterialCBuf.h"

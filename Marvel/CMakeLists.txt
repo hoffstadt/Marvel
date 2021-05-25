@@ -47,6 +47,7 @@ target_sources(marvel
 		"renderer/buffers/mvDynamicBuffer.cpp"
 		"renderer/buffers/mvVertexLayout.cpp"
 		"renderer/buffers/mvPhongMaterialCBuf.cpp"
+		"renderer/buffers/mvComputeBuffer.cpp"
 
 		"renderer/bindables/mvBindableRegistry.cpp"
 		"renderer/bindables/mvDepthStencil.cpp"
@@ -61,6 +62,7 @@ target_sources(marvel
 		"renderer/pipeline/mvRasterizerState.cpp"
 		"renderer/pipeline/mvPixelShader.cpp"
 		"renderer/pipeline/mvVertexShader.cpp"
+		"renderer/pipeline/mvComputeShader.cpp"
 		"renderer/pipeline/mvGeometryShader.cpp"
 		"renderer/pipeline/mvInputLayout.cpp"
 		"renderer/pipeline/mvSamplerState.cpp"
