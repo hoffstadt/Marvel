@@ -44,9 +44,9 @@ int main()
     //mvCamera directionCamera(graphics, "directionCamera", { 0.0f, 75.0f, 0.0f }, PI / 2.0f, 0.0f, 300, 300, 0.5f, 100.0f, true);
 
     // create model
-    mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
+    //mvModel model(graphics, "../../Resources/Models/Sponza/sponza.obj", 1.0f);
     //mvModel model(graphics, "../../Resources/Models/gobber/GoblinX.obj", 1.0f);
-    //mvSolidSphere model(graphics, 1.0f, { 1.0f, 0.2f, 0.0f }, 0);
+    mvSolidSphere sphere(graphics, "sphere boi", 1.0f, { 5.0f, 5.0f, 0.0f }, 0);
 
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
@@ -94,7 +94,8 @@ int main()
             window.setResizedFlag(false);
 
             graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
-            model.linkTechniques(*graph);
+           //model.linkTechniques(*graph);
+            sphere.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             quad.linkTechniques(*graph);
             pointlight.linkTechniques(*graph);
@@ -122,7 +123,8 @@ int main()
 
         cube.submit(*graph);
         quad.submit(*graph);
-        model.submit(*graph);
+        //model.submit(*graph);
+        sphere.submit(*graph);
         pointlight.submit(*graph);
         //lightcamera->submit(*graph);
         //directionCamera.submit(*graph);
@@ -131,7 +133,7 @@ int main()
 
         static mvModelProbe probe(graphics, "Model Probe");
 
-        probe.spawnWindow(model);
+        //probe.spawnWindow(model);
         pointlight.show_imgui_window();
         directionLight.show_imgui_window();
         graph->show_imgui_window();

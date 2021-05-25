@@ -125,23 +125,48 @@ namespace Marvel {
 		// phong
 		else
 		{
-		//	std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
 
-		//	step.addBuffer(buf);
-		//	step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			step.addBuffer(std::make_shared<mvPhongMaterialCBuf>(graphics, 1));
 
-		//	mvPipelineInfo pipeline;
+			//-----------------------------------------------------------------------------
+			// pipeline state setup
+			//-----------------------------------------------------------------------------
+			mvPipelineInfo pipeline;
 
-		//	pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
-		//	pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
-		//	pipeline.geometryShader = "";
-		//	pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		//	pipeline.vertexLayout = vl;
-		//	pipeline.rasterizerStateCull = true;
-		//	pipeline.rasterizerStateHwPCF = false;
-		//	pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
 
-		//	step.registerPipeline(graphics, pipeline);
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 0;  // use render target
+			pipeline.viewportHeight = 0; // use render target
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateDepthBias = 0;    // not used
+			pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+			pipeline.rasterizerStateClamp = 0.0f;	  // not used
+
+			// pixel shader stage
+			pipeline.pixelShader = graphics.getShaderRoot() + "PBRModel_PS.hlsl";
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
 		}
 
 
