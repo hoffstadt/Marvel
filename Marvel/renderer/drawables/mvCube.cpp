@@ -178,20 +178,17 @@ namespace Marvel {
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
 			pipeline.blendStateFlags =  mvBlendStateFlags::OFF;
 
-			for (int i = 1; i < 4; i++)
-			{
-				mvStep step("shadow" + std::to_string(i));
+			mvStep step("shadow");
 
-				//-----------------------------------------------------------------------------
-				// additional buffers
-				//-----------------------------------------------------------------------------
-				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
-				// registers required pipeline
-				step.registerPipeline(graphics, pipeline);
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
 
-				map.addStep(step);
-			}
+			map.addStep(step);
 		}
 
 		addTechnique(phong);

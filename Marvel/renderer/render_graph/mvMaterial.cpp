@@ -160,23 +160,21 @@ namespace Marvel {
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
 			pipeline.blendStateFlags = phongMaterial->material.hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
 
-			for (int i = 1; i < 4; i++)
-			{
-				mvStep step("shadow" + std::to_string(i));
 
-				//-----------------------------------------------------------------------------
-				// additional buffers
-				//-----------------------------------------------------------------------------
-				step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			mvStep step("shadow");
 
-				if (!pipeline.pixelShader.empty())
-					step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
-				// registers required pipeline
-				step.registerPipeline(graphics, pipeline);
+			if (!pipeline.pixelShader.empty())
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
 
-				map.addStep(step);
-			}
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
+
+			map.addStep(step);
 		}
 
 		m_techniques.push_back(phong);

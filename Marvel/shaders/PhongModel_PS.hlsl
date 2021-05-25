@@ -5,40 +5,20 @@
 Texture2D   ColorTexture    : register(t0);
 Texture2D   SpecularTexture : register(t1);
 Texture2D   NormalTexture   : register(t2);
-TextureCube ShadowMap1      : register(t3);
-TextureCube ShadowMap2      : register(t4);
-TextureCube ShadowMap3      : register(t5);
+TextureCube ShadowMap      : register(t3);
 
 // samplers
 SamplerState           Sampler       : register(s0);
 SamplerComparisonState ShadowSampler : register(s1);
 
 // constant buffers
-cbuffer mvPointLightManagerCBuf : register(b0) { mvPointLightManager PointLight; };
-cbuffer mvMaterialCBuf          : register(b1) { mvMaterial material; };
-cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLight DirectionalLight; };
-cbuffer mvSceneCBuf             : register(b3) { mvScene Scene; };
-
-float GetShadowLevel(int index, float4 pos)
-{
-    if(index == 0)
-    {
-        return Shadow(pos, ShadowMap1, ShadowSampler);
-    }
-    if (index == 1)
-    {
-        return Shadow(pos, ShadowMap2, ShadowSampler);
-    }
-    if (index == 2)
-    {
-        return Shadow(pos, ShadowMap3, ShadowSampler);
-    }
-    
-    return Shadow(pos, ShadowMap1, ShadowSampler);
-}
+cbuffer mvPointLightCBuf       : register(b0) { mvPointLight PointLight; };
+cbuffer mvMaterialCBuf         : register(b1) { mvMaterial material; };
+cbuffer mvDirectionalLightCBuf : register(b2) { mvDirectionalLight DirectionalLight; };
+cbuffer mvSceneCBuf            : register(b3) { mvScene Scene; };
 
 float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, 
-    float2 tc : Texcoord, float4 spos[3] : shadowPosition) : SV_Target
+    float2 tc : Texcoord, float4 spos : shadowPosition) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
@@ -93,35 +73,31 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         }
     }
      
-    // point lights
-    for (int i = 0; i < PointLight.LightCount; i++)
+    // point light
+    const float shadowLevel = Shadow(spos, ShadowMap, ShadowSampler);
+            
+    if (shadowLevel != 0.0f)
     {
             
-        const float shadowLevel = GetShadowLevel(i, spos[i]);
-            
-        if (shadowLevel != 0.0f)
-        {
-            
-	        // fragment to light vector data
-            const LightVectorData lv = CalculateLightVectorData(PointLight.viewLightPos[i], viewFragPos);
+	    // fragment to light vector data
+        const LightVectorData lv = CalculateLightVectorData(PointLight.viewLightPos, viewFragPos);
     
-	        // attenuation
-            const float att = Attenuate(PointLight.attConst[i], PointLight.attLin[i], PointLight.attQuad[i], lv.dist);
+	    // attenuation
+        const float att = Attenuate(PointLight.attConst, PointLight.attLin, PointLight.attQuad, lv.dist);
     
-	        // diffuse
-            diffuse += Diffuse(PointLight.diffuseColor[i], PointLight.diffuseIntensity[i], att, lv.dir, viewNormal);
+	    // diffuse
+        diffuse += Diffuse(PointLight.diffuseColor, PointLight.diffuseIntensity, att, lv.dir, viewNormal);
     
-            // specular
-            specularReflected += Speculate(
-            PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor,1.0f, viewNormal,
-            lv.vec, viewFragPos, att, specularPowerLoaded);
+        // specular
+        specularReflected += Speculate(
+        PointLight.diffuseColor * PointLight.diffuseIntensity * specularReflectedColor, 1.0f, viewNormal,
+        lv.vec, viewFragPos, att, specularPowerLoaded);
             
-            // scale by shadow level
-            diffuse *= shadowLevel;
-            specularReflected *= shadowLevel;
-        }
-  
+        // scale by shadow level
+        diffuse *= shadowLevel;
+        specularReflected *= shadowLevel;
     }
+  
     
     // directional light
 

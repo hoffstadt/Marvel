@@ -1,28 +1,19 @@
 
-struct mvPointLightManager
+struct mvPointLight
 {
-    int LightCount;
+    float3 viewLightPos;
     //-------------------------- ( 16 bytes )
     
-    float3 viewLightPos[3];
-    //-------------------------- ( 48 bytes )
+    float3 diffuseColor;
+    float diffuseIntensity;
+    //-------------------------- ( 16 bytes )
     
-    float3 diffuseColor[3];
-    //-------------------------- ( 48 bytes )
+    float attConst;
+    float attLin;
+    float attQuad;
+    //-------------------------- ( 16 bytes )
     
-    float diffuseIntensity[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attConst[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attLin[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attQuad[3];
-    //-------------------------- ( 48 bytes )
-    
-    //-------------------------- ( 6*48 + 16 = 304 bytes )
+    //-------------------------- ( 4*16 = 64 bytes )
 };
 
 struct mvDirectionalLight

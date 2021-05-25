@@ -36,11 +36,8 @@ int main()
 
     auto directionLight = mvDirectionLight(graphics, { 0.0f, -1.0f, 0.0f });
 
-    mvPointLightManager lightManager(graphics);
-    lightManager.addLight(graphics, "light0", { 0.0f, 5.0f, 0.0f });
-    lightManager.addLight(graphics, "light1", { 50.8f, 40.5f, -20.6f });
-    lightManager.addLight(graphics, "light2", { -22.2f, 17.2f, -27.5f });
-    auto lightcamera = lightManager.getLight(0).getCamera();
+    mvPointLight pointlight(graphics, "light0", { 0.0f, 5.0f, 0.0f });
+    auto lightcamera = pointlight.getCamera();
 
     // create camera
     mvCamera camera(graphics, "maincamera", { -13.5f, 6.0f, 3.5f }, 0.0f, PI / 2.0f, width, height, 0.5f, 400.0f, false);
@@ -100,16 +97,12 @@ int main()
             model.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             quad.linkTechniques(*graph);
-            lightManager.linkTechniques(*graph);
+            pointlight.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
             //directionCamera.linkTechniques(*graph);
-            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera1(*lightManager.getLight(0).getCamera());
-            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera2(*lightManager.getLight(1).getCamera());
-            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera3(*lightManager.getLight(2).getCamera());
-            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
-            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
-            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
+            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
+            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
         }
 
         const auto dt = timer.mark() * 1.0f;
@@ -119,22 +112,18 @@ int main()
         graphics.beginFrame();
 
         graph->bindMainCamera(camera);
-        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera1(*lightManager.getLight(0).getCamera());
-        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera2(*lightManager.getLight(1).getCamera());
-        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera3(*lightManager.getLight(2).getCamera());
-        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow1"))->bindShadowCamera(*lightManager.getLight(0).getCamera());
-        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow2"))->bindShadowCamera(*lightManager.getLight(1).getCamera());
-        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow3"))->bindShadowCamera(*lightManager.getLight(2).getCamera());
+        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
+        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
 
         graph->bind(graphics);
 
-        lightManager.bind(graphics, camera.getMatrix());
+        pointlight.bind(graphics, camera.getMatrix());
         directionLight.bind(graphics, camera.getMatrix());
 
         cube.submit(*graph);
         quad.submit(*graph);
         model.submit(*graph);
-        lightManager.submit(*graph);
+        pointlight.submit(*graph);
         //lightcamera->submit(*graph);
         //directionCamera.submit(*graph);
 
@@ -143,7 +132,7 @@ int main()
         static mvModelProbe probe(graphics, "Model Probe");
 
         probe.spawnWindow(model);
-        lightManager.show_imgui_windows();
+        pointlight.show_imgui_window();
         directionLight.show_imgui_window();
         graph->show_imgui_window();
         cube.show_imgui_windows("Test Cube");
