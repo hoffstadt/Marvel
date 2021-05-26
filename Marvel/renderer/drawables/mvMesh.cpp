@@ -21,15 +21,16 @@ namespace Marvel {
 		float z = 0.0f;
 	};
 
-	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale)
+	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, 
+		const aiMaterial& material, const std::filesystem::path& path, float scale, bool PBR)
 	{
 
 		const auto rootPath = path.parent_path().string() + "\\";
 
-		mvMaterial mat = mvMaterial(graphics, material, rootPath);
+		m_material = std::make_shared<mvMaterial>(graphics, material, rootPath, PBR);
 
 		// create vertex layout
-		const Marvel::mvVertexLayout& vertexLayout = mat.getLayout();
+		const Marvel::mvVertexLayout& vertexLayout = m_material->getLayout();
 		
 		std::vector<float> verticies;
 		verticies.reserve(mesh.mNumVertices * 14);
@@ -77,7 +78,7 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
 
-		auto techniques = mat.getTechniques();
+		auto techniques = m_material->getTechniques();
 
 		for (auto& tech : techniques)
 			addTechnique(tech);
@@ -93,6 +94,43 @@ namespace Marvel {
 	glm::mat4 mvMesh::getTransform() const
 	{
 		return m_transform;
+	}
+
+	void mvMesh::show_imgui_controls()
+	{
+		//ImGui::SliderFloat("X-Pos", &m_x, -50.0f, 50.0f);
+		//ImGui::SliderFloat("Y-Pos", &m_y, -50.0f, 50.0f);
+		//ImGui::SliderFloat("Z-Pos", &m_z, -50.0f, 50.0f);
+		//ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
+		//ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
+		//ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
+
+		if (m_material)
+		{
+			if (m_material->getPBRMaterial())
+			{
+				ImGui::ColorEdit3("Albedo", &m_material->getPBRMaterial()->material.albedo.x);
+				ImGui::SliderFloat("Metalness", &m_material->getPBRMaterial()->material.metalness, 0.0f, 1.0f);
+				ImGui::SliderFloat("Roughness", &m_material->getPBRMaterial()->material.roughness, 0.0f, 1.0f);
+				ImGui::SliderFloat("Radiance", &m_material->getPBRMaterial()->material.radiance, 0.0f, 1.0f);
+				ImGui::SliderFloat("Fresnel", &m_material->getPBRMaterial()->material.fresnel, 0.0f, 1.0f);
+				ImGui::Checkbox("Use Albedo Map", (bool*)&m_material->getPBRMaterial()->material.useAlbedoMap);
+				ImGui::Checkbox("Use Normal Map", (bool*)&m_material->getPBRMaterial()->material.useNormalMap);
+				ImGui::Checkbox("Use Roughness Map", (bool*)&m_material->getPBRMaterial()->material.useRoughnessMap);
+				ImGui::Checkbox("Use Metal Map", (bool*)&m_material->getPBRMaterial()->material.useMetalMap);
+			}
+
+			if (m_material->getPhongMaterial())
+			{
+				ImGui::ColorEdit3("Material Color", &m_material->getPhongMaterial()->material.materialColor.x);
+				ImGui::ColorEdit3("Specular Color", &m_material->getPhongMaterial()->material.specularColor.x);
+				ImGui::SliderFloat("Normal Weight", &m_material->getPhongMaterial()->material.normalMapWeight, 0.0f, 1.0f);
+				ImGui::Checkbox("Use Color Map", (bool*)&m_material->getPhongMaterial()->material.useTextureMap);
+				ImGui::Checkbox("Use Normal Map", (bool*)&m_material->getPhongMaterial()->material.useNormalMap);
+				ImGui::Checkbox("Use Specular Map", (bool*)&m_material->getPhongMaterial()->material.useSpecularMap);
+			}
+		}
+
 	}
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "mvDrawable.h"
+#include "mvPBRMaterialCBuf.h"
 #include <memory>
 
 namespace Marvel {
@@ -18,7 +19,7 @@ namespace Marvel {
 		glm::mat4 getTransform() const override;
 		void setTransform(glm::mat4 transform);
 
-		void show_imgui_windows(const char* name);
+		void show_imgui_window();
 		void setPosition(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 
@@ -31,6 +32,8 @@ namespace Marvel {
 		float m_yangle = 0.0f;
 		float m_zangle = 0.0f;
 		glm::mat4 m_transform;
+		std::string m_name;
+		std::shared_ptr<mvPBRMaterialCBuf> m_material = nullptr;
 
 	};
 

@@ -28,7 +28,7 @@ struct mvDirectionalLight
     //-------------------------- ( 2*16 = 32 bytes )
 };
 
-struct mvMaterial
+struct mvPhongMaterial
 {
     float3 materialColor;
     //-------------------------- ( 16 bytes )
@@ -51,6 +51,26 @@ struct mvMaterial
     //-------------------------- ( 4 * 16 = 64 bytes )
 };
 
+struct mvPBRMaterial
+{
+    float3 albedo;
+    float metalness;
+    //-------------------------- ( 16 bytes )
+    
+    float roughness;
+    float radiance;
+    float fresnel;
+    bool useAlbedoMap;
+    //-------------------------- ( 16 bytes )
+    
+    bool useNormalMap;
+    bool useRoughnessMap;
+    bool useMetalMap;
+    //-------------------------- ( 16 bytes )
+   
+    //-------------------------- ( 3 * 16 = 48 bytes )
+};
+
 struct mvScene
 {
     float FogStart;
@@ -61,5 +81,10 @@ struct mvScene
     float3 ambient;
     //-------------------------- ( 16 bytes )
     
-    //-------------------------- ( 2*16 = 32 bytes ) 
+    float3 camPos;
+    bool useShadows;
+    bool useSkybox;
+    //-------------------------- ( 16 bytes )
+    
+    //-------------------------- ( 3*16 = 48 bytes ) 
 };

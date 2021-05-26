@@ -34,7 +34,15 @@ namespace Marvel {
 			glm::vec3 ambientColor = { 0.05f, 0.05f, 0.05f };
 			//-------------------------- ( 16 bytes )
 
-			//-------------------------- ( 2*16 = 32 bytes )
+			glm::vec3 camPos = { 0.0f, 0.0f, 0.0f };
+			int useShadows = true;
+			//-------------------------- ( 16 bytes )
+
+			int useSkybox = true;
+			char _pad0[12];
+			//-------------------------- ( 16 bytes )
+
+			//-------------------------- ( 4*16 = 64 bytes )
 		};
 
 	public:
@@ -85,8 +93,7 @@ namespace Marvel {
 		std::vector<std::unique_ptr<mvPassResource>> m_resources;
 		std::vector<std::unique_ptr<mvPassProduct>> m_products;
 
-
-
+		const mvCamera* m_camera = nullptr;
 	};
 
 }

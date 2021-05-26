@@ -10,6 +10,7 @@
 #include "mvOverlayPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
+#include "mvCamera.h"
 
 namespace Marvel {
 
@@ -113,12 +114,14 @@ namespace Marvel {
 
 	void mvRenderGraph::bindMainCamera(mvCamera& camera)
 	{
+		m_camera = &camera;
 		static_cast<mvLambertianPass*>(getPass("lambertian"))->bindMainCamera(camera);
 		static_cast<mvOverlayPass*>(getPass("overlay"))->bindMainCamera(camera);
 	}
 
 	void mvRenderGraph::bind(mvGraphics& graphics)
 	{
+		m_globalSettings.camPos = m_camera->getPos();
 		m_buffer->update(graphics, m_globalSettings);
 		m_buffer->bind(graphics);
 	}
@@ -135,6 +138,8 @@ namespace Marvel {
 			ImGui::SliderFloat("Fog Start", &m_globalSettings.fogStart,  0.0f, 100.0f, "%.1f");
 			ImGui::SliderFloat("Fog Range", &m_globalSettings.fogRange,  0.0f, 100.0f, "%.1f");
 			ImGui::ColorEdit3("Fog Color", &m_globalSettings.fogColor.x);
+			ImGui::Checkbox("Use Shadows", (bool*)&m_globalSettings.useShadows);
+			ImGui::Checkbox("Use Skybox", (bool*)&m_globalSettings.useSkybox);
 		}
 		ImGui::End();
 	}

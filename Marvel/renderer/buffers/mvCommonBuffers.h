@@ -9,3 +9,4 @@
 #include "mvComputeBuffer.h"
 #include "mvIndexBuffer.h"
 #include "mvPhongMaterialCBuf.h"
+#include "mvPBRMaterialCBuf.h"

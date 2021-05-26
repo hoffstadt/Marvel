@@ -58,6 +58,9 @@ namespace Marvel {
 				m_selectedNode->setAppliedTransform(transformation);
 			}
 
+			for (auto& mesh : m_selectedNode->getMeshes())
+				mesh->show_imgui_controls();
+
 		}
 		ImGui::End();
 	}

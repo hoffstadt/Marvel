@@ -28,7 +28,7 @@ namespace Marvel {
 
 	public:
 
-		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
+		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f, bool PBR = false);
 
 		// propagates through graph linking steps to passes
 		// model -> node -> mesh -> technique -> step -> pass
