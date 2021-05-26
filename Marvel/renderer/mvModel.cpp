@@ -8,7 +8,7 @@
 
 namespace Marvel {
 
-	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
+	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale, bool PBR)
 		:
 		m_mesh(graphics, pathString+"sphere")
 	{
@@ -33,7 +33,7 @@ namespace Marvel {
 		{
 			const auto& mesh = *pScene->mMeshes[i];
 			m_meshes.push_back(std::make_shared<mvMesh>(
-				graphics, mesh.mName.C_Str(), mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale));
+				graphics, mesh.mName.C_Str(), mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale, PBR));
 		}
 
 		int id = 0;

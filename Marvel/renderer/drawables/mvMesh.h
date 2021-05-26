@@ -26,7 +26,8 @@ namespace Marvel {
 
 	public:
 
-		mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
+		mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, 
+			const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f, bool PBR = false);
 
 		// propagates through graph submitting jobs
 		// mesh -> technique -> step -> pass
@@ -34,9 +35,12 @@ namespace Marvel {
 		
 		glm::mat4 getTransform() const override;
 
+		void show_imgui_controls();
+
 	private:
 
 		mutable glm::mat4 m_transform = glm::identity<glm::mat4>();
+		std::shared_ptr<mvMaterial> m_material = nullptr;
 
 	};
 

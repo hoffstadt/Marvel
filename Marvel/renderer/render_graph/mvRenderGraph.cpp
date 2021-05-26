@@ -10,6 +10,7 @@
 #include "mvOverlayPass.h"
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
+#include "mvCamera.h"
 
 namespace Marvel {
 
@@ -39,25 +40,13 @@ namespace Marvel {
 		}
 
 		{
-			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow1", 3);
-			addPass(std::move(pass));
-		}
-
-		{
-			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow2", 4);
-			addPass(std::move(pass));
-		}
-
-		{
-			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow3", 5);
+			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow", 3);
 			addPass(std::move(pass));
 		}
 
 		{
 			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
-			pass->linkResourceToProduct("map1", "shadow1", "map");
-			pass->linkResourceToProduct("map2", "shadow2", "map");
-			pass->linkResourceToProduct("map3", "shadow3", "map");
+			pass->linkResourceToProduct("map", "shadow", "map");
 			pass->linkResourceToProduct("render_target", "clear_target", "buffer");
 			pass->linkResourceToProduct("depth_stencil", "clear_depth", "buffer");
 			addPass(std::move(pass));
@@ -125,12 +114,14 @@ namespace Marvel {
 
 	void mvRenderGraph::bindMainCamera(mvCamera& camera)
 	{
+		m_camera = &camera;
 		static_cast<mvLambertianPass*>(getPass("lambertian"))->bindMainCamera(camera);
 		static_cast<mvOverlayPass*>(getPass("overlay"))->bindMainCamera(camera);
 	}
 
 	void mvRenderGraph::bind(mvGraphics& graphics)
 	{
+		m_globalSettings.camPos = m_camera->getPos();
 		m_buffer->update(graphics, m_globalSettings);
 		m_buffer->bind(graphics);
 	}
@@ -147,6 +138,8 @@ namespace Marvel {
 			ImGui::SliderFloat("Fog Start", &m_globalSettings.fogStart,  0.0f, 100.0f, "%.1f");
 			ImGui::SliderFloat("Fog Range", &m_globalSettings.fogRange,  0.0f, 100.0f, "%.1f");
 			ImGui::ColorEdit3("Fog Color", &m_globalSettings.fogColor.x);
+			ImGui::Checkbox("Use Shadows", (bool*)&m_globalSettings.useShadows);
+			ImGui::Checkbox("Use Skybox", (bool*)&m_globalSettings.useSkybox);
 		}
 		ImGui::End();
 	}

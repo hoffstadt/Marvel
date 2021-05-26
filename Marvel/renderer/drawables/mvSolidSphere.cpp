@@ -11,6 +11,8 @@ namespace Marvel {
 	mvSolidSphere::mvSolidSphere(mvGraphics& graphics, const std::string& name, float radius, glm::vec3 color, int simple)
 	{
 
+		m_name = name;
+
 		// create vertex layout
 		mvVertexLayout vl;
 		vl.append(ElementType::Position3D);
@@ -125,23 +127,49 @@ namespace Marvel {
 		// phong
 		else
 		{
-		//	std::shared_ptr<mvPixelConstantBuffer> buf = std::make_shared<mvPixelConstantBuffer>(graphics, 1, &m_materialBuffer);
 
-		//	step.addBuffer(buf);
-		//	step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+			m_material = std::make_shared<mvPBRMaterialCBuf>(graphics, 1);
+			step.addBuffer(m_material);
 
-		//	mvPipelineInfo pipeline;
+			//-----------------------------------------------------------------------------
+			// pipeline state setup
+			//-----------------------------------------------------------------------------
+			mvPipelineInfo pipeline;
 
-		//	pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
-		//	pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
-		//	pipeline.geometryShader = "";
-		//	pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		//	pipeline.vertexLayout = vl;
-		//	pipeline.rasterizerStateCull = true;
-		//	pipeline.rasterizerStateHwPCF = false;
-		//	pipeline.blendStateFlags = mvBlendStateFlags::MV_BLEND_STATE_BLEND_OFF;
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
 
-		//	step.registerPipeline(graphics, pipeline);
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongModel_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 0;  // use render target
+			pipeline.viewportHeight = 0; // use render target
+			pipeline.rasterizerStateCull = true;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateDepthBias = 0;    // not used
+			pipeline.rasterizerStateSlopeBias = 0.0f; // not used
+			pipeline.rasterizerStateClamp = 0.0f;	  // not used
+
+			// pixel shader stage
+			pipeline.pixelShader = graphics.getShaderRoot() + "PBRModel_PS.hlsl";
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
 		}
 
 
@@ -171,20 +199,25 @@ namespace Marvel {
 			glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f });
 	}
 
-	void mvSolidSphere::show_imgui_windows(const char* name)
+	void mvSolidSphere::show_imgui_window()
 	{
-		if (ImGui::Begin(name))
+		if (ImGui::Begin(m_name.c_str()))
 		{
 			ImGui::SliderFloat("X-Pos", &m_x, -50.0f, 50.0f);
 			ImGui::SliderFloat("Y-Pos", &m_y, -50.0f, 50.0f);
 			ImGui::SliderFloat("Z-Pos", &m_z, -50.0f, 50.0f);
-			ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
-			ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
-			ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
-			//ImGui::ColorEdit3("Material Color", &m_material->m_cbData.materialColor.x);
-			//ImGui::ColorEdit3("Specular Color", &m_material->m_cbData.specularColor.x);
-			//ImGui::SliderFloat("Specular Weight", &m_material->m_cbData.specularWeight, 0.0f, 100.0f);
-			//ImGui::SliderFloat("Specular Gloss", &m_material->m_cbData.specularGloss, 0.0f, 100.0f);
+			//ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
+			//ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
+			//ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
+
+			if (m_material)
+			{
+				ImGui::ColorEdit3("Albedo", &m_material->material.albedo.x);
+				ImGui::SliderFloat("Metalness", &m_material->material.metalness, 0.0f, 1.0f);
+				ImGui::SliderFloat("Roughness", &m_material->material.roughness, 0.0f, 1.0f);
+				ImGui::SliderFloat("Radiance", &m_material->material.radiance, 0.0f, 1.0f);
+			}
+
 		}
 		ImGui::End();
 	}

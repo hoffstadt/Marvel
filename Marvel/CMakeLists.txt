@@ -46,6 +46,7 @@ target_sources(marvel
 		"renderer/buffers/mvVertexBuffer.cpp"
 		"renderer/buffers/mvDynamicBuffer.cpp"
 		"renderer/buffers/mvVertexLayout.cpp"
+		"renderer/buffers/mvPBRMaterialCBuf.cpp"
 		"renderer/buffers/mvPhongMaterialCBuf.cpp"
 		"renderer/buffers/mvComputeBuffer.cpp"
 

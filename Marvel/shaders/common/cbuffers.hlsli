@@ -1,28 +1,19 @@
 
-struct mvPointLightManager
+struct mvPointLight
 {
-    int LightCount;
+    float3 viewLightPos;
     //-------------------------- ( 16 bytes )
     
-    float3 viewLightPos[3];
-    //-------------------------- ( 48 bytes )
+    float3 diffuseColor;
+    float diffuseIntensity;
+    //-------------------------- ( 16 bytes )
     
-    float3 diffuseColor[3];
-    //-------------------------- ( 48 bytes )
+    float attConst;
+    float attLin;
+    float attQuad;
+    //-------------------------- ( 16 bytes )
     
-    float diffuseIntensity[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attConst[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attLin[3];
-    //-------------------------- ( 48 bytes )
-    
-    float attQuad[3];
-    //-------------------------- ( 48 bytes )
-    
-    //-------------------------- ( 6*48 + 16 = 304 bytes )
+    //-------------------------- ( 4*16 = 64 bytes )
 };
 
 struct mvDirectionalLight
@@ -37,7 +28,7 @@ struct mvDirectionalLight
     //-------------------------- ( 2*16 = 32 bytes )
 };
 
-struct mvMaterial
+struct mvPhongMaterial
 {
     float3 materialColor;
     //-------------------------- ( 16 bytes )
@@ -60,6 +51,26 @@ struct mvMaterial
     //-------------------------- ( 4 * 16 = 64 bytes )
 };
 
+struct mvPBRMaterial
+{
+    float3 albedo;
+    float metalness;
+    //-------------------------- ( 16 bytes )
+    
+    float roughness;
+    float radiance;
+    float fresnel;
+    bool useAlbedoMap;
+    //-------------------------- ( 16 bytes )
+    
+    bool useNormalMap;
+    bool useRoughnessMap;
+    bool useMetalMap;
+    //-------------------------- ( 16 bytes )
+   
+    //-------------------------- ( 3 * 16 = 48 bytes )
+};
+
 struct mvScene
 {
     float FogStart;
@@ -70,5 +81,10 @@ struct mvScene
     float3 ambient;
     //-------------------------- ( 16 bytes )
     
-    //-------------------------- ( 2*16 = 32 bytes ) 
+    float3 camPos;
+    bool useShadows;
+    bool useSkybox;
+    //-------------------------- ( 16 bytes )
+    
+    //-------------------------- ( 3*16 = 48 bytes ) 
 };

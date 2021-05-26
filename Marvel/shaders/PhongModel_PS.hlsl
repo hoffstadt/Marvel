@@ -1,44 +1,39 @@
 #include "common/cbuffers.hlsli"
 #include "common/equations.hlsli"
 
+//-----------------------------------------------------------------------------
 // textures
+//-----------------------------------------------------------------------------
 Texture2D   ColorTexture    : register(t0);
 Texture2D   SpecularTexture : register(t1);
 Texture2D   NormalTexture   : register(t2);
-TextureCube ShadowMap1      : register(t3);
-TextureCube ShadowMap2      : register(t4);
-TextureCube ShadowMap3      : register(t5);
+TextureCube ShadowMap      : register(t3);
 
+//-----------------------------------------------------------------------------
 // samplers
+//-----------------------------------------------------------------------------
 SamplerState           Sampler       : register(s0);
 SamplerComparisonState ShadowSampler : register(s1);
 
+//-----------------------------------------------------------------------------
 // constant buffers
-cbuffer mvPointLightManagerCBuf : register(b0) { mvPointLightManager PointLight; };
-cbuffer mvMaterialCBuf          : register(b1) { mvMaterial material; };
-cbuffer mvDirectionalLightCBuf  : register(b2) { mvDirectionalLight DirectionalLight; };
-cbuffer mvSceneCBuf             : register(b3) { mvScene Scene; };
+//-----------------------------------------------------------------------------
+cbuffer mvPointLightCBuf       : register(b0) { mvPointLight PointLight; };
+cbuffer mvMaterialCBuf         : register(b1) { mvPhongMaterial material; };
+cbuffer mvDirectionalLightCBuf : register(b2) { mvDirectionalLight DirectionalLight; };
+cbuffer mvSceneCBuf            : register(b3) { mvScene Scene; };
 
-float GetShadowLevel(int index, float4 pos)
+struct VSOut
 {
-    if(index == 0)
-    {
-        return Shadow(pos, ShadowMap1, ShadowSampler);
-    }
-    if (index == 1)
-    {
-        return Shadow(pos, ShadowMap2, ShadowSampler);
-    }
-    if (index == 2)
-    {
-        return Shadow(pos, ShadowMap3, ShadowSampler);
-    }
-    
-    return Shadow(pos, ShadowMap1, ShadowSampler);
-}
+    float3 viewPos        : Position;       // frag pos  (view space)
+    float3 viewNormal     : Normal;         // frag norm (view space)
+    float2 tc             : Texcoord;       // texture coordinates
+    float3x3 tangentBasis : TangentBasis;   // tangent basis
+    float4 shadowWorldPos : shadowPosition; // light pos (world space)
+    float4 pixelPos       : SV_Position;    // frag pos  (screen space)
+};
 
-float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 viewTan : Tangent, float3 viewBitan : Bitangent, 
-    float2 tc : Texcoord, float4 spos[3] : shadowPosition) : SV_Target
+float4 main(VSOut input) : SV_Target
 {
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
@@ -47,36 +42,36 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
     if(material.useTextureMap)
     {
-        // sample diffuse texture
-        const float4 dtex = ColorTexture.Sample(Sampler, tc);
-        
+        const float4 dtex = ColorTexture.Sample(Sampler, input.tc);
         materialColor = dtex.rgb;
     }
 
     if (material.hasAlpha)
     {
 
-        // sample diffuse texture
-        const float4 dtex = ColorTexture.Sample(Sampler, tc);
+        const float4 dtex = ColorTexture.Sample(Sampler, input.tc);
             
         // bail if highly translucent
         clip(dtex.a < 0.1f ? -1 : 1);
         
         // flip normal when backface
-        if (dot(viewNormal, viewFragPos) >= 0.0f)
+        if (dot(input.viewNormal, input.viewPos) >= 0.0f)
         {
-            viewNormal = -viewNormal;
+            input.viewNormal = -input.viewNormal;
         }
     }
 
     // normalize the mesh normal
-    viewNormal = normalize(viewNormal);
+    input.viewNormal = normalize(input.viewNormal);
     
     // replace normal with mapped if normal mapping enabled
     if (material.useNormalMap)
     {
-        const float3 mappedNormal = MapNormal(normalize(viewTan), normalize(viewBitan), viewNormal, tc, NormalTexture, Sampler);
-        viewNormal = lerp(viewNormal, mappedNormal, material.normalMapWeight);
+        // sample and unpack the normal from texture into target space   
+        const float3 normalSample = NormalTexture.Sample(Sampler, input.tc).xyz;
+        const float3 tanNormal = normalSample * 2.0f - 1.0f;
+        const float3 mappedNormal = normalize(mul(tanNormal, input.tangentBasis));
+        input.viewNormal = lerp(input.viewNormal, mappedNormal, material.normalMapWeight);
     }
     
     // specular parameter determination (mapped or uniform)
@@ -84,7 +79,7 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
     
     if (material.useSpecularMap)
     {
-        const float4 specularSample = SpecularTexture.Sample(Sampler, tc);
+        const float4 specularSample = SpecularTexture.Sample(Sampler, input.tc);
         specularReflectedColor = specularSample.rgb;
         
         if (material.useGlossAlpha)
@@ -93,47 +88,67 @@ float4 main(float3 viewFragPos : Position, float3 viewNormal : Normal, float3 vi
         }
     }
      
-    // point lights
-    for (int i = 0; i < PointLight.LightCount; i++)
+    //-----------------------------------------------------------------------------
+    // point light with simple shadows
+    //-----------------------------------------------------------------------------
+    
+    float shadowLevel = Shadow(input.shadowWorldPos, ShadowMap, ShadowSampler);
+    if(!Scene.useShadows)            
+        shadowLevel = 1.0f;
+    if (shadowLevel != 0.0f)
     {
             
-        const float shadowLevel = GetShadowLevel(i, spos[i]);
-            
-        if (shadowLevel != 0.0f)
-        {
-            
-	        // fragment to light vector data
-            const LightVectorData lv = CalculateLightVectorData(PointLight.viewLightPos[i], viewFragPos);
+	    // fragment to light vector data
+        float3 lightVec = PointLight.viewLightPos - input.viewPos;
+        float lightDistFromFrag = length(lightVec);
+        float3 lightDirVec = lightVec / lightDistFromFrag;
     
-	        // attenuation
-            const float att = Attenuate(PointLight.attConst[i], PointLight.attLin[i], PointLight.attQuad[i], lv.dist);
+	    // attenuation
+        const float att = Attenuate(PointLight.attConst, PointLight.attLin, PointLight.attQuad, lightDistFromFrag);
     
-	        // diffuse
-            diffuse += Diffuse(PointLight.diffuseColor[i], PointLight.diffuseIntensity[i], att, lv.dir, viewNormal);
+	    // diffuse
+        diffuse += PointLight.diffuseColor * PointLight.diffuseIntensity * att * max(0.0f, dot(lightDirVec, input.viewNormal));
     
-            // specular
-            specularReflected += Speculate(
-            PointLight.diffuseColor[i] * PointLight.diffuseIntensity[i] * specularReflectedColor,1.0f, viewNormal,
-            lv.vec, viewFragPos, att, specularPowerLoaded);
+        // specular
+        
+        // calculate reflected light vector
+        const float3 w = input.viewNormal * dot(lightVec, input.viewNormal);
+        const float3 r = normalize(w * 2.0f - lightVec);
+        
+        // vector from camera to fragment
+        const float3 viewCamToFrag = normalize(input.viewPos);
+        
+        specularReflected += att * PointLight.diffuseColor * PointLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
             
-            // scale by shadow level
-            diffuse *= shadowLevel;
-            specularReflected *= shadowLevel;
-        }
-  
+        // scale by shadow level
+        diffuse *= shadowLevel;
+        specularReflected *= shadowLevel;
     }
-    
+  
+    //-----------------------------------------------------------------------------
     // directional light
-
-	// diffuse
-    diffuse += Diffuse(DirectionalLight.diffuseColor, DirectionalLight.diffuseIntensity, 1.0f, -normalize(DirectionalLight.viewLightDir), viewNormal);
+    //-----------------------------------------------------------------------------
+    {
     
-    // specular
-    specularReflected += Speculate(
-        DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor, 1.0f, viewNormal,
-        -normalize(DirectionalLight.viewLightDir), viewFragPos, 1.0f, specularPowerLoaded);
+	    // diffuse
+        diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(-normalize(DirectionalLight.viewLightDir), input.viewNormal));
+    
+        // specular
+        
+        // calculate reflected light vector
+        const float3 w = input.viewNormal * dot(-normalize(DirectionalLight.viewLightDir), input.viewNormal);
+        const float3 r = normalize(w * 2.0f - -normalize(DirectionalLight.viewLightDir));
+        
+        // vector from camera to fragment
+        const float3 viewCamToFrag = normalize(input.viewPos);
+        
+        specularReflected += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
+            
+    }
+    //-----------------------------------------------------------------------------
+    // final color
+    //-----------------------------------------------------------------------------
 
-	// final color
     float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   
     return float4(litColor, 1.0f);
     //return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);

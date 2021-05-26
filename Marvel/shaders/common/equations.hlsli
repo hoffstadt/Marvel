@@ -1,47 +1,12 @@
 
+static const float PI = 3.14159265359;
+
 //-----------------------------------------------------------------------------
 // lighting
 //-----------------------------------------------------------------------------
 float Attenuate(uniform float attConst, uniform float attLin, uniform float attQuad, const in float distFragToL)
 {
     return 1.0f / (attConst + attLin * distFragToL + attQuad * (distFragToL * distFragToL));
-}
-
-float3 Diffuse(uniform float3 diffuseColor, uniform float diffuseIntensity, const in float att,
-    const in float3 viewDirFragToL, const in float3 viewNormal)
-{
-    return diffuseColor * diffuseIntensity * att * max(0.0f, dot(viewDirFragToL, viewNormal));
-}
-
-float3 Speculate(const in float3 specularColor, uniform float specularIntensity, const in float3 viewNormal,
-    const in float3 viewFragToL, const in float3 viewPos, const in float att, const in float specularPower)
-{
-    // calculate reflected light vector
-    const float3 w = viewNormal * dot(viewFragToL, viewNormal);
-    const float3 r = normalize(w * 2.0f - viewFragToL);
-    
-    // vector from camera to fragment (in view space)
-    const float3 viewCamToFrag = normalize(viewPos);
-    
-    // calculate specular component color based on angle between
-    // viewing vector and reflection vector, narrow with power function
-    return att * specularColor * specularIntensity * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPower);
-}
-
-struct LightVectorData
-{
-    float3 vec;
-    float3 dir;
-    float dist;
-};
-
-LightVectorData CalculateLightVectorData(const in float3 lightPos, const in float3 fragPos)
-{
-    LightVectorData lv;
-    lv.vec = lightPos - fragPos;
-    lv.dist = length(lv.vec);
-    lv.dir = lv.vec / lv.dist;
-    return lv;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,16 +43,36 @@ float3 Fog(const in float dist, uniform float fogstart, uniform float fogrange, 
 }
 
 //-----------------------------------------------------------------------------
-// misc
+// pbr
 //-----------------------------------------------------------------------------
-float3 MapNormal(const in float3 tan, const in float3 bitan, const in float3 normal,
-    const in float2 tc, uniform Texture2D nmap, uniform SamplerState splr)
+
+// GGX/Towbridge-Reitz normal distribution function.
+// Uses Disney's reparametrization of alpha = roughness^2.
+float ndfGGX(float cosLh, float roughness)
 {
-    // build the tranform (rotation) into same space as tan/bitan/normal (target space)
-    const float3x3 tanToTarget = float3x3(tan, bitan, normal);
-    // sample and unpack the normal from texture into target space   
-    const float3 normalSample = nmap.Sample(splr, tc).xyz;
-    const float3 tanNormal = normalSample * 2.0f - 1.0f;
-    // bring normal from tanspace into target space
-    return normalize(mul(tanNormal, tanToTarget));
+    float alpha = roughness * roughness;
+    float alphaSq = alpha * alpha;
+
+    float denom = (cosLh * cosLh) * (alphaSq - 1.0) + 1.0;
+    return alphaSq / (PI * denom * denom);
+}
+
+// Single term for separable Schlick-GGX below.
+float gaSchlickG1(float cosTheta, float k)
+{
+    return cosTheta / (cosTheta * (1.0 - k) + k);
+}
+
+// Schlick-GGX approximation of geometric attenuation function using Smith's method.
+float gaSchlickGGX(float cosLi, float cosLo, float roughness)
+{
+    float r = roughness + 1.0;
+    float k = (r * r) / 8.0; // Epic suggests using this roughness remapping for analytic lights.
+    return gaSchlickG1(cosLi, k) * gaSchlickG1(cosLo, k);
+}
+
+// Shlick's approximation of the Fresnel factor.
+float3 fresnelSchlick(float3 F0, float cosTheta)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }

@@ -47,6 +47,8 @@ namespace Marvel {
 		const std::string& getName            () const { return m_name; }
 		mvNode*            getNode            (const std::string& name);
 
+		std::vector<std::shared_ptr<mvMesh>>& getMeshes() { return m_meshes; }
+
 
 	private:
 
