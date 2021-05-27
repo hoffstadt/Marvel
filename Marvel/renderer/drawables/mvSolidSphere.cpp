@@ -134,6 +134,8 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 			m_material = std::make_shared<mvPBRMaterialCBuf>(graphics, 1);
 			step.addBuffer(m_material);
+			step.addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox", 5));
+
 
 			//-----------------------------------------------------------------------------
 			// pipeline state setup
@@ -163,6 +165,7 @@ namespace Marvel {
 			pipeline.pixelShader = graphics.getShaderRoot() + "PBRModel_PS.hlsl";
 			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
 			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::WRAP, 2u, false });
 
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
@@ -216,6 +219,8 @@ namespace Marvel {
 				ImGui::SliderFloat("Metalness", &m_material->material.metalness, 0.0f, 1.0f);
 				ImGui::SliderFloat("Roughness", &m_material->material.roughness, 0.0f, 1.0f);
 				ImGui::SliderFloat("Radiance", &m_material->material.radiance, 0.0f, 1.0f);
+				ImGui::SliderFloat("Fresnel", &m_material->material.fresnel, 0.0f, 1.0f);
+
 			}
 
 		}

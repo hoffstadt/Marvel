@@ -15,6 +15,7 @@ struct VSOut
 {
     float3 viewPos        : Position;       // frag pos  (view space)
     float3 viewNormal     : Normal;         // frag norm (view space)
+    float3 worldNormal     : Normal1;         // frag norm (view space)
     float2 tc             : Texcoord;       // texture coordinates
     float3x3 tangentBasis : TangentBasis;   // tangent basis
     float4 shadowWorldPos : shadowPosition; // light pos (world space)
@@ -26,6 +27,7 @@ VSOut main(float3 pos : Position, float3 n : Normal, float3 tan : Tangent, float
     VSOut vso;
     vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
     vso.viewNormal = mul(n, (float3x3) modelView);
+    vso.worldNormal = mul(n, (float3x3) model);
     vso.tangentBasis = float3x3(
         mul(tan,   (float3x3) modelView),
         mul(bitan, (float3x3) modelView),

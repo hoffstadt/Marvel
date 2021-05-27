@@ -27,6 +27,7 @@ struct VSOut
 {
     float3 viewPos        : Position;       // frag pos  (view space)
     float3 viewNormal     : Normal;         // frag norm (view space)
+    float3 worldNormal : Normal1; // frag norm (view space)
     float2 tc             : Texcoord;       // texture coordinates
     float3x3 tangentBasis : TangentBasis;   // tangent basis
     float4 shadowWorldPos : shadowPosition; // light pos (world space)

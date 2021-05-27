@@ -25,11 +25,12 @@ namespace Marvel {
 			aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 			material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
 			m_pbrMaterial->material.albedo = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
-
 			{
 
 				mvStep step("lambertian");
 				aiString texFileName;
+
+				step.addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox", 5));
 
 				// diffuse
 				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
@@ -116,6 +117,7 @@ namespace Marvel {
 				pipeline.pixelShader = graphics.getShaderRoot() + "PBRModel_PS.hlsl";
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::WRAP, 2u, false });
 
 				// output merger stage
 				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
