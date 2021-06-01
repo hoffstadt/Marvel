@@ -104,4 +104,14 @@ namespace Marvel {
         }
     };
 
+    class mvComputeConstantBuffer : public mvConstantBuffer
+    {
+    public:
+        using mvConstantBuffer::mvConstantBuffer;
+        void bind(mvGraphics& graphics) override
+        {
+            graphics.getContext()->CSSetConstantBuffers(m_slot, 1u, m_constantBuffer.GetAddressOf());
+        }
+    };
+
 }
