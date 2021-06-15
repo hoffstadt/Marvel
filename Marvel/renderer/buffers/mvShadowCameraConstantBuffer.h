@@ -12,6 +12,7 @@ namespace Marvel {
 	class mvDrawable;
 	class mvGraphics;
 	class mvCamera;
+	class mvOrthoCamera;
 
 	//-----------------------------------------------------------------------------
 	// mvTransformUniform
@@ -32,11 +33,13 @@ namespace Marvel {
 
 		void bind(mvGraphics& graphics) override;
 		void setCamera(const mvCamera* camera);
+		void setOrthoCamera(const mvOrthoCamera* camera);
 
 	private:
 
 		std::unique_ptr<mvVertexConstantBuffer> m_buf;
 		const mvCamera*                         m_camera = nullptr;
+		const mvOrthoCamera*                    m_orthocamera = nullptr;
 		ShadowCameraInfo                        m_buffer;
 
 	};

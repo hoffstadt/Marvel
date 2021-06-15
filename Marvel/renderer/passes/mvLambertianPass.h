@@ -9,6 +9,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	class mvOrthoCamera;
 	class mvCamera;
 
 	//-----------------------------------------------------------------------------
@@ -25,6 +26,7 @@ namespace Marvel {
 
 		void bindMainCamera(const mvCamera& cam);
 		void bindShadowCamera(const mvCamera& cam);
+		void bindDirectionalShadowCamera(const mvOrthoCamera& cam);
 
 	private:
 

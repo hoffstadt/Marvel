@@ -39,11 +39,13 @@ namespace Marvel {
 
 		void bind(mvGraphics& graphics, glm::mat4 view);
 		void setDirection(float x, float y, float z);
+		std::shared_ptr<mvOrthoCamera> getCamera() const;
 
 	private:
 
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 		DirectionLightInfo                     m_info = {};
+		std::shared_ptr<mvOrthoCamera>         m_camera;
 
 	};
 

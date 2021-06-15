@@ -21,10 +21,7 @@ namespace Marvel {
 	{
 		m_depthStencil->clear(graphics);
 
-		graphics.setProjection(glm::orthoLH(-100.0f, 100.0f, -100.0f, 100.0f, -101.0f, 101.0f));
-		glm::mat4 camera_matrix = glm::lookAtLH(glm::vec3{ 0.0f, 80.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
-
-		graphics.setCamera(camera_matrix);
+		m_shadowCamera->bind(graphics);
 
 		m_depthStencil->bindAsBuffer(graphics);
 
@@ -35,7 +32,7 @@ namespace Marvel {
 			j.execute(graphics);
 	}
 
-	void mvDirectionalShadowMappingPass::bindShadowCamera(const mvCamera& cam)
+	void mvDirectionalShadowMappingPass::bindShadowCamera(const mvOrthoCamera& cam)
 	{
 		m_shadowCamera = &cam;
 	}

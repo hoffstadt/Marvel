@@ -139,4 +139,78 @@ namespace Marvel {
 		ImGui::End();
 	}
 
+	mvOrthoCamera::mvOrthoCamera(mvGraphics& graphics, const std::string& name, glm::vec3 homePos, float left, float right, float bottom, float top,
+		float nearZ, float farZ)
+		:
+		m_pos(homePos),
+		m_projection(glm::orthoLH(left, right, bottom, top, nearZ, farZ)),
+		m_left(left),
+		m_right(right),
+		m_top(top),
+		m_bottom(bottom),
+		m_near(nearZ),
+		m_far(farZ),
+		m_viewLightDir(glm::vec3{ 0.0f, 1.0f, 0.0f })
+	{
+	}
+
+	glm::mat4 mvOrthoCamera::getMatrix() const
+	{
+
+		//glm::mat4 roll_pitch_yaw = glm::yawPitchRoll(m_yaw, m_pitch, 0.0f);
+
+		//glm::vec4 forward_base_vector = { 0.0f, 0.0f, 1.0f, 0.0f };
+
+		//glm::vec4 look_vector = roll_pitch_yaw * forward_base_vector;
+
+		//glm::vec3 lpos = { look_vector.x, look_vector.y, look_vector.z };
+
+		//glm::vec3 look_target = m_pos + lpos;
+
+		//glm::mat4 camera_matrix = glm::lookAtLH(m_pos, look_target, glm::vec3{ 0.0f, 1.0f, 0.0f });
+
+		//return camera_matrix;
+
+		//auto result = glm::lookAtLH(m_pos, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+		auto result = glm::lookAtLH(m_pos, m_pos + m_viewLightDir, glm::vec3{ 0.0f, 0.0f, 1.0f });
+		return result;
+	}
+
+	glm::mat4 mvOrthoCamera::getProjection() const
+	{
+		return m_projection;
+	}
+
+	void mvOrthoCamera::bind(mvGraphics& graphics) const
+	{
+		graphics.setCamera(getMatrix());
+		graphics.setProjection(m_projection);
+	}
+
+	void mvOrthoCamera::show_imgui_windows()
+	{
+		bool projDirty = false;
+		bool posDirty = false;
+		const auto dcheck = [](bool d, bool& carry) { carry = carry || d; };
+
+		ImGui::Begin("Directional Shadow Camera");
+
+		ImGui::Text("Position");
+		dcheck(ImGui::SliderFloat("X", &m_pos.x, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Y", &m_pos.y, -80.0f, 80.0f, "%.1f"), posDirty);
+		dcheck(ImGui::SliderFloat("Z", &m_pos.z, -80.0f, 80.0f, "%.1f"), posDirty);
+
+		ImGui::Text("Orientation");
+		dcheck(ImGui::SliderFloat("left", &m_left, -500.0f, 0.0f, "%.0f"), projDirty);
+		dcheck(ImGui::SliderFloat("right", &m_right,  0.0f, 500.0f, "%.0f"), projDirty);
+		dcheck(ImGui::SliderFloat("top", &m_top,  0.0f, 500.0f, "%.0f"), projDirty);
+		dcheck(ImGui::SliderFloat("bottom", &m_bottom,  -500.0f, 0.0f, "%.0f"), projDirty);
+		dcheck(ImGui::SliderFloat("near", &m_near,  -500.0f, 0.0f, "%.0f"), projDirty);
+		dcheck(ImGui::SliderFloat("far", &m_far,  0.0f, 500.0f, "%.0f"), projDirty);
+
+		if (projDirty)
+			m_projection = glm::orthoLH(m_left, m_right, m_bottom, m_top, m_near, m_far);
+
+		ImGui::End();
+	}
 }

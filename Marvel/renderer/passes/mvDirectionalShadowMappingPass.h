@@ -9,7 +9,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvCamera;
+	class mvOrthoCamera;
 	class mvDepthTexture;
 
 	//-----------------------------------------------------------------------------
@@ -24,11 +24,11 @@ namespace Marvel {
 
 		void execute(mvGraphics& graphics) const override;
 
-		void bindShadowCamera(const mvCamera& cam);
+		void bindShadowCamera(const mvOrthoCamera& cam);
 
 	private:
 
-		const mvCamera* m_shadowCamera = nullptr;
+		const mvOrthoCamera* m_shadowCamera = nullptr;
 		std::shared_ptr<mvDepthTexture> m_depthTexture;
 
 	};

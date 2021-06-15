@@ -5,6 +5,7 @@
 #include "mvCommonBindables.h"
 #include "mvCommonDrawables.h"
 #include "mvPointShadowMappingPass.h"
+#include "mvDirectionalShadowMappingPass.h"
 #include "mvLambertianPass.h"
 #include "mvCamera.h"
 #include "mvTimer.h"
@@ -120,7 +121,9 @@ int main()
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
+            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindDirectionalShadowCamera(*directionLight.getCamera());
             static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
+            static_cast<mvDirectionalShadowMappingPass*>(graph->getPass("directional_shadow"))->bindShadowCamera(*directionLight.getCamera());
             modelsDirty = false;
         }
 
@@ -132,7 +135,9 @@ int main()
 
         graph->bindMainCamera(camera);
         static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
+        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindDirectionalShadowCamera(*directionLight.getCamera());
         static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
+        static_cast<mvDirectionalShadowMappingPass*>(graph->getPass("directional_shadow"))->bindShadowCamera(*directionLight.getCamera());
 
         graph->bind(graphics);
 
@@ -163,6 +168,7 @@ int main()
         directionLight.show_imgui_window();
         graph->show_imgui_window();
         //sphere.show_imgui_window();
+        directionLight.getCamera()->show_imgui_windows();
         cube.show_imgui_windows("Test Cube");
         quad.show_imgui_windows("Test Quad");
 

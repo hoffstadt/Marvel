@@ -144,9 +144,9 @@ float4 main(VSOut input) : SV_Target
         // Calculate the projected texture coordinates.
         projectTexCoord.x = 0.5f * input.shadowWorldPos2.x / input.shadowWorldPos2.w + 0.5f;
         projectTexCoord.y = -0.5f * input.shadowWorldPos2.y / input.shadowWorldPos2.w + 0.5f;
-        
+
         // Determine if the projected coordinates are in the 0 to 1 range.  If so then this pixel is in the view of the light.
-        if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
+        if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y) && Scene.useShadows)
         {
             shadowLevel = DirectionalShadowMap.Sample(DShadowSampler, projectTexCoord).r;
             
@@ -183,7 +183,6 @@ float4 main(VSOut input) : SV_Target
         }
         else
         {
-            return float4(1.0f, 0.0f, 0.0f, 1.0f);
              // diffuse
             diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
     

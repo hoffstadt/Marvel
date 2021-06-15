@@ -49,4 +49,36 @@ namespace Marvel {
 
 	};
 
+	//-----------------------------------------------------------------------------
+	// mvOrthoCamera
+	//-----------------------------------------------------------------------------
+	class mvOrthoCamera
+	{
+
+	public:
+
+		mvOrthoCamera(mvGraphics& graphics, const std::string& name, glm::vec3 homePos = { 0.0f, 100.0f, 0.0f },
+			float left = -100.0f, float right = 100.0f, float bottom = -100.0f, float top = 100.0f,
+			float nearZ = -101.0f, float farZ = 101.0f);
+
+		glm::mat4 getMatrix() const;
+		glm::mat4 getProjection() const;
+		void setDirection(glm::vec3 direction) { m_viewLightDir = direction; }
+
+		void bind(mvGraphics& graphics) const;
+		void show_imgui_windows();
+
+	private:
+
+		glm::vec3    m_pos;
+		glm::mat4    m_projection;
+		float        m_left;
+		float        m_right;
+		float        m_top;
+		float        m_bottom;
+		float        m_near;
+		float        m_far;
+		glm::vec3    m_viewLightDir;
+	};
+
 }

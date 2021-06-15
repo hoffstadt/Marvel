@@ -12,6 +12,7 @@ namespace Marvel {
 		m_info.viewLightDir.y = dir.y;
 		m_info.viewLightDir.z = dir.z;
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 2, &m_info);
+		m_camera = std::make_shared<mvOrthoCamera>(graphics, "directional camera");
 	}
 
 
@@ -31,9 +32,16 @@ namespace Marvel {
 			ImGui::SliderFloat("Intensity", &m_info.diffuseIntensity, 0.01f, 2.0f, "%.2f");
 			ImGui::ColorEdit3("Diffuse Color", &m_info.diffuseColor.x);
 
+			m_camera->setDirection(m_info.viewLightDir);
+
 		}
 		ImGui::End();
 
+	}
+
+	std::shared_ptr<mvOrthoCamera> mvDirectionLight::getCamera() const
+	{
+		return m_camera;
 	}
 
 	void mvDirectionLight::bind(mvGraphics& graphics, glm::mat4 view)

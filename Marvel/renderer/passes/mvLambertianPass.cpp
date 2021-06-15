@@ -52,4 +52,9 @@ namespace Marvel {
 	{
 		m_shadowCBuf->setCamera(&cam);
 	}
+
+	void mvLambertianPass::bindDirectionalShadowCamera(const mvOrthoCamera& cam)
+	{
+		m_shadowCBuf->setOrthoCamera(&cam);
+	}
 }
