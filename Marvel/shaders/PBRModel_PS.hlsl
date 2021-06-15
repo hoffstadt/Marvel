@@ -31,13 +31,13 @@ cbuffer mvSceneCBuf            : register(b3) { mvScene Scene; };
 
 struct VSOut
 {
-    float3 viewPos        : Position;       // frag pos  (view space)
-    float3 viewNormal     : Normal;         // frag norm (view space)
-    float3 worldNormal : Normal1; // frag norm (view space)
-    float2 tc             : Texcoord;       // texture coordinates
-    float3x3 tangentBasis : TangentBasis;   // tangent basis
-    float4 shadowWorldPos : shadowPosition; // light pos (world space)
-    float4 pixelPos       : SV_Position;    // frag pos  (screen space)
+    float3 viewPos        : Position;       // pixel pos           (view space)
+    float3 viewNormal     : Normal;         // pixel norm          (view space)
+    float3 worldNormal    : WorldNormal;    // pixel normal        (view space)
+    float2 tc             : Texcoord;       // texture coordinates (model space)
+    float3x3 tangentBasis : TangentBasis;   // tangent basis       (view space)
+    float4 shadowWorldPos : shadowPosition; // light pos           (world space)
+    float4 pixelPos       : SV_Position;    // pixel pos           (screen space)
 };
 
 float4 main(VSOut input) : SV_Target
@@ -68,7 +68,7 @@ float4 main(VSOut input) : SV_Target
         // sample and unpack the normal from texture into target space   
         const float3 normalSample = NormalTexture.Sample(Sampler, input.tc).xyz;
         const float3 tanNormal = normalSample * 2.0f - 1.0f;
-        const float3 mappedNormal = normalize(mul(tanNormal, input.tangentBasis));
+        const float3 mappedNormal = normalize(mul(input.tangentBasis, tanNormal));
         input.viewNormal = lerp(input.viewNormal, mappedNormal, 1.0f);
     }
   
