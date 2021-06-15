@@ -176,11 +176,10 @@ namespace Marvel {
 
 	glm::mat4 mvTexturedQuad::getTransform() const
 	{
-
 		return glm::translate(glm::vec3{ m_x, m_y, m_z }) *
-			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
+			glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f }) *
 			glm::rotate(m_yangle, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
-			glm::rotate(m_xangle, glm::vec3{ 1.0f, 0.0f, 0.0f });
+			glm::rotate(m_zangle, glm::vec3{ 0.0f, 0.0f, 1.0f });
 	}
 
 	void mvTexturedQuad::setPosition(float x, float y, float z)

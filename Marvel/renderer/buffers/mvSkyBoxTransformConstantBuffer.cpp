@@ -23,7 +23,7 @@ namespace Marvel {
 	{
 		auto viewProj = graphics.getProjection() * graphics.getCamera();
 
-		m_bufferRaw->getElement("viewProj") = glm::transpose(viewProj);
+		m_bufferRaw->getElement("viewProj") = viewProj;
 
 		m_buf->update(graphics, *m_bufferRaw);
 		m_buf->bind(graphics);

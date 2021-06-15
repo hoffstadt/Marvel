@@ -13,7 +13,7 @@ namespace Marvel {
 
 	void mvShadowCameraConstantBuffer::bind(mvGraphics& graphics)
 	{
-		m_buffer.shadowPosition = glm::transpose(m_camera->getMatrix());
+		m_buffer.shadowPosition = m_camera->getMatrix();
 
 		m_buf->update(graphics, m_buffer);
 		m_buf->bind(graphics);

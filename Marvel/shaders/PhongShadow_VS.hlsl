@@ -17,7 +17,7 @@ VSOut main(float3 pos : Position, float3 n : Normal, float3 tan : Tangent, float
     vso.viewNormal = n;
     vso.tan = tan;
     vso.bitan = bitan;
-    vso.pos =mul(float4(pos, 1.0f), modelViewProj);;
+    vso.pos = mul(modelViewProj, float4(pos, 1.0f));
     vso.tc = tc;
     return vso;
 }

@@ -7,8 +7,8 @@ cbuffer ShadowTransformCBuf : register(b1)
 
 float4 ToShadowHomoSpace(const in float3 pos, uniform matrix modelTransform)
 {
-    const float4 world = mul(float4(pos, 1.0f), modelTransform);
-    return mul(world, shadowPosition);
+    const float4 world = mul(modelTransform, float4(pos, 1.0f));
+    return mul(shadowPosition, world);
 }
 
 struct VSOut
@@ -25,14 +25,14 @@ struct VSOut
 VSOut main(float3 pos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord)
 {
     VSOut vso;
-    vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
-    vso.viewNormal = mul(n, (float3x3) modelView);
-    vso.worldNormal = mul(n, (float3x3) model);
+    vso.viewPos = (float3) mul(modelView, float4(pos, 1.0f));
+    vso.viewNormal = mul((float3x3) modelView, n);
+    vso.worldNormal = mul((float3x3) model, n);
     vso.tangentBasis = float3x3(
-        mul(tan,   (float3x3) modelView),
-        mul(bitan, (float3x3) modelView),
-        mul(n,     (float3x3) modelView));
-    vso.pixelPos = mul(float4(pos, 1.0f), modelViewProj);
+        mul((float3x3) modelView, tan),
+        mul((float3x3) modelView, bitan),
+        mul((float3x3) modelView, n));
+    vso.pixelPos = mul(modelViewProj, float4(pos, 1.0f));
     vso.tc = tc;
     vso.shadowWorldPos = ToShadowHomoSpace(pos, model);
     return vso;

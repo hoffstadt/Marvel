@@ -124,9 +124,9 @@ namespace Marvel {
 	glm::mat4 mvFrustum::getTransform() const
 	{
 		return glm::translate(m_pos) *
-			glm::rotate(m_rot.z, glm::vec3{ 0.0f, 0.0f, 1.0f }) *
+			glm::rotate(m_rot.x, glm::vec3{ 1.0f, 0.0f, 0.0f }) *
 			glm::rotate(m_rot.y, glm::vec3{ 0.0f, 1.0f, 0.0f }) *
-			glm::rotate(m_rot.x, glm::vec3{ 1.0f, 0.0f, 0.0f });
+			glm::rotate(m_rot.z, glm::vec3{ 0.0f, 0.0f, 1.0f });
 	}
 
 

@@ -10,6 +10,6 @@ VSOut main(float3 pos : Position, float4 color : Color)
 {
     VSOut vso;
     vso.Color = color;
-    vso.pos = mul(float4(pos, 1.0f), modelViewProj);
+    vso.pos = mul(modelViewProj, float4(pos, 1.0f));
 	return vso;
 }
