@@ -262,8 +262,8 @@ namespace Marvel {
 			pipeline.geometryShader = "";
 
 			// rasterizer stage
-			pipeline.viewportWidth = 1000;
-			pipeline.viewportHeight = 1000;
+			pipeline.viewportWidth = 2000;
+			pipeline.viewportHeight = 2000;
 			pipeline.rasterizerStateCull = !hasAlpha;
 			pipeline.rasterizerStateHwPCF = true;
 			pipeline.rasterizerStateDepthBias = 50;

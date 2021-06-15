@@ -10,7 +10,7 @@ namespace Marvel {
 		mvPass(name)
 	{
 
-		UINT size = 1000;
+		UINT size = 2000;
 		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, slot);
 		issueProduct(std::make_unique<mvBindPassProduct<mvCubeDepthTexture>>("map", m_depthCube));
 		
