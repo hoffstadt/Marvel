@@ -133,6 +133,7 @@ namespace Marvel {
 			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
 			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
 			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::CLAMP, 2u, false });
 
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
@@ -191,8 +192,56 @@ namespace Marvel {
 			map.addStep(step);
 		}
 
+		mvTechnique dmap;
+		{
+			//-----------------------------------------------------------------------------
+			// shadow mapping pipeline state setup
+			//-----------------------------------------------------------------------------
+			mvPipelineInfo pipeline;
+
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = vl;
+
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 4000;
+			pipeline.viewportHeight = 4000;
+			pipeline.rasterizerStateCull = false;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateDepthBias = 50;
+			pipeline.rasterizerStateSlopeBias = 2.0f;
+			pipeline.rasterizerStateClamp = 0.1f;
+
+			// pixel shader stage
+			pipeline.pixelShader = "";
+			// * no samplers
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+
+			mvStep step("directional_shadow");
+
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
+
+			dmap.addStep(step);
+		}
+
 		addTechnique(phong);
 		addTechnique(map);
+		addTechnique(dmap);
 	}
 
 	glm::mat4 mvCube::getTransform() const

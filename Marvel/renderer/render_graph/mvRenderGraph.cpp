@@ -11,6 +11,7 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCamera.h"
+#include "mvDirectionalShadowMappingPass.h"
 
 namespace Marvel {
 
@@ -45,8 +46,14 @@ namespace Marvel {
 		}
 
 		{
+			auto pass = std::make_unique<mvDirectionalShadowMappingPass>(graphics, "directional_shadow", 4);
+			addPass(std::move(pass));
+		}
+
+		{
 			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
 			pass->linkResourceToProduct("map", "shadow", "map");
+			pass->linkResourceToProduct("directional_map", "directional_shadow", "map");
 			pass->linkResourceToProduct("render_target", "clear_target", "buffer");
 			pass->linkResourceToProduct("depth_stencil", "clear_depth", "buffer");
 			addPass(std::move(pass));

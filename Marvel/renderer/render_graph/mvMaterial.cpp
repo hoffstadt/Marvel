@@ -30,7 +30,7 @@ namespace Marvel {
 				mvStep step("lambertian");
 				aiString texFileName;
 
-				step.addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox", 5));
+				step.addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox", 6));
 
 				// diffuse
 				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
@@ -71,7 +71,7 @@ namespace Marvel {
 				// metalness
 				if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 4u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 5u);
 					step.addBindable(texture);
 					m_pbrMaterial->material.useMetalMap = true;
 
@@ -117,7 +117,8 @@ namespace Marvel {
 				pipeline.pixelShader = graphics.getShaderRoot() + "PBRModel_PS.hlsl";
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
-				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::WRAP, 2u, false });
+				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::CLAMP, 2u, false });
+				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 3u, false });
 
 				// output merger stage
 				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
@@ -223,12 +224,13 @@ namespace Marvel {
 				pipeline.rasterizerStateHwPCF = false;
 				pipeline.rasterizerStateDepthBias = 0;    // not used
 				pipeline.rasterizerStateSlopeBias = 0.0f; // not used
-				pipeline.rasterizerStateClamp = 0.0f;	  // not used
+				pipeline.rasterizerStateClamp = 1.0f;	  // not used
 
 				// pixel shader stage
 				pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
 				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
+				pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::CLAMP, 2u, false });
 
 				// output merger stage
 				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
@@ -302,9 +304,68 @@ namespace Marvel {
 			map.addStep(step);
 		}
 
+		mvTechnique dmap;
+		{
+			//-----------------------------------------------------------------------------
+			// shadow mapping pipeline state setup
+			//-----------------------------------------------------------------------------
+			mvPipelineInfo pipeline;
+
+			// input assembler stage
+			pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			pipeline.vertexLayout = m_layout;
+
+			// vertex shader stage
+			pipeline.vertexShader = graphics.getShaderRoot() + "PhongShadow_VS.hlsl";
+
+			// geometry shader stage
+			pipeline.geometryShader = "";
+
+			// rasterizer stage
+			pipeline.viewportWidth = 4000;
+			pipeline.viewportHeight = 4000;
+			pipeline.rasterizerStateCull = !hasAlpha;
+			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateDepthBias = 50;
+			pipeline.rasterizerStateSlopeBias = 2.0f;
+			pipeline.rasterizerStateClamp = 0.1f;
+
+			// pixel shader stage
+			//aiString texFileName;
+			//if (hasColorMap && hasAlpha)
+			//{
+			//	if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+			//	{
+			//		pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
+			//		pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+			//	}
+			//}
+
+			// output merger stage
+			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
+			pipeline.blendStateFlags = hasAlpha ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
+
+
+			mvStep step("directional_shadow");
+
+			//-----------------------------------------------------------------------------
+			// additional buffers
+			//-----------------------------------------------------------------------------
+			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
+
+			//if (!pipeline.pixelShader.empty())
+			//	step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+
+			// registers required pipeline
+			step.registerPipeline(graphics, pipeline);
+
+			dmap.addStep(step);
+		}
+
 		
 		m_techniques.push_back(phong);
 		m_techniques.push_back(map);		
+		m_techniques.push_back(dmap);		
 	}
 
 	std::vector<mvTechnique> mvMaterial::getTechniques() const

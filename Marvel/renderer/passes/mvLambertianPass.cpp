@@ -18,6 +18,7 @@ namespace Marvel {
 
 		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
 		addBindableResource<mvBindable>("map");
+		addBindableResource<mvBindable>("directional_map");
 		
 		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));

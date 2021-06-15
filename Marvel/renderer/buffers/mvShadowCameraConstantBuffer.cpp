@@ -13,7 +13,9 @@ namespace Marvel {
 
 	void mvShadowCameraConstantBuffer::bind(mvGraphics& graphics)
 	{
-		m_buffer.shadowPosition = m_camera->getMatrix();
+		m_buffer.pointShadowView = m_camera->getMatrix();
+		m_buffer.directShadowView = glm::lookAtLH(glm::vec3{ 0.0f, 80.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 1.0f });
+		m_buffer.directShadowProjection = glm::orthoLH(-100.0f, 100.0f, -100.0f, 100.0f, -101.0f, 101.0f);
 
 		m_buf->update(graphics, m_buffer);
 		m_buf->bind(graphics);

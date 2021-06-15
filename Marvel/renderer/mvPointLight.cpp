@@ -8,7 +8,7 @@ namespace Marvel {
 		:
 		m_mesh(graphics, name,  0.5f, { 1.0f, 1.0f, 1.0f }, 1)
 	{
-		m_info.viewLightPos = pos;
+		m_info.viewLightPos = glm::vec4{ pos.x, pos.y, pos.z, 1.0f };
 		m_mesh.setPosition(pos.x, pos.y, pos.z);
 		m_camera = std::make_shared<mvCamera>(graphics, name, pos, 0.0f, 0.0f, 1000, 1000, 0.5, 100.0f);
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 0, &m_info);
@@ -58,10 +58,10 @@ namespace Marvel {
 	void mvPointLight::bind(mvGraphics& graphics, glm::mat4 view)
 	{
 		
-		glm::vec3 posCopy = m_info.viewLightPos;
+		glm::vec4 posCopy = m_info.viewLightPos;
 
 
-		glm::vec3 out = view * glm::vec4(m_info.viewLightPos, 1.0f);
+		glm::vec3 out = view * m_info.viewLightPos;
 		m_info.viewLightPos.x = out.x;
 		m_info.viewLightPos.y = out.y;
 		m_info.viewLightPos.z = out.z;

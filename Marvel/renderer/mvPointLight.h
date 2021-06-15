@@ -20,8 +20,7 @@ namespace Marvel {
 		struct PointLightInfo
 		{
 
-			glm::vec3 viewLightPos = { 0.0f, 0.0f, 0.0f};
-			char _pad0[4];
+			glm::vec4 viewLightPos = { 0.0f, 0.0f, 0.0f, 1.0f};
 			//-------------------------- ( 16 bytes )
 
 			glm::vec3 diffuseColor = { 1.0f, 1.0f, 1.0f};

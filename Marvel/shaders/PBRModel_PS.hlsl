@@ -7,19 +7,21 @@ static const float Epsilon = 0.00001;
 //-----------------------------------------------------------------------------
 // textures
 //-----------------------------------------------------------------------------
-Texture2D   AlbedoTexture     : register(t0);
-Texture2D   NormalTexture     : register(t1);
-Texture2D   RoughnessTexture  : register(t2);
-TextureCube ShadowMap         : register(t3);
-Texture2D   MetalTexture      : register(t4);
-TextureCube IrradianceTexture : register(t5);
+Texture2D   AlbedoTexture        : register(t0);
+Texture2D   NormalTexture        : register(t1);
+Texture2D   RoughnessTexture     : register(t2);
+TextureCube ShadowMap            : register(t3);
+Texture2D   DirectionalShadowMap : register(t4);
+Texture2D   MetalTexture         : register(t5);
+TextureCube IrradianceTexture    : register(t6);
 
 //-----------------------------------------------------------------------------
 // samplers
 //-----------------------------------------------------------------------------
-SamplerState           Sampler       : register(s0);
-SamplerComparisonState ShadowSampler : register(s1);
-SamplerState           CubeSampler   : register(s2);
+SamplerState           Sampler        : register(s0);
+SamplerComparisonState ShadowSampler  : register(s1);
+SamplerState           DShadowSampler : register(s2);
+SamplerState           CubeSampler    : register(s3);
 
 //-----------------------------------------------------------------------------
 // constant buffers
@@ -31,13 +33,14 @@ cbuffer mvSceneCBuf            : register(b3) { mvScene Scene; };
 
 struct VSOut
 {
-    float3 viewPos        : Position;       // pixel pos           (view space)
-    float3 viewNormal     : Normal;         // pixel norm          (view space)
-    float3 worldNormal    : WorldNormal;    // pixel normal        (view space)
-    float2 tc             : Texcoord;       // texture coordinates (model space)
-    float3x3 tangentBasis : TangentBasis;   // tangent basis       (view space)
-    float4 shadowWorldPos : shadowPosition; // light pos           (world space)
-    float4 pixelPos       : SV_Position;    // pixel pos           (screen space)
+    float3 viewPos         : Position;        // pixel pos           (view space)
+    float3 viewNormal      : Normal;          // pixel norm          (view space)
+    float3 worldNormal     : WorldNormal;     // pixel normal        (view space)
+    float2 tc              : Texcoord;        // texture coordinates (model space)
+    float3x3 tangentBasis  : TangentBasis;    // tangent basis       (view space)
+    float4 shadowWorldPos1 : shadowPosition1; // light pos           (world space)
+    float4 shadowWorldPos2 : shadowPosition2; // light pos           (world space)
+    float4 pixelPos        : SV_Position;     // pixel pos           (screen space)
 };
 
 float4 main(VSOut input) : SV_Target
@@ -92,7 +95,7 @@ float4 main(VSOut input) : SV_Target
     //-----------------------------------------------------------------------------
     // point light
     //-----------------------------------------------------------------------------
-    float shadowLevel = Shadow(input.shadowWorldPos, ShadowMap, ShadowSampler);
+    float shadowLevel = Shadow(input.shadowWorldPos1, ShadowMap, ShadowSampler);
     if (!Scene.useShadows)            
         shadowLevel = 1.0f;
     if (shadowLevel != 0.0f)
@@ -146,40 +149,105 @@ float4 main(VSOut input) : SV_Target
     // directional light
     //-----------------------------------------------------------------------------
     {
-    
+        
+        float lightDepthValue;
+        float2 projectTexCoord;
+        float bias = 0.001f;
+        float3 lightDir;
+        
         float3 Li = -DirectionalLight.viewLightDir;
 
-	    // Half-vector between Li and Lo.
-        float3 Lh = normalize(Li + Lo);
+        // Calculate the projected texture coordinates.
+        projectTexCoord.x = 0.5f * input.shadowWorldPos2.x / input.shadowWorldPos2.w + 0.5f;
+        projectTexCoord.y = -0.5f * input.shadowWorldPos2.y / input.shadowWorldPos2.w + 0.5f;
+        
+                // Determine if the projected coordinates are in the 0 to 1 range.  If so then this pixel is in the view of the light.
+        if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
+        {
+            
+            shadowLevel = DirectionalShadowMap.Sample(DShadowSampler, projectTexCoord).r;
+            
+            // Calculate the depth of the light.
+            lightDepthValue = input.shadowWorldPos2.z / input.shadowWorldPos2.w;
 
-	    // Calculate angles between surface normal and light vector.
-        float cosLi = max(0.0, dot(input.viewNormal, Li));
-        float cosLh = max(0.0, dot(input.viewNormal, Lh));
+           // Subtract the bias from the lightDepthValue.
+            lightDepthValue = lightDepthValue - bias;
+            
+            // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel.
+            // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it.
+            
+            // not in shadow
+            if (lightDepthValue < shadowLevel)
+            {
+                
+	            // Half-vector between Li and Lo.
+                float3 Lh = normalize(Li + Lo);
 
-	    // Calculate Fresnel term for direct lighting. 
-        float3 F = fresnelSchlick(F0, max(0.0, dot(Lh, Lo)));
+	            // Calculate angles between surface normal and light vector.
+                float cosLi = max(0.0, dot(input.viewNormal, Li));
+                float cosLh = max(0.0, dot(input.viewNormal, Lh));
+
+	            // Calculate Fresnel term for direct lighting. 
+                float3 F = fresnelSchlick(F0, max(0.0, dot(Lh, Lo)));
     
-	    // Calculate normal distribution for specular BRDF.
-        float D = ndfGGX(cosLh, roughness);
+	            // Calculate normal distribution for specular BRDF.
+                float D = ndfGGX(cosLh, roughness);
     
-	    // Calculate geometric attenuation for specular BRDF.
-        float G = gaSchlickGGX(cosLi, cosLo, roughness);
+	            // Calculate geometric attenuation for specular BRDF.
+                float G = gaSchlickGGX(cosLi, cosLo, roughness);
 
-	    // Diffuse scattering happens due to light being refracted multiple times by a dielectric medium.
-	    // Metals on the other hand either reflect or absorb energy, so diffuse contribution is always zero.
-	    // To be energy conserving we must scale diffuse BRDF contribution based on Fresnel factor & metalness.
-        float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metalness);
+	            // Diffuse scattering happens due to light being refracted multiple times by a dielectric medium.
+	            // Metals on the other hand either reflect or absorb energy, so diffuse contribution is always zero.
+	            // To be energy conserving we must scale diffuse BRDF contribution based on Fresnel factor & metalness.
+                float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metalness);
 
-	    // Lambert diffuse BRDF.
-	    // We don't scale by 1/PI for lighting & material units to be more convenient.
-	    // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
-        float3 diffuseBRDF = kd * albedo;
+	            // Lambert diffuse BRDF.
+	            // We don't scale by 1/PI for lighting & material units to be more convenient.
+	            // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
+                float3 diffuseBRDF = kd * albedo;
 
-	    // Cook-Torrance specular microfacet BRDF.
-        float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
+	            // Cook-Torrance specular microfacet BRDF.
+                float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
 
-	    // Total contribution for this light.
-        directLighting += (diffuseBRDF + specularBRDF) * DirectionalLight.diffuseIntensity * cosLi;
+	            // Total contribution for this light.
+                directLighting += (diffuseBRDF + specularBRDF) * DirectionalLight.diffuseIntensity * cosLi;
+            }
+        }
+        else
+        {
+    
+	        // Half-vector between Li and Lo.
+            float3 Lh = normalize(Li + Lo);
+
+	        // Calculate angles between surface normal and light vector.
+            float cosLi = max(0.0, dot(input.viewNormal, Li));
+            float cosLh = max(0.0, dot(input.viewNormal, Lh));
+
+	        // Calculate Fresnel term for direct lighting. 
+            float3 F = fresnelSchlick(F0, max(0.0, dot(Lh, Lo)));
+    
+	        // Calculate normal distribution for specular BRDF.
+            float D = ndfGGX(cosLh, roughness);
+    
+	        // Calculate geometric attenuation for specular BRDF.
+            float G = gaSchlickGGX(cosLi, cosLo, roughness);
+
+	        // Diffuse scattering happens due to light being refracted multiple times by a dielectric medium.
+	        // Metals on the other hand either reflect or absorb energy, so diffuse contribution is always zero.
+	        // To be energy conserving we must scale diffuse BRDF contribution based on Fresnel factor & metalness.
+            float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metalness);
+
+	        // Lambert diffuse BRDF.
+	        // We don't scale by 1/PI for lighting & material units to be more convenient.
+	        // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
+            float3 diffuseBRDF = kd * albedo;
+
+	        // Cook-Torrance specular microfacet BRDF.
+            float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
+
+	        // Total contribution for this light.
+            directLighting += (diffuseBRDF + specularBRDF) * DirectionalLight.diffuseIntensity * cosLi;
+        }
     }
     
     //-----------------------------------------------------------------------------

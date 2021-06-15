@@ -21,7 +21,9 @@ namespace Marvel {
 
 		struct ShadowCameraInfo
 		{
-			glm::mat4 shadowPosition = glm::identity<glm::mat4>();
+			glm::mat4 pointShadowView = glm::identity<glm::mat4>();
+			glm::mat4 directShadowView = glm::identity<glm::mat4>();
+			glm::mat4 directShadowProjection = glm::identity<glm::mat4>();
 		};
 
 	public:

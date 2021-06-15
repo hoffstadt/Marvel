@@ -33,7 +33,8 @@ namespace Marvel {
 		{
 			Border,
 			Wrap,
-			Mirror
+			Mirror,
+			Clamp
 		};
 
 		static mvSamplerState* Request(mvGraphics& graphics, Type type, Addressing addressing, UINT slot, bool hwPcf);

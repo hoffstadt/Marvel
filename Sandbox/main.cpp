@@ -48,7 +48,7 @@ int main()
     bool showSponza = false;
     bool showGun = false;
     bool modelsDirty = true;
-    mvSolidSphere sphere(graphics, "test sphere", 1.0f, { 0.5f, 0.5f, 0.8f }, 0);
+    //mvSolidSphere sphere(graphics, "test sphere", 1.0f, { 0.5f, 0.5f, 0.8f }, 0);
 
     // create testing cube
     mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
@@ -113,7 +113,7 @@ int main()
                 sponza->linkTechniques(*graph);
             }
 
-            sphere.linkTechniques(*graph);
+            //sphere.linkTechniques(*graph);
             cube.linkTechniques(*graph);
             quad.linkTechniques(*graph);
             pointlight.linkTechniques(*graph);
@@ -139,7 +139,7 @@ int main()
         pointlight.bind(graphics, camera.getMatrix());
         directionLight.bind(graphics, camera.getMatrix());
 
-        sphere.submit(*graph);
+        //sphere.submit(*graph);
         cube.submit(*graph);
         quad.submit(*graph);
         if(showSponza)
@@ -162,7 +162,7 @@ int main()
         pointlight.show_imgui_window();
         directionLight.show_imgui_window();
         graph->show_imgui_window();
-        sphere.show_imgui_window();
+        //sphere.show_imgui_window();
         cube.show_imgui_windows("Test Cube");
         quad.show_imgui_windows("Test Quad");
 

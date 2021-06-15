@@ -55,6 +55,12 @@ namespace Marvel {
 			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
 			break;
 
+		case(Addressing::Clamp):
+			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			break;
+
 		default:
 			samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 			samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;

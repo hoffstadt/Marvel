@@ -58,7 +58,8 @@ namespace Marvel {
 		NONE,
 		BORDER,
 		WRAP,
-		MIRROR
+		MIRROR,
+		CLAMP
 	};
 
 	//-----------------------------------------------------------------------------

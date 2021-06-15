@@ -189,6 +189,10 @@ namespace Marvel {
 			case mvSamplerStateAddressingFlags::MIRROR:
 				addressing = mvSamplerState::Addressing::Mirror;
 				break;
+
+			case mvSamplerStateAddressingFlags::CLAMP:
+				addressing = mvSamplerState::Addressing::Clamp;
+				break;
 			}
 
 			m_samplerStates.push_back(mvSamplerState::Request(graphics, type, addressing, sampler.slot, sampler.hardwarePCF));

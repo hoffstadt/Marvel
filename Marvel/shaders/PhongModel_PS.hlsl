@@ -4,16 +4,18 @@
 //-----------------------------------------------------------------------------
 // textures
 //-----------------------------------------------------------------------------
-Texture2D   ColorTexture    : register(t0);
-Texture2D   SpecularTexture : register(t1);
-Texture2D   NormalTexture   : register(t2);
-TextureCube ShadowMap      : register(t3);
+Texture2D   ColorTexture         : register(t0);
+Texture2D   SpecularTexture      : register(t1);
+Texture2D   NormalTexture        : register(t2);
+TextureCube ShadowMap            : register(t3);
+Texture2D   DirectionalShadowMap : register(t4);
 
 //-----------------------------------------------------------------------------
 // samplers
 //-----------------------------------------------------------------------------
-SamplerState           Sampler       : register(s0);
-SamplerComparisonState ShadowSampler : register(s1);
+SamplerState           Sampler        : register(s0);
+SamplerComparisonState ShadowSampler  : register(s1);
+SamplerState           DShadowSampler : register(s2);
 
 //-----------------------------------------------------------------------------
 // constant buffers
@@ -25,13 +27,14 @@ cbuffer mvSceneCBuf            : register(b3) { mvScene Scene; };
 
 struct VSOut
 {
-    float3 viewPos        : Position;       // pixel pos           (view space)
-    float3 viewNormal     : Normal;         // pixel norm          (view space)
-    float3 worldNormal    : WorldNormal;    // pixel normal        (view space)
-    float2 tc             : Texcoord;       // texture coordinates (model space)
-    float3x3 tangentBasis : TangentBasis;   // tangent basis       (view space)
-    float4 shadowWorldPos : shadowPosition; // light pos           (world space)
-    float4 pixelPos       : SV_Position;    // pixel pos           (screen space)
+    float3 viewPos         : Position;        // pixel pos           (view space)
+    float3 viewNormal      : Normal;          // pixel norm          (view space)
+    float3 worldNormal     : WorldNormal;     // pixel normal        (view space)
+    float2 tc              : Texcoord;        // texture coordinates (model space)
+    float3x3 tangentBasis  : TangentBasis;    // tangent basis       (view space)
+    float4 shadowWorldPos1 : shadowPosition1; // light pos           (world space)
+    float4 shadowWorldPos2 : shadowPosition2; // light pos           (world space)
+    float4 pixelPos        : SV_Position;     // pixel pos           (screen space)
 };
 
 float4 main(VSOut input) : SV_Target
@@ -93,7 +96,7 @@ float4 main(VSOut input) : SV_Target
     // point light with simple shadows
     //-----------------------------------------------------------------------------
     
-    float shadowLevel = Shadow(input.shadowWorldPos, ShadowMap, ShadowSampler);
+    float shadowLevel = Shadow(input.shadowWorldPos1, ShadowMap, ShadowSampler);
     if(!Scene.useShadows)            
         shadowLevel = 1.0f;
     if (shadowLevel != 0.0f)
@@ -130,21 +133,73 @@ float4 main(VSOut input) : SV_Target
     // directional light
     //-----------------------------------------------------------------------------
     {
-    
-	    // diffuse
-        diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(-normalize(DirectionalLight.viewLightDir), input.viewNormal));
-    
-        // specular
         
-        // calculate reflected light vector
-        const float3 w = input.viewNormal * dot(-normalize(DirectionalLight.viewLightDir), input.viewNormal);
-        const float3 r = normalize(w * 2.0f - -normalize(DirectionalLight.viewLightDir));
+        float lightDepthValue;
+        float2 projectTexCoord;
+        float bias = 0.001f;
+        float3 lightDir;
         
-        // vector from camera to fragment
-        const float3 viewCamToFrag = normalize(input.viewPos);
+        lightDir = -DirectionalLight.viewLightDir;
         
-        specularReflected += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
+        // Calculate the projected texture coordinates.
+        projectTexCoord.x = 0.5f * input.shadowWorldPos2.x / input.shadowWorldPos2.w + 0.5f;
+        projectTexCoord.y = -0.5f * input.shadowWorldPos2.y / input.shadowWorldPos2.w + 0.5f;
+        
+        // Determine if the projected coordinates are in the 0 to 1 range.  If so then this pixel is in the view of the light.
+        if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
+        {
+            shadowLevel = DirectionalShadowMap.Sample(DShadowSampler, projectTexCoord).r;
             
+            // Calculate the depth of the light.
+            lightDepthValue = input.shadowWorldPos2.z / input.shadowWorldPos2.w;
+
+           // Subtract the bias from the lightDepthValue.
+            lightDepthValue = lightDepthValue - bias;
+            
+            // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel.
+            // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it.
+            
+            // not in shadow
+            if (lightDepthValue < shadowLevel)
+            {
+                
+                // diffuse
+                //diffuse += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
+                diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
+    
+                // specular
+        
+                // calculate reflected light vector
+                const float3 w = input.viewNormal * dot(normalize(lightDir), input.viewNormal);
+                const float3 r = normalize(w * 2.0f - normalize(lightDir));
+        
+                // vector from camera to fragment
+                const float3 viewCamToFrag = normalize(input.viewPos);
+        
+                specularReflected += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(r, viewCamToFrag)), specularPowerLoaded);
+            
+            }
+           
+        }
+        else
+        {
+            return float4(1.0f, 0.0f, 0.0f, 1.0f);
+             // diffuse
+            diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
+    
+            // specular
+        
+            // calculate reflected light vector
+            const float3 w = input.viewNormal * dot(normalize(lightDir), input.viewNormal);
+            const float3 r = normalize(w * 2.0f - normalize(lightDir));
+        
+            // vector from camera to fragment
+            const float3 viewCamToFrag = normalize(input.viewPos);
+        
+            specularReflected += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
+            
+        }
+        
     }
     //-----------------------------------------------------------------------------
     // final color
