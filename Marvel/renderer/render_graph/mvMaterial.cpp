@@ -325,21 +325,21 @@ namespace Marvel {
 			pipeline.viewportWidth = 4000;
 			pipeline.viewportHeight = 4000;
 			pipeline.rasterizerStateCull = !hasAlpha;
-			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateHwPCF = true;
 			pipeline.rasterizerStateDepthBias = 50;
 			pipeline.rasterizerStateSlopeBias = 2.0f;
 			pipeline.rasterizerStateClamp = 0.1f;
 
 			// pixel shader stage
-			//aiString texFileName;
-			//if (hasColorMap && hasAlpha)
-			//{
-			//	if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
-			//	{
-			//		pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
-			//		pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
-			//	}
-			//}
+			aiString texFileName;
+			if (hasColorMap && hasAlpha)
+			{
+				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				{
+					pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
+					pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
+				}
+			}
 
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
@@ -353,8 +353,8 @@ namespace Marvel {
 			//-----------------------------------------------------------------------------
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
-			//if (!pipeline.pixelShader.empty())
-			//	step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+			if (!pipeline.pixelShader.empty())
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);

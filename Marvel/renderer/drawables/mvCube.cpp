@@ -213,7 +213,7 @@ namespace Marvel {
 			pipeline.viewportWidth = 4000;
 			pipeline.viewportHeight = 4000;
 			pipeline.rasterizerStateCull = false;
-			pipeline.rasterizerStateHwPCF = false;
+			pipeline.rasterizerStateHwPCF = true;
 			pipeline.rasterizerStateDepthBias = 50;
 			pipeline.rasterizerStateSlopeBias = 2.0f;
 			pipeline.rasterizerStateClamp = 0.1f;

@@ -136,7 +136,6 @@ float4 main(VSOut input) : SV_Target
         
         float lightDepthValue;
         float2 projectTexCoord;
-        float bias = 0.001f;
         float3 lightDir;
         
         lightDir = -DirectionalLight.viewLightDir;
@@ -153,9 +152,6 @@ float4 main(VSOut input) : SV_Target
             // Calculate the depth of the light.
             lightDepthValue = input.shadowWorldPos2.z / input.shadowWorldPos2.w;
 
-           // Subtract the bias from the lightDepthValue.
-            lightDepthValue = lightDepthValue - bias;
-            
             // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel.
             // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it.
             
