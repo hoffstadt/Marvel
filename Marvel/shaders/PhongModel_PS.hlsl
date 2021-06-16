@@ -15,7 +15,7 @@ Texture2D   DirectionalShadowMap : register(t4);
 //-----------------------------------------------------------------------------
 SamplerState           Sampler        : register(s0);
 SamplerComparisonState ShadowSampler  : register(s1);
-SamplerState           DShadowSampler : register(s2);
+SamplerComparisonState DShadowSampler : register(s2);
 
 //-----------------------------------------------------------------------------
 // constant buffers
@@ -97,9 +97,7 @@ float4 main(VSOut input) : SV_Target
     //-----------------------------------------------------------------------------
     
     float shadowLevel = Shadow(input.shadowWorldPos1, ShadowMap, ShadowSampler);
-    if(!Scene.useShadows)            
-        shadowLevel = 1.0f;
-    if (shadowLevel != 0.0f)
+    if (shadowLevel != 0.0f && Scene.useShadows)
     {
             
 	    // fragment to light vector data
@@ -147,21 +145,19 @@ float4 main(VSOut input) : SV_Target
         // Determine if the projected coordinates are in the 0 to 1 range.  If so then this pixel is in the view of the light.
         if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y) && Scene.useShadows)
         {
-            shadowLevel = DirectionalShadowMap.Sample(DShadowSampler, projectTexCoord).r;
             
             // Calculate the depth of the light.
             lightDepthValue = input.shadowWorldPos2.z / input.shadowWorldPos2.w;
-
-            // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel.
-            // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it.
             
+            shadowLevel = DirectionalShadowMap.SampleCmpLevelZero(DShadowSampler, projectTexCoord, lightDepthValue);
+
             // not in shadow
-            if (lightDepthValue < shadowLevel)
+            if (shadowLevel != 0.0f)
             {
                 
                 // diffuse
-                //diffuse += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
-                diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
+                diffuse += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
+                //diffuse += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * max(0.0f, dot(normalize(lightDir), input.viewNormal));
     
                 // specular
         
@@ -172,9 +168,11 @@ float4 main(VSOut input) : SV_Target
                 // vector from camera to fragment
                 const float3 viewCamToFrag = normalize(input.viewPos);
         
-                specularReflected += DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(r, viewCamToFrag)), specularPowerLoaded);
+                specularReflected += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(r, viewCamToFrag)), specularPowerLoaded);
             
             }
+            
+
            
         }
         else
@@ -202,6 +200,6 @@ float4 main(VSOut input) : SV_Target
 
     float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   
     return float4(litColor, 1.0f);
-    //return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), viewFragPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
+    //return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), input.viewPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
 
 }

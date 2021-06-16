@@ -70,7 +70,7 @@ namespace Marvel {
 		if (hwPcf)
 		{
 			samplerDesc.BorderColor[0] = 1.0f;
-			samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+			samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
 
 			samplerDesc.Filter = [type]() {
 				switch (type)

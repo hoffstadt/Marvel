@@ -20,7 +20,7 @@ TextureCube IrradianceTexture    : register(t6);
 //-----------------------------------------------------------------------------
 SamplerState           Sampler        : register(s0);
 SamplerComparisonState ShadowSampler  : register(s1);
-SamplerState           DShadowSampler : register(s2);
+SamplerComparisonState DShadowSampler : register(s2);
 SamplerState           CubeSampler    : register(s3);
 
 //-----------------------------------------------------------------------------
@@ -152,7 +152,6 @@ float4 main(VSOut input) : SV_Target
         
         float lightDepthValue;
         float2 projectTexCoord;
-        float bias = 0.001f;
         float3 lightDir;
         
         float3 Li = -DirectionalLight.viewLightDir;
@@ -165,19 +164,13 @@ float4 main(VSOut input) : SV_Target
         if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y)  && Scene.useShadows)
         {
             
-            shadowLevel = DirectionalShadowMap.Sample(DShadowSampler, projectTexCoord).r;
-            
             // Calculate the depth of the light.
             lightDepthValue = input.shadowWorldPos2.z / input.shadowWorldPos2.w;
-
-           // Subtract the bias from the lightDepthValue.
-            lightDepthValue = lightDepthValue - bias;
             
-            // Compare the depth of the shadow map value and the depth of the light to determine whether to shadow or to light this pixel.
-            // If the light is in front of the object then light the pixel, if not then shadow this pixel since an object (occluder) is casting a shadow on it.
+            shadowLevel = DirectionalShadowMap.SampleCmpLevelZero(DShadowSampler, projectTexCoord, lightDepthValue);
             
             // not in shadow
-            if (lightDepthValue < shadowLevel)
+            if (shadowLevel != 0.0f)
             {
                 
 	            // Half-vector between Li and Lo.
@@ -210,7 +203,7 @@ float4 main(VSOut input) : SV_Target
                 float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
 
 	            // Total contribution for this light.
-                directLighting += (diffuseBRDF + specularBRDF) * DirectionalLight.diffuseIntensity * cosLi;
+                directLighting += shadowLevel * (diffuseBRDF + specularBRDF) * DirectionalLight.diffuseIntensity * cosLi;
             }
         }
         else

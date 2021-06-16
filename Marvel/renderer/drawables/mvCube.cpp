@@ -132,8 +132,8 @@ namespace Marvel {
 			// pixel shader stage
 			pipeline.pixelShader = graphics.getShaderRoot() + "PhongModel_PS.hlsl";
 			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
-			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::BORDER, 1u, true });
-			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::POINT, mvSamplerStateAddressingFlags::CLAMP, 2u, false });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::BILINEAR, mvSamplerStateAddressingFlags::CLAMP, 1u, true });
+			pipeline.samplers.push_back({ mvSamplerStateTypeFlags::BILINEAR, mvSamplerStateAddressingFlags::CLAMP, 2u, true });
 
 			// output merger stage
 			pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
