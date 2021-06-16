@@ -63,7 +63,7 @@ namespace Marvel {
         srvDesc.Format = textureDesc.Format;
         srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Texture2D.MostDetailedMip = 0;
-        srvDesc.Texture2D.MipLevels = 1;
+        srvDesc.Texture2D.MipLevels = -1;
 
 
         graphics.getDevice()->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_textureView.GetAddressOf());
