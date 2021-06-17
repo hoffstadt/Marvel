@@ -17,11 +17,66 @@ namespace Marvel {
 
 		// load 6 surfaces for cube faces
 		std::vector<unsigned char*> surfaces;
-		for (int i = 0; i < 6; i++)
+		int texForceNumChannels = 4;
+
+		// right
 		{
-			// Load Image
-			int texForceNumChannels = 4;
-			std::string file = path + "\\" + std::to_string(i) + ".png";
+			std::string file = path + "\\right.png";
+			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
+				&texNumChannels, texForceNumChannels);
+			assert(testTextureBytes);
+			textBytesPerRow = 4 * texWidth;
+
+			surfaces.push_back(testTextureBytes);
+		}
+
+		// left
+		{
+			std::string file = path + "\\left.png";
+			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
+				&texNumChannels, texForceNumChannels);
+			assert(testTextureBytes);
+			textBytesPerRow = 4 * texWidth;
+
+			surfaces.push_back(testTextureBytes);
+		}
+
+		// top
+		{
+			std::string file = path + "\\top.png";
+			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
+				&texNumChannels, texForceNumChannels);
+			assert(testTextureBytes);
+			textBytesPerRow = 4 * texWidth;
+
+			surfaces.push_back(testTextureBytes);
+		}
+
+		// bottom
+		{
+			std::string file = path + "\\bottom.png";
+			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
+				&texNumChannels, texForceNumChannels);
+			assert(testTextureBytes);
+			textBytesPerRow = 4 * texWidth;
+
+			surfaces.push_back(testTextureBytes);
+		}
+
+		// front
+		{
+			std::string file = path + "\\front.png";
+			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
+				&texNumChannels, texForceNumChannels);
+			assert(testTextureBytes);
+			textBytesPerRow = 4 * texWidth;
+
+			surfaces.push_back(testTextureBytes);
+		}
+
+		// back
+		{
+			std::string file = path + "\\back.png";
 			unsigned char* testTextureBytes = stbi_load(file.c_str(), &texWidth, &texHeight,
 				&texNumChannels, texForceNumChannels);
 			assert(testTextureBytes);

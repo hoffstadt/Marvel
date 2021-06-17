@@ -101,7 +101,8 @@ int main()
             {
                 if (!gun)
                 {
-                    gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f, true);
+                    //gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f, true);
+                    gun = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball.obj", 1.0f, true);
                     gun->setRootTransform(glm::translate(glm::vec3(-5.0f, 5.0f, 0.0f)));
                 }
                 gun->linkTechniques(*graph);

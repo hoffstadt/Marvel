@@ -147,8 +147,7 @@ namespace Marvel {
 			float gloss = 8.0f;
 			material.Get(AI_MATKEY_SHININESS, gloss);
 			m_phongMaterial->material.specularGloss = gloss;
-
-			
+	
 			{
 
 				mvStep step("lambertian");
