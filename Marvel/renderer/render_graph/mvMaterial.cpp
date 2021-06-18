@@ -122,7 +122,8 @@ namespace Marvel {
 
 				// output merger stage
 				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
-				pipeline.blendStateFlags = mvBlendStateFlags::OFF;
+				pipeline.blendStateFlags = mvBlendStateFlags::ON;
+
 
 				// registers required pipeline
 				step.registerPipeline(graphics, pipeline);

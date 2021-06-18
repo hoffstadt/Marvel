@@ -59,6 +59,13 @@ namespace Marvel {
 		m_proj.submit(graph);
 	}
 
+	void mvCamera::show_pos() const
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 15),
+			ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(m_pos.x) + ", " + std::to_string(m_pos.y) + ", " + std::to_string(m_pos.z)).c_str());
+	}
+
 	glm::mat4 mvCamera::getMatrix() const
 	{
 

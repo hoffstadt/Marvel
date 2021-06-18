@@ -46,13 +46,22 @@ struct VSOut
 float4 main(VSOut input) : SV_Target
 {
     
-    float3 albedo = material.albedo;
+    float4 albedo = float4(material.albedo, 1.0f);
     float metalness = material.metalness;
     float roughness = material.roughness;
     
     if(material.useAlbedoMap)
     {
-        albedo = AlbedoTexture.Sample(Sampler, input.tc).rgb;
+        albedo = AlbedoTexture.Sample(Sampler, input.tc).rgba;
+        
+        // bail if highly translucent
+        clip(albedo.a < 0.1f ? -1 : 1);
+        
+        // flip normal when backface
+        if (dot(input.viewNormal, input.viewPos) >= 0.0f)
+        {
+            input.viewNormal = -input.viewNormal;
+        }
     }
     
     if (material.useMetalMap)
@@ -135,7 +144,7 @@ float4 main(VSOut input) : SV_Target
 	    // Lambert diffuse BRDF.
 	    // We don't scale by 1/PI for lighting & material units to be more convenient.
 	    // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
-        float3 diffuseBRDF = kd * albedo;
+        float3 diffuseBRDF = kd * albedo.rgb;
 
 	    // Cook-Torrance specular microfacet BRDF.
 	    float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
@@ -197,7 +206,7 @@ float4 main(VSOut input) : SV_Target
 	            // Lambert diffuse BRDF.
 	            // We don't scale by 1/PI for lighting & material units to be more convenient.
 	            // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
-                float3 diffuseBRDF = kd * albedo;
+                float3 diffuseBRDF = kd * albedo.rgb;
 
 	            // Cook-Torrance specular microfacet BRDF.
                 float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
@@ -233,7 +242,7 @@ float4 main(VSOut input) : SV_Target
 	        // Lambert diffuse BRDF.
 	        // We don't scale by 1/PI for lighting & material units to be more convenient.
 	        // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
-            float3 diffuseBRDF = kd * albedo;
+            float3 diffuseBRDF = kd * albedo.rgb;
 
 	        // Cook-Torrance specular microfacet BRDF.
             float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
@@ -263,7 +272,7 @@ float4 main(VSOut input) : SV_Target
         float3 kd = lerp(1.0 - F, 0.0, metalness);
 
 		// Irradiance map contains exitant radiance assuming Lambertian BRDF, no need to scale by 1/PI here either.
-        float3 diffuseIBL = kd * albedo * irradiance;
+        float3 diffuseIBL = kd * albedo.rgb * irradiance;
 
 		// Sample pre-filtered specular reflection environment at correct mipmap level.
         //uint specularTextureLevels = querySpecularTextureLevels();
@@ -280,5 +289,6 @@ float4 main(VSOut input) : SV_Target
         ambientLighting = diffuseIBL;
     }
     
-    return float4(directLighting + ambientLighting, 1.0f);
+    //return float4(directLighting + ambientLighting, 1.0f);
+    return float4(directLighting, 1.0f);
 }

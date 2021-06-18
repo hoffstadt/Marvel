@@ -46,18 +46,11 @@ int main()
     // create model
     std::shared_ptr<mvModel> sponza = nullptr;
     std::shared_ptr<mvModel> gun = nullptr;
+    std::shared_ptr<mvModel> ball = nullptr;
     bool showSponza = false;
     bool showGun = false;
+    bool showBall = false;
     bool modelsDirty = true;
-    //mvSolidSphere sphere(graphics, "test sphere", 1.0f, { 0.5f, 0.5f, 0.8f }, 0);
-
-    // create testing cube
-    mvCube cube(graphics, "testcube", { 1.0f, 0.0f, 0.5f });
-    cube.setPosition(0.0f, 5.0f, 10.0f);
-
-    // create testing quad
-    mvTexturedQuad quad(graphics, "testquad", "../../Resources/brickwall.jpg");
-    quad.setPosition(5.0f, 5.0f, 10.0f);
 
     // testing compute shaders
     struct BufType { float f;};
@@ -101,11 +94,20 @@ int main()
             {
                 if (!gun)
                 {
-                    //gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f, true);
-                    gun = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball.obj", 1.0f, true);
+                    gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f, true);
                     gun->setRootTransform(glm::translate(glm::vec3(-5.0f, 5.0f, 0.0f)));
                 }
                 gun->linkTechniques(*graph);
+            }
+
+            if (showBall)
+            {
+                if (!ball)
+                {
+                    ball = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball.obj", 1.0f, true);
+                    ball->setRootTransform(glm::translate(glm::vec3(5.0f, 5.0f, 0.0f)));
+                }
+                ball->linkTechniques(*graph);
             }
 
             if (showSponza)
@@ -115,9 +117,6 @@ int main()
                 sponza->linkTechniques(*graph);
             }
 
-            //sphere.linkTechniques(*graph);
-            cube.linkTechniques(*graph);
-            quad.linkTechniques(*graph);
             pointlight.linkTechniques(*graph);
             camera.linkTechniques(*graph);
             lightcamera->linkTechniques(*graph);
@@ -145,43 +144,42 @@ int main()
         pointlight.bind(graphics, camera.getMatrix());
         directionLight.bind(graphics, camera.getMatrix());
 
-        //sphere.submit(*graph);
-        cube.submit(*graph);
-        quad.submit(*graph);
         if(showSponza)
             sponza->submit(*graph);
         if(showGun)
             gun->submit(*graph);
-        //sphere.submit(*graph);
+        if (showBall)
+            ball->submit(*graph);
         pointlight.submit(*graph);
-        //lightcamera->submit(*graph);
-        //directionCamera.submit(*graph);
 
         graph->execute(graphics);
 
         static mvModelProbe probe1(graphics, "Sponza Model Probe");
         static mvModelProbe probe2(graphics, "Gun Model Probe");
+        static mvModelProbe probe3(graphics, "Ball Model Probe");
         if (showSponza)
             probe1.spawnWindow(*sponza);
         if(showGun)
             probe2.spawnWindow(*gun);
+        if (showBall)
+            probe3.spawnWindow(*ball);
         pointlight.show_imgui_window();
         directionLight.show_imgui_window();
         graph->show_imgui_window();
-        //sphere.show_imgui_window();
         directionLight.getCamera()->show_imgui_windows();
-        cube.show_imgui_windows("Test Cube");
-        quad.show_imgui_windows("Test Quad");
 
         ImGuiIO& io = ImGui::GetIO();
         ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
             ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
+        camera.show_pos();
 
         if (ImGui::Begin("Sandbox Options"))
         {
             if (ImGui::Checkbox("Sponza", &showSponza))
                 modelsDirty = true;
             if (ImGui::Checkbox("Gun", &showGun))
+                modelsDirty = true;
+            if (ImGui::Checkbox("Ball", &showBall))
                 modelsDirty = true;
         }
         ImGui::End();

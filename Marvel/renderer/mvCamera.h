@@ -33,6 +33,7 @@ namespace Marvel {
 		void linkTechniques(mvRenderGraph& graph);
 		void submit(mvRenderGraph& graph) const;
 		void show_imgui_windows();
+		void show_pos() const;
 
 		// called when the viewport is resized
 		void updateProjection(int width, int height);
