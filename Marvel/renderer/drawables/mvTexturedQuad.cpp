@@ -20,7 +20,7 @@ namespace Marvel {
 
 		auto phongMaterial = std::make_shared<mvPhongMaterialCBuf>(graphics, 1);
 
-		phongMaterial->material.materialColor = { 0.45f, 0.45f, 0.85f };
+		phongMaterial->material.materialColor = { 0.45f, 0.45f, 0.85f, 1.0f };
 		phongMaterial->material.specularColor = { 0.18f, 0.18f, 0.18f };
 		phongMaterial->material.specularGloss = 8.0f;
 		phongMaterial->material.normalMapWeight = 1.0f;

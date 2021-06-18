@@ -22,8 +22,7 @@ namespace Marvel {
 
 		struct mvMaterialBuffer
 		{
-			glm::vec3 materialColor = { 0.45f, 0.45f, 0.85f };
-			char _pad0[4];
+			glm::vec4 materialColor = { 0.45f, 0.45f, 0.85f, 1.0f };
 			//-------------------------- ( 16 bytes )
 
 			glm::vec3 specularColor = { 0.18f, 0.18f, 0.18f };

@@ -21,10 +21,18 @@ namespace Marvel {
 		if (m_pbr)
 		{
 			m_pbrMaterial = std::make_shared<mvPBRMaterialCBuf>(graphics, 1);
+			m_pbrMaterial->material.metalness = 0.5f;
+			m_pbrMaterial->material.roughness = 0.5f;
+			m_pbrMaterial->material.fresnel = 0.04f;
 
 			aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 			material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-			m_pbrMaterial->material.albedo = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
+			m_pbrMaterial->material.albedo = { diffuseColor.r, diffuseColor.g, diffuseColor.b , 1.0f};
+
+			aiColor3D transparentColor = { 1.0f, 1.0f, 1.0f };
+
+			material.Get(AI_MATKEY_COLOR_TRANSPARENT, transparentColor);
+			m_pbrMaterial->material.albedo.w = transparentColor.r;
 			{
 
 				mvStep step("lambertian");
@@ -43,7 +51,6 @@ namespace Marvel {
 				else
 				{
 					m_pbrMaterial->material.useAlbedoMap = false;
-					//pbrMaterial->material.hasAlpha = false;
 				}
 
 				// normals
@@ -107,7 +114,7 @@ namespace Marvel {
 				// rasterizer stage
 				pipeline.viewportWidth = 0;  // use render target
 				pipeline.viewportHeight = 0; // use render target
-				pipeline.rasterizerStateCull = true;
+				pipeline.rasterizerStateCull = m_pbrMaterial->material.albedo.w == 1.0f;
 				pipeline.rasterizerStateHwPCF = false;
 				pipeline.rasterizerStateDepthBias = 0;    // not used
 				pipeline.rasterizerStateSlopeBias = 0.0f; // not used
@@ -122,7 +129,7 @@ namespace Marvel {
 
 				// output merger stage
 				pipeline.depthStencilStateFlags = mvDepthStencilStateFlags::OFF;
-				pipeline.blendStateFlags = mvBlendStateFlags::ON;
+				pipeline.blendStateFlags = m_pbrMaterial->material.albedo.w == 1.0f ? mvBlendStateFlags::ON : mvBlendStateFlags::OFF;
 
 
 				// registers required pipeline
@@ -139,7 +146,12 @@ namespace Marvel {
 
 			aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
 			material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-			m_phongMaterial->material.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b };
+			m_phongMaterial->material.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b, 1.0f };
+
+			aiColor3D transparentColor = { 1.0f, 1.0f, 1.0f };
+
+			material.Get(AI_MATKEY_COLOR_TRANSPARENT, transparentColor);
+			m_phongMaterial->material.materialColor.w = transparentColor.r;
 
 			aiColor3D specularColor = { 0.18f,0.18f,0.18f };
 			material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
@@ -167,7 +179,7 @@ namespace Marvel {
 				else
 				{
 					m_phongMaterial->material.useTextureMap = false;
-					m_phongMaterial->material.hasAlpha = false;
+					m_phongMaterial->material.hasAlpha = m_phongMaterial->material.materialColor.a != 1.0f;
 				}
 
 				// specular

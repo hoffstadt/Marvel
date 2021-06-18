@@ -30,7 +30,7 @@ struct mvDirectionalLight
 
 struct mvPhongMaterial
 {
-    float3 materialColor;
+    float4 materialColor;
     //-------------------------- ( 16 bytes )
     
     float3 specularColor;
@@ -53,16 +53,16 @@ struct mvPhongMaterial
 
 struct mvPBRMaterial
 {
-    float3 albedo;
-    float metalness;
+    float4 albedo;
     //-------------------------- ( 16 bytes )
     
+    float metalness;
     float roughness;
     float radiance;
     float fresnel;
-    bool useAlbedoMap;
     //-------------------------- ( 16 bytes )
     
+    bool useAlbedoMap;
     bool useNormalMap;
     bool useRoughnessMap;
     bool useMetalMap;

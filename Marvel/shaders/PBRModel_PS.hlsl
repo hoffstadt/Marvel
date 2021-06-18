@@ -46,7 +46,7 @@ struct VSOut
 float4 main(VSOut input) : SV_Target
 {
     
-    float4 albedo = float4(material.albedo, 1.0f);
+    float4 albedo = material.albedo;
     float metalness = material.metalness;
     float roughness = material.roughness;
     
@@ -105,9 +105,7 @@ float4 main(VSOut input) : SV_Target
     // point light
     //-----------------------------------------------------------------------------
     float shadowLevel = Shadow(input.shadowWorldPos1, ShadowMap, ShadowSampler);
-    if (!Scene.useShadows)            
-        shadowLevel = 1.0f;
-    if (shadowLevel != 0.0f)
+    if (shadowLevel != 0.0f && Scene.useShadows)
     {
     
         // fragment to light vector data
@@ -152,6 +150,52 @@ float4 main(VSOut input) : SV_Target
 	    // Total contribution for this light.
         directLighting += (diffuseBRDF + specularBRDF) * PointLight.diffuseIntensity * att * cosLi;
         directLighting *= shadowLevel;
+    }
+    
+    else if (!Scene.useShadows)
+    {
+    
+        // fragment to light vector data
+        float3 lightVec = PointLight.viewLightPos - input.viewPos;
+        float lightDistFromFrag = length(lightVec);
+        float3 lightDirVec = lightVec / lightDistFromFrag;
+        
+        // attenuation
+        const float att = Attenuate(PointLight.attConst, PointLight.attLin, PointLight.attQuad, lightDistFromFrag);
+    
+        float3 Li = lightDirVec;
+
+	    // Half-vector between Li and Lo.
+        float3 Lh = normalize(Li + Lo);
+
+	    // Calculate angles between surface normal and light vector.
+        float cosLi = max(0.0, dot(input.viewNormal, Li));
+        float cosLh = max(0.0, dot(input.viewNormal, Lh));
+
+	    // Calculate Fresnel term for direct lighting. 
+        float3 F = fresnelSchlick(F0, max(0.0, dot(Lh, Lo)));
+    
+	    // Calculate normal distribution for specular BRDF.
+        float D = ndfGGX(cosLh, roughness);
+    
+	    // Calculate geometric attenuation for specular BRDF.
+        float G = gaSchlickGGX(cosLi, cosLo, roughness);
+
+	    // Diffuse scattering happens due to light being refracted multiple times by a dielectric medium.
+	    // Metals on the other hand either reflect or absorb energy, so diffuse contribution is always zero.
+	    // To be energy conserving we must scale diffuse BRDF contribution based on Fresnel factor & metalness.
+        float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metalness);
+
+	    // Lambert diffuse BRDF.
+	    // We don't scale by 1/PI for lighting & material units to be more convenient.
+	    // See: https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
+        float3 diffuseBRDF = kd * albedo.rgb;
+
+	    // Cook-Torrance specular microfacet BRDF.
+        float3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
+
+	    // Total contribution for this light.
+        directLighting += (diffuseBRDF + specularBRDF) * PointLight.diffuseIntensity * att * cosLi;
     }
     
     //-----------------------------------------------------------------------------

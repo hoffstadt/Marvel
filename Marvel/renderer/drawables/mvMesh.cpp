@@ -98,15 +98,10 @@ namespace Marvel {
 
 	void mvMesh::show_imgui_controls()
 	{
-		//ImGui::SliderFloat("X-Pos", &m_x, -50.0f, 50.0f);
-		//ImGui::SliderFloat("Y-Pos", &m_y, -50.0f, 50.0f);
-		//ImGui::SliderFloat("Z-Pos", &m_z, -50.0f, 50.0f);
-		//ImGui::SliderFloat("X-Angle", &m_xangle, -50.0f, 50.0f);
-		//ImGui::SliderFloat("Y-Angle", &m_yangle, -50.0f, 50.0f);
-		//ImGui::SliderFloat("Z-Angle", &m_zangle, -50.0f, 50.0f);
 
 		if (m_material)
 		{
+			ImGui::PushID(this);
 			if (m_material->getPBRMaterial())
 			{
 				ImGui::ColorEdit3("Albedo", &m_material->getPBRMaterial()->material.albedo.x);
@@ -129,6 +124,7 @@ namespace Marvel {
 				ImGui::Checkbox("Use Normal Map", (bool*)&m_material->getPhongMaterial()->material.useNormalMap);
 				ImGui::Checkbox("Use Specular Map", (bool*)&m_material->getPhongMaterial()->material.useSpecularMap);
 			}
+			ImGui::PopID();
 		}
 
 	}

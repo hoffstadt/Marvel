@@ -42,12 +42,12 @@ float4 main(VSOut input) : SV_Target
     float3 diffuse = { 0.0f, 0.0f, 0.0f };
     float3 specularReflected = { 0.0f, 0.0f, 0.0f };
     float3 specularReflectedColor = material.specularColor;
-    float3 materialColor = material.materialColor;
+    float4 materialColor = material.materialColor;
     
     if(material.useTextureMap)
     {
         const float4 dtex = ColorTexture.Sample(Sampler, input.tc);
-        materialColor = dtex.rgb;
+        materialColor = dtex.rgba;
     }
 
     if (material.hasAlpha)
@@ -126,6 +126,31 @@ float4 main(VSOut input) : SV_Target
         diffuse *= shadowLevel;
         specularReflected *= shadowLevel;
     }
+    else if (!Scene.useShadows)
+    {
+       	// fragment to light vector data
+        float3 lightVec = PointLight.viewLightPos - input.viewPos;
+        float lightDistFromFrag = length(lightVec);
+        float3 lightDirVec = lightVec / lightDistFromFrag;
+    
+	    // attenuation
+        const float att = Attenuate(PointLight.attConst, PointLight.attLin, PointLight.attQuad, lightDistFromFrag);
+    
+	    // diffuse
+        diffuse += PointLight.diffuseColor * PointLight.diffuseIntensity * att * max(0.0f, dot(lightDirVec, input.viewNormal));
+    
+        // specular
+        
+        // calculate reflected light vector
+        const float3 w = input.viewNormal * dot(lightVec, input.viewNormal);
+        const float3 r = normalize(w * 2.0f - lightVec);
+        
+        // vector from camera to fragment
+        const float3 viewCamToFrag = normalize(input.viewPos);
+        
+        specularReflected += att * PointLight.diffuseColor * PointLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
+           
+    }
   
     //-----------------------------------------------------------------------------
     // directional light
@@ -168,7 +193,7 @@ float4 main(VSOut input) : SV_Target
                 // vector from camera to fragment
                 const float3 viewCamToFrag = normalize(input.viewPos);
         
-                specularReflected += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(r, viewCamToFrag)), specularPowerLoaded);
+                specularReflected += shadowLevel * DirectionalLight.diffuseColor * DirectionalLight.diffuseIntensity * specularReflectedColor * 1.0f * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPowerLoaded);
             
             }
             
@@ -198,7 +223,7 @@ float4 main(VSOut input) : SV_Target
     // final color
     //-----------------------------------------------------------------------------
 
-    float3 litColor = saturate((diffuse + Scene.ambient) * materialColor + specularReflected);   
+    float3 litColor = saturate((diffuse + Scene.ambient) * materialColor.rgb + specularReflected);   
     return float4(litColor, 1.0f);
     //return float4(Fog(distance(float3(0.0f, 0.0f, 0.0f), input.viewPos), Scene.FogStart, Scene.FogRange, Scene.FogColor, litColor), 1.0f);
 

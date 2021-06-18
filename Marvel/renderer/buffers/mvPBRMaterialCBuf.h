@@ -22,20 +22,21 @@ namespace Marvel {
 
 		struct mvMaterialBuffer
 		{
-			glm::vec3 albedo = { 0.45f, 0.45f, 0.85f };
-			float metalness = 0.5f;
+			glm::vec4 albedo = { 0.45f, 0.45f, 0.85f, 1.0f };
+			
 			//-------------------------- ( 16 bytes )
 
+			float metalness = 0.5f;
 			float roughness = 0.5f;
 			float radiance = 1.0f;
 			float fresnel = 0.04f;
-			int useAlbedoMap = false;
+			
 			//-------------------------- ( 16 bytes )
 
+			int useAlbedoMap = false;
 			int useNormalMap = false;
 			int useRoughnessMap = false;
 			int useMetalMap = false;
-			char _pad0[4];
 			//-------------------------- ( 16 bytes )
 
 			//-------------------------- ( 3 * 16 = 48 bytes )
