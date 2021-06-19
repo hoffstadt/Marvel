@@ -52,6 +52,8 @@ namespace Marvel {
 
 		mvMaterialBuffer material;
 
+		void showControls();
+
 	private:
 
 		std::unique_ptr<mvPixelConstantBuffer> m_buf;

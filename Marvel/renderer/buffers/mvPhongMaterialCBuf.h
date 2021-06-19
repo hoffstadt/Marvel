@@ -48,6 +48,8 @@ namespace Marvel {
 
 		void bind(mvGraphics& graphics) override;
 
+		void showControls();
+
 	public:
 
 		mvMaterialBuffer material;

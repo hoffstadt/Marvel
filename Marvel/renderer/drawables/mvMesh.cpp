@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include "mvGraphics.h"
 #include "mvMaterial.h"
+#include "mvPBRMaterial.h"
+#include "mvPhongMaterial.h"
 #include "mvCommonBindables.h"
 #include "assimp/Importer.hpp"
 #include "assimp/Scene.h"
@@ -27,7 +29,10 @@ namespace Marvel {
 
 		const auto rootPath = path.parent_path().string() + "\\";
 
-		m_material = std::make_shared<mvMaterial>(graphics, material, rootPath, PBR);
+		if(PBR)
+			m_material = std::make_shared<mvPBRMaterial>(graphics, material, rootPath);
+		else
+			m_material = std::make_shared<mvPhongMaterial>(graphics, material, rootPath);
 
 		// create vertex layout
 		const Marvel::mvVertexLayout& vertexLayout = m_material->getLayout();
@@ -98,34 +103,8 @@ namespace Marvel {
 
 	void mvMesh::show_imgui_controls()
 	{
-
 		if (m_material)
-		{
-			ImGui::PushID(this);
-			if (m_material->getPBRMaterial())
-			{
-				ImGui::ColorEdit3("Albedo", &m_material->getPBRMaterial()->material.albedo.x);
-				ImGui::SliderFloat("Metalness", &m_material->getPBRMaterial()->material.metalness, 0.0f, 1.0f);
-				ImGui::SliderFloat("Roughness", &m_material->getPBRMaterial()->material.roughness, 0.0f, 1.0f);
-				ImGui::SliderFloat("Radiance", &m_material->getPBRMaterial()->material.radiance, 0.0f, 1.0f);
-				ImGui::SliderFloat("Fresnel", &m_material->getPBRMaterial()->material.fresnel, 0.0f, 1.0f);
-				ImGui::Checkbox("Use Albedo Map", (bool*)&m_material->getPBRMaterial()->material.useAlbedoMap);
-				ImGui::Checkbox("Use Normal Map", (bool*)&m_material->getPBRMaterial()->material.useNormalMap);
-				ImGui::Checkbox("Use Roughness Map", (bool*)&m_material->getPBRMaterial()->material.useRoughnessMap);
-				ImGui::Checkbox("Use Metal Map", (bool*)&m_material->getPBRMaterial()->material.useMetalMap);
-			}
-
-			if (m_material->getPhongMaterial())
-			{
-				ImGui::ColorEdit3("Material Color", &m_material->getPhongMaterial()->material.materialColor.x);
-				ImGui::ColorEdit3("Specular Color", &m_material->getPhongMaterial()->material.specularColor.x);
-				ImGui::SliderFloat("Normal Weight", &m_material->getPhongMaterial()->material.normalMapWeight, 0.0f, 1.0f);
-				ImGui::Checkbox("Use Color Map", (bool*)&m_material->getPhongMaterial()->material.useTextureMap);
-				ImGui::Checkbox("Use Normal Map", (bool*)&m_material->getPhongMaterial()->material.useNormalMap);
-				ImGui::Checkbox("Use Specular Map", (bool*)&m_material->getPhongMaterial()->material.useSpecularMap);
-			}
-			ImGui::PopID();
-		}
+			m_material->showControls();
 
 	}
 

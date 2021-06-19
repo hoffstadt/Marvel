@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <vector>
 #include "mvBindable.h"
+#include "mvMaterial.h"
 #include "mvConstantBuffer.h"
 #include "mvTechnique.h"
 #include "mvVertexLayout.h"
@@ -24,19 +25,19 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// mvMaterial
 	//-----------------------------------------------------------------------------
-	class mvMaterial
+	class mvPBRMaterial : public mvMaterial
 	{
 
 	public:
 
-		std::vector<mvTechnique> getTechniques() const;
-		const mvVertexLayout&    getLayout() const;
-		virtual void showControls() {}
+		mvPBRMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path);
 
-	protected:
+		void showControls() override { m_material->showControls(); }
 
-		std::vector<mvTechnique> m_techniques;
-		mvVertexLayout           m_layout;
+	private:
+
+		std::shared_ptr<mvPBRMaterialCBuf> m_material = nullptr;
+
 
 	};
 
