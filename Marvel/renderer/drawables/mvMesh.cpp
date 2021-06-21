@@ -6,10 +6,8 @@
 #include "mvPBRMaterial.h"
 #include "mvPhongMaterial.h"
 #include "mvCommonBindables.h"
-#include "assimp/Importer.hpp"
-#include "assimp/Scene.h"
-#include "assimp/postprocess.h"
 #include "mvTechnique.h"
+#include "mvObjMaterial.h"
 
 namespace Marvel {
 
@@ -23,59 +21,44 @@ namespace Marvel {
 		float z = 0.0f;
 	};
 
-	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, 
-		const aiMaterial& material, const std::filesystem::path& path, float scale, bool PBR)
+	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const mvObjMesh& mesh,
+		const mvObjMaterial& material, const std::filesystem::path& path, float scale, bool PBR)
 	{
 
 		const auto rootPath = path.parent_path().string() + "\\";
 
-		if(PBR)
-			m_material = std::make_shared<mvPBRMaterial>(graphics, material, rootPath);
-		else
-			m_material = std::make_shared<mvPhongMaterial>(graphics, material, rootPath);
+		//if(PBR)
+		//	m_material = std::make_shared<mvPBRMaterial>(graphics, material, rootPath);
+		//else
+		m_material = std::make_shared<mvPhongMaterial>(graphics, rootPath, material);
 
 		// create vertex layout
 		const Marvel::mvVertexLayout& vertexLayout = m_material->getLayout();
 		
 		std::vector<float> verticies;
-		verticies.reserve(mesh.mNumVertices * 14);
-		std::vector<unsigned int> indicies;
-		indicies.reserve(mesh.mNumFaces * 3);
+		std::vector<unsigned int> indicies = mesh.indicies;
 
-
-		// this is nasty and requires the layout order to be correct. 
-		// a more robust system is needed.
-		for (size_t i = 0; i < mesh.mNumVertices; i++)
+		for (size_t i = 0; i < mesh.vertexCount; i++)
 		{
-			verticies.push_back(mesh.mVertices[i].x * scale);
-			verticies.push_back(mesh.mVertices[i].y * scale);
-			verticies.push_back(mesh.mVertices[i].z * scale);
+			verticies.push_back(mesh.averticies[i].position.x * scale);
+			verticies.push_back(mesh.averticies[i].position.y * scale);
+			verticies.push_back(mesh.averticies[i].position.z * scale);
 
-			verticies.push_back(mesh.mNormals[i].x);
-			verticies.push_back(mesh.mNormals[i].y);
-			verticies.push_back(mesh.mNormals[i].z);
+			verticies.push_back(mesh.averticies[i].normal.x);
+			verticies.push_back(mesh.averticies[i].normal.y);
+			verticies.push_back(mesh.averticies[i].normal.z);
 
-			verticies.push_back(mesh.mTangents[i].x);
-			verticies.push_back(mesh.mTangents[i].y);
-			verticies.push_back(mesh.mTangents[i].z);
+			verticies.push_back(mesh.averticies[i].tangent.x);
+			verticies.push_back(mesh.averticies[i].tangent.y);
+			verticies.push_back(mesh.averticies[i].tangent.z);
 
-			verticies.push_back(mesh.mBitangents[i].x);
-			verticies.push_back(mesh.mBitangents[i].y);
-			verticies.push_back(mesh.mBitangents[i].z);
+			verticies.push_back(mesh.averticies[i].bitangent.x);
+			verticies.push_back(mesh.averticies[i].bitangent.y);
+			verticies.push_back(mesh.averticies[i].bitangent.z);
 
-			verticies.push_back(mesh.mTextureCoords[0][i].x);
-			verticies.push_back(mesh.mTextureCoords[0][i].y);
+			verticies.push_back(mesh.averticies[i].uv.x);
+			verticies.push_back(mesh.averticies[i].uv.y);
 		}
-
-		for (int i = 0; i < mesh.mNumFaces; i++)
-		{
-			const auto& face = mesh.mFaces[i];
-			assert(face.mNumIndices == 3);
-			indicies.push_back(face.mIndices[0]);
-			indicies.push_back(face.mIndices[1]);
-			indicies.push_back(face.mIndices[2]);
-		}
-
 
 		// create vertex buffer
 		m_vertexBuffer = mvBufferRegistry::Request<mvVertexBuffer>(graphics, name, verticies, vertexLayout, false);

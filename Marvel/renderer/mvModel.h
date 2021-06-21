@@ -6,11 +6,7 @@
 #include "mvNode.h"
 #include "mvMesh.h"
 #include "mvGizmo.h"
-
-//-----------------------------------------------------------------------------
-// forward declarations
-//-----------------------------------------------------------------------------
-struct aiNode;
+#include "mvObjMaterial.h"
 
 namespace Marvel {
 
@@ -28,7 +24,7 @@ namespace Marvel {
 
 	public:
 
-		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f, bool PBR = false);
+		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
 		// propagates through graph linking steps to passes
 		// model -> node -> mesh -> technique -> step -> pass
@@ -48,7 +44,7 @@ namespace Marvel {
 
 	private:
 
-		mvNode* parseNode(int& id, const aiNode& node, float scale);
+		mvNode* parseNode(int& id, const mvObjNode& node, float scale);
 
 	private:
 
