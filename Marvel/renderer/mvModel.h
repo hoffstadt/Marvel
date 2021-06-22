@@ -44,7 +44,7 @@ namespace Marvel {
 
 	private:
 
-		mvNode* parseNode(int& id, const mvObjNode& node, float scale);
+		mvNode* parseNode(mvGraphics& graphics, mvObjParser& parser, mvObjMaterialParser& mat, const std::string& pathString, int& id, const mvObjNode& node, float scale);
 
 	private:
 

@@ -23,7 +23,7 @@ namespace Marvel {
 	public:
 
 		mvMesh(mvGraphics& graphics, const std::string& name, const mvObjMesh& mesh,
-			const mvObjMaterial& material, const std::filesystem::path& path, float scale = 1.0f, bool PBR = false);
+			const mvObjMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
 
 		// propagates through graph submitting jobs
 		// mesh -> technique -> step -> pass

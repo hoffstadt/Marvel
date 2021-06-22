@@ -68,8 +68,33 @@ namespace Marvel {
 			m_currentMaterial->transmissionFilter.b = std::stof(tokens[3]);
 		}
 
+		else if (tokens[0] == std::string("Ke"))
+		{
+			m_currentMaterial->emissive.r = std::stof(tokens[1]);
+			m_currentMaterial->emissive.g = std::stof(tokens[2]);
+			m_currentMaterial->emissive.b = std::stof(tokens[3]);
+		}
+
 		else if (tokens[0] == std::string("Ni"))
 			m_currentMaterial->opticalDensity = std::stof(tokens[1]);
+
+		else if (tokens[0] == std::string("Pr"))
+		{
+			m_currentMaterial->roughness = std::stof(tokens[1]);
+			m_currentMaterial->pbr = true;
+		}
+
+		else if (tokens[0] == std::string("Pm"))
+		{
+			m_currentMaterial->metallic = std::stof(tokens[1]);
+			m_currentMaterial->pbr = true;
+		}
+
+		else if (tokens[0] == std::string("Ps"))
+		{
+			m_currentMaterial->sheen = std::stof(tokens[1]);
+			m_currentMaterial->pbr = true;
+		}
 
 		else if (tokens[0] == std::string("Ns"))
 			m_currentMaterial->specularExponent = std::stof(tokens[1]);
@@ -92,6 +117,9 @@ namespace Marvel {
 		else if (tokens[0] == std::string("map_Ks"))
 			m_currentMaterial->specularMap = tokens[1];
 
+		else if (tokens[0] == std::string("map_Ke"))
+			m_currentMaterial->emissiveMap = tokens[1];
+
 		else if (tokens[0] == std::string("map_Ns"))
 			m_currentMaterial->specularExponentMap = tokens[1];
 
@@ -100,6 +128,24 @@ namespace Marvel {
 
 		else if (tokens[0] == std::string("map_bump"))
 			m_currentMaterial->bumpMap = tokens[1];
+
+		else if (tokens[0] == std::string("map_Pr"))
+		{
+			m_currentMaterial->roughnessMap = tokens[1];
+			m_currentMaterial->pbr = true;
+		}
+
+		else if (tokens[0] == std::string("map_Pm"))
+		{
+			m_currentMaterial->metallicMap = tokens[1];
+			m_currentMaterial->pbr = true;
+		}
+
+		else if (tokens[0] == std::string("map_Ps"))
+		{
+			m_currentMaterial->sheenMap = tokens[1];
+			m_currentMaterial->pbr = true;
+		}
 
 		else if (tokens[0] == std::string("disp"))
 			m_currentMaterial->displacementMap = tokens[1];
@@ -155,29 +201,46 @@ namespace Marvel {
 				glm::vec2 uv1 = tex1 - tex0;
 				glm::vec2 uv2 = tex2 - tex0;
 
-				float r = 1.0f / (uv1.x * uv2.y - uv1.y * uv2.x);
+				float dirCorrection = (uv1.x * uv2.y - uv1.y * uv2.x) < 0.0f ? -1.0f : 1.0f;
+
+				if (uv1.x * uv2.y == uv1.y * uv2.x)
+				{
+					uv1.x = 0.0f;
+					uv1.y = 1.0f;
+					uv2.x = 1.0f;
+					uv2.y = 0.0f;
+				}
 
 				glm::vec3 tangent = {
-					((edge1.x * uv2.y) - (edge2.x * uv1.y)) * r,
-					((edge1.y * uv2.y) - (edge2.y * uv1.y)) * r,
-					((edge1.z * uv2.y) - (edge2.z * uv1.y)) * r
+					((edge1.x * uv2.y) - (edge2.x * uv1.y)) * dirCorrection,
+					((edge1.y * uv2.y) - (edge2.y * uv1.y)) * dirCorrection,
+					((edge1.z * uv2.y) - (edge2.z * uv1.y)) * dirCorrection
 				};
 
 				glm::vec3 bitangent = {
-					((edge1.x * uv2.x) - (edge2.x * uv1.x)) * r,
-					((edge1.t * uv2.x) - (edge2.y * uv1.x)) * r,
-					((edge1.z * uv2.x) - (edge2.z * uv1.x)) * r
+					((edge1.x * uv2.x) - (edge2.x * uv1.x)) * dirCorrection,
+					((edge1.t * uv2.x) - (edge2.y * uv1.x)) * dirCorrection,
+					((edge1.z * uv2.x) - (edge2.z * uv1.x)) * dirCorrection
 				};
 
-				mesh->averticies[i0].tangent = tangent;
-				mesh->averticies[i1].tangent = tangent;
-				mesh->averticies[i2].tangent = tangent;
-				
-				mesh->averticies[i0].bitangent = bitangent;
-				mesh->averticies[i1].bitangent = bitangent;
-				mesh->averticies[i2].bitangent = bitangent;
+				// project tangent and bitangent into the plane formed by the vertex' normal
+				mesh->averticies[i0].tangent = tangent - mesh->averticies[i0].normal * (tangent * mesh->averticies[i0].normal);
+				mesh->averticies[i1].tangent = tangent - mesh->averticies[i1].normal * (tangent * mesh->averticies[i1].normal);
+				mesh->averticies[i2].tangent = tangent - mesh->averticies[i2].normal * (tangent * mesh->averticies[i2].normal);
+				mesh->averticies[i0].bitangent = bitangent - mesh->averticies[i0].normal * (bitangent * mesh->averticies[i0].normal);
+				mesh->averticies[i1].bitangent = bitangent - mesh->averticies[i1].normal * (bitangent * mesh->averticies[i1].normal);
+				mesh->averticies[i2].bitangent = bitangent - mesh->averticies[i2].normal * (bitangent * mesh->averticies[i2].normal);
+
+				// normalize
+				mesh->averticies[i0].tangent = glm::normalize(mesh->averticies[i0].tangent);
+				mesh->averticies[i1].tangent = glm::normalize(mesh->averticies[i1].tangent);
+				mesh->averticies[i2].tangent = glm::normalize(mesh->averticies[i2].tangent);
+				mesh->averticies[i0].bitangent = glm::normalize(mesh->averticies[i0].bitangent);
+				mesh->averticies[i1].bitangent = glm::normalize(mesh->averticies[i1].bitangent);
+				mesh->averticies[i2].bitangent = glm::normalize(mesh->averticies[i2].bitangent);
 			}
 
+			// left hand
 			for (size_t i = 0; i < mesh->triangleCount; i++)
 			{
 				size_t i0 = mesh->indicies[i * 3];
@@ -209,6 +272,7 @@ namespace Marvel {
 				mesh->averticies[i2].uv.g = 1 - mesh->averticies[i2].uv.g;
 
 			}
+
 		}
 	}
 
@@ -233,21 +297,26 @@ namespace Marvel {
 		// check if new mesh
 		if (tokens[0] == std::string("o"))
 		{
-			m_meshes.push_back(new mvObjMesh());
-			m_meshes.back()->name = tokens[1];
+			m_rootNode.name = tokens[1];
+			//m_meshes.push_back(new mvObjMesh());
+			//m_meshes.back()->name = tokens[1];
 		}
 
 		else if (tokens[0] == std::string("g"))
 		{
 			m_meshes.push_back(new mvObjMesh());
 			m_meshes.back()->name = tokens[1];
+
+			m_rootNode.children.push_back({});
+			m_rootNode.children.back().name = tokens[1];
+			m_rootNode.children.back().meshes.push_back(m_meshes.size() - 1);
 		}
 
 		else if (tokens[0] == std::string("usemtl"))
 		{
 			m_currentMesh = m_meshes.back();
 			m_currentMesh->material = tokens[1];
-			m_rootNode.meshes.push_back(m_meshes.size() - 1);
+			//m_rootNode.meshes.push_back(m_meshes.size() - 1);
 		}
 
 		else if (tokens[0] == std::string("v"))

@@ -22,15 +22,15 @@ namespace Marvel {
 	};
 
 	mvMesh::mvMesh(mvGraphics& graphics, const std::string& name, const mvObjMesh& mesh,
-		const mvObjMaterial& material, const std::filesystem::path& path, float scale, bool PBR)
+		const mvObjMaterial& material, const std::filesystem::path& path, float scale)
 	{
 
 		const auto rootPath = path.parent_path().string() + "\\";
 
-		//if(PBR)
-		//	m_material = std::make_shared<mvPBRMaterial>(graphics, material, rootPath);
-		//else
-		m_material = std::make_shared<mvPhongMaterial>(graphics, rootPath, material);
+		if(material.pbr)
+			m_material = std::make_shared<mvPBRMaterial>(graphics, rootPath, material);
+		else
+			m_material = std::make_shared<mvPhongMaterial>(graphics, rootPath, material);
 
 		// create vertex layout
 		const Marvel::mvVertexLayout& vertexLayout = m_material->getLayout();

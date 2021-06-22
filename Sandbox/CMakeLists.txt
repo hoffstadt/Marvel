@@ -28,7 +28,6 @@ target_include_directories(sandbox
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/assimp/include/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
 

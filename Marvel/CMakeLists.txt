@@ -127,7 +127,6 @@ target_include_directories(marvel
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/assimp/include/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
 
@@ -137,5 +136,4 @@ target_link_libraries(marvel
 	PRIVATE
 		d3d11
 		d3dcompiler
-		assimp
 )

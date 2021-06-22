@@ -2,9 +2,6 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCommonBuffers.h"
-#include "assimp/Importer.hpp"
-#include "assimp/Scene.h"
-#include "assimp/postprocess.h"
 
 namespace Marvel {
 
