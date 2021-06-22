@@ -97,6 +97,7 @@ namespace Marvel {
 		mvObjParser(const std::string& file);
 		const mvObjNode& getRootNode() const;
 		const std::vector<mvObjMesh*>& getMeshes() const;
+		const std::string& getMaterialLib() const { return m_materialLib; }
 
 	private:
 
@@ -112,6 +113,7 @@ namespace Marvel {
 		std::vector<glm::vec3> m_verticies;
 		std::vector<glm::vec3> m_normals;
 		std::vector<glm::vec2> m_textureCoordinates;
+		std::string            m_materialLib;
 
 	};
 

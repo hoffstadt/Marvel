@@ -95,7 +95,7 @@ int main()
             {
                 if (!gun)
                 {
-                    gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus", 1.0f);
+                    gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f);
                     gun->setRootTransform(glm::translate(glm::vec3(-5.0f, 5.0f, 0.0f)));
                 }
                 gun->linkTechniques(*graph);
@@ -105,7 +105,7 @@ int main()
             {
                 if (!ball)
                 {
-                    ball = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball", 1.0f);
+                    ball = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball.obj", 1.0f);
                     ball->setRootTransform(glm::translate(glm::vec3(5.0f, 5.0f, 0.0f)));
                 }
                 ball->linkTechniques(*graph);
@@ -114,7 +114,7 @@ int main()
             if (showSponza)
             {
                 if (!sponza)
-                    sponza = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/Sponza/sponza", 1.0f);
+                    sponza = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/Sponza/sponza.obj", 1.0f);
                 sponza->linkTechniques(*graph);
             }
 

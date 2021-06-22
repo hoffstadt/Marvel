@@ -312,11 +312,13 @@ namespace Marvel {
 			m_rootNode.children.back().meshes.push_back(m_meshes.size() - 1);
 		}
 
+		else if (tokens[0] == std::string("mtllib"))
+			m_materialLib = tokens[1];
+
 		else if (tokens[0] == std::string("usemtl"))
 		{
 			m_currentMesh = m_meshes.back();
 			m_currentMesh->material = tokens[1];
-			//m_rootNode.meshes.push_back(m_meshes.size() - 1);
 		}
 
 		else if (tokens[0] == std::string("v"))

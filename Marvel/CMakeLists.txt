@@ -33,10 +33,10 @@ target_sources(marvel
 		"renderer/mvModelProbe.cpp"
 
 		"renderer/materials/mvObjMaterial.cpp"
+		"renderer/materials/mvMaterial.cpp"
+		"renderer/materials/mvPhongMaterial.cpp"
+		"renderer/materials/mvPBRMaterial.cpp"
 
-		"renderer/render_graph/mvMaterial.cpp"
-		"renderer/render_graph/mvPhongMaterial.cpp"
-		"renderer/render_graph/mvPBRMaterial.cpp"
 		"renderer/render_graph/mvStep.cpp"
 		"renderer/render_graph/mvTechnique.cpp"
 		"renderer/render_graph/mvJob.cpp"

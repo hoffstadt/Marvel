@@ -1,4 +1,5 @@
 #include "mvModel.h"
+#include <filesystem>
 #include "mvNode.h"
 #include "drawables/mvMesh.h"
 #include "mvObjMaterial.h"
@@ -9,9 +10,12 @@ namespace Marvel {
 		:
 		m_mesh(graphics, pathString+"sphere")
 	{
+		std::filesystem::path path = pathString;
+		const auto rootPath = path.parent_path().string() + "\\";
 
-		mvObjMaterialParser mat(pathString + ".mtl");
-		mvObjParser objmesh(pathString + ".obj");
+		mvObjParser objmesh(pathString);
+
+		mvObjMaterialParser mat(rootPath + objmesh.getMaterialLib());
 
 		int id = 0;
 		m_root.reset(parseNode(graphics, objmesh, mat, pathString, id, objmesh.getRootNode(), scale));
