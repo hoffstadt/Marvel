@@ -10,17 +10,13 @@
 #include "mvPhongMaterialCBuf.h"
 #include "mvPBRMaterialCBuf.h"
 
-//-----------------------------------------------------------------------------
-// forward declarations
-//-----------------------------------------------------------------------------
-struct aiMaterial;
-
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
+	struct mvObjMaterial;
 
 	//-----------------------------------------------------------------------------
 	// mvMaterial
@@ -30,7 +26,7 @@ namespace Marvel {
 
 	public:
 
-		mvPBRMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path);
+		mvPBRMaterial(mvGraphics& graphics, const std::string& path, const mvObjMaterial& material);
 
 		void showControls() override { m_material->showControls(); }
 

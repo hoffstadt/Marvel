@@ -1,43 +1,20 @@
 #include "mvModel.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include "mvNode.h"
 #include "drawables/mvMesh.h"
-
+#include "mvObjMaterial.h"
 
 namespace Marvel {
 
-	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale, bool PBR)
+	mvModel::mvModel(mvGraphics& graphics, const std::string& pathString, float scale)
 		:
 		m_mesh(graphics, pathString+"sphere")
 	{
 
-		Assimp::Importer imp;
-		const auto pScene = imp.ReadFile(pathString.c_str(),
-			aiProcess_ConvertToLeftHanded |
-			aiProcess_SplitLargeMeshes |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_CalcTangentSpace |        // Create binormals/tangents just in case
-			aiProcess_Triangulate |             // Make sure we're triangles
-			//aiProcess_SortByPType |             // Split meshes by primitive type
-			aiProcess_GenNormals |              // Make sure we have legit normals
-			aiProcess_GenUVCoords |             // Convert UVs if required 
-			aiProcess_OptimizeMeshes |          // Batch draws where possible
-			aiProcess_ValidateDataStructure    // Validation
-
-		);
-
-		m_meshes.reserve(pScene->mNumMeshes);
-		for (size_t i = 0; i < pScene->mNumMeshes; i++)
-		{
-			const auto& mesh = *pScene->mMeshes[i];
-			m_meshes.push_back(std::make_shared<mvMesh>(
-				graphics, mesh.mName.C_Str(), mesh, *pScene->mMaterials[mesh.mMaterialIndex], pathString, scale, PBR));
-		}
+		mvObjMaterialParser mat(pathString + ".mtl");
+		mvObjParser objmesh(pathString + ".obj");
 
 		int id = 0;
-		m_root.reset(parseNode(id, *pScene->mRootNode, scale));
+		m_root.reset(parseNode(graphics, objmesh, mat, pathString, id, objmesh.getRootNode(), scale));
 	}
 
 	void mvModel::submit(mvRenderGraph& graph) const
@@ -56,6 +33,7 @@ namespace Marvel {
 		m_mesh.linkTechniques(graph);
 		for (auto& mesh : m_meshes)
 			mesh->linkTechniques(graph);
+		m_root->linkTechniques(graph);
 	}
 
 	mvNode* mvModel::getNode(const std::string& name)
@@ -68,22 +46,38 @@ namespace Marvel {
 		m_root->setAppliedTransform(tf);
 	}
 
-	mvNode* mvModel::parseNode(int& id, const aiNode& node, float scale)
+	mvNode* mvModel::parseNode(mvGraphics& graphics, mvObjParser& parser, mvObjMaterialParser& mat, const std::string& pathString, int& id, const mvObjNode& node, float scale)
 	{
-		const auto transform = glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation)) * glm::scale(glm::vec3(scale, scale, scale));
+		//const auto transform = glm::transpose(*reinterpret_cast<const glm::mat4*>(&node.mTransformation)) * glm::scale(glm::vec3(scale, scale, scale));
+		const auto transform = glm::scale(glm::vec3(scale, scale, scale));
 
 		std::vector<std::shared_ptr<mvMesh>> curMeshPtrs;
-		curMeshPtrs.reserve(node.mNumMeshes);
-		for (size_t i = 0; i < node.mNumMeshes; i++)
+		curMeshPtrs.reserve(node.meshes.size());
+		for (size_t i = 0; i < node.meshes.size(); i++)
 		{
-			const auto meshIdx = node.mMeshes[i];
-			curMeshPtrs.push_back(m_meshes.at(meshIdx));
+			const auto meshIdx = node.meshes[i];
+			mvObjMesh* mesh = parser.getMeshes()[meshIdx];
+
+				bool materialFound = false;
+				for (const auto& material : mat.getMaterials())
+				{
+					if (material.name == mesh->material)
+					{
+						curMeshPtrs.push_back(std::make_shared<mvMesh>(graphics, mesh->name, *mesh, material, pathString, scale));
+						materialFound = true;
+						break;
+					}
+				}
+
+				assert(materialFound);
+
+			
 		}
 
-		mvNode* pNode = new mvNode(node.mName.C_Str(), id++, curMeshPtrs, transform);
+		mvNode* pNode = new mvNode(node.name, id++, curMeshPtrs, transform);
 		pNode->setModel(this);
-		for (size_t i = 0; i < node.mNumChildren; i++)
-			pNode->addChild(parseNode(id, *node.mChildren[i], scale));
+		for (size_t i = 0; i < node.children.size(); i++)
+			pNode->addChild(parseNode(graphics, parser, mat, pathString, id, node.children[i], scale));
 
 		return pNode;
 	}

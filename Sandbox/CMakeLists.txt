@@ -23,11 +23,11 @@ target_include_directories(sandbox
 		"../Marvel/renderer/buffers"
 		"../Marvel/renderer/drawables"
 		"../Marvel/renderer/passes"
+		"../Marvel/renderer/materials"
 		"../Marvel/renderer/render_graph"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/assimp/include/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
 

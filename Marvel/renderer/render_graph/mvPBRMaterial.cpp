@@ -2,13 +2,11 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCommonBuffers.h"
-#include "assimp/Importer.hpp"
-#include "assimp/Scene.h"
-#include "assimp/postprocess.h"
+#include "mvObjMaterial.h"
 
 namespace Marvel {
 
-	mvPBRMaterial::mvPBRMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path)
+	mvPBRMaterial::mvPBRMaterial(mvGraphics& graphics, const std::string& path, const mvObjMaterial& material)
 	{
 		bool hasAlpha = false;
 		bool hasColorMap = false;
@@ -16,30 +14,23 @@ namespace Marvel {
 		mvTechnique pbr;
 		{
 			m_material = std::make_shared<mvPBRMaterialCBuf>(graphics, 1);
-			m_material->material.metalness = 0.5f;
-			m_material->material.roughness = 0.5f;
-			m_material->material.fresnel = 0.04f;
+			m_material->material.metalness = material.metallic;
+			m_material->material.roughness = material.roughness;
+			m_material->material.fresnel = material.sheen;
 
-			aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
-			material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-			m_material->material.albedo = { diffuseColor.r, diffuseColor.g, diffuseColor.b , 1.0f };
 
-			aiColor3D transparentColor = { 1.0f, 1.0f, 1.0f };
-
-			material.Get(AI_MATKEY_COLOR_TRANSPARENT, transparentColor);
-			m_material->material.albedo.w = transparentColor.r;
+			m_material->material.albedo = glm::vec4(material.diffuseColor, material.dissolve);
 			{
 
 				mvStep step("lambertian");
-				aiString texFileName;
 
 				step.addBindable(std::make_shared<mvCubeTexture>(graphics, "../../Resources/SkyBox", 6));
 
 				// diffuse
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					m_material->material.useAlbedoMap = true;
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u);
 					step.addBindable(texture);
 					//pbrMaterial->material.hasAlpha = texture->hasAlpha();
 				}
@@ -49,9 +40,9 @@ namespace Marvel {
 				}
 
 				// normals
-				if (material.GetTexture(aiTextureType_HEIGHT, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.normalMap.empty())
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.normalMap, 1u);
 					step.addBindable(texture);
 					//hasGlossAlpha = texture->hasAlpha();
 					m_material->material.useNormalMap = true;
@@ -60,9 +51,9 @@ namespace Marvel {
 					m_material->material.useNormalMap = false;
 
 				// roughness
-				if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.roughnessMap.empty())
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.roughnessMap, 2u);
 					step.addBindable(texture);
 					m_material->material.useRoughnessMap = true;
 
@@ -71,9 +62,9 @@ namespace Marvel {
 					m_material->material.useRoughnessMap = false;
 
 				// metalness
-				if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.metallicMap.empty())
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 5u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.metallicMap, 5u);
 					step.addBindable(texture);
 					m_material->material.useMetalMap = true;
 
@@ -162,10 +153,9 @@ namespace Marvel {
 			pipeline.rasterizerStateClamp = 0.1f;
 
 			// pixel shader stage
-			aiString texFileName;
 			if (hasColorMap && hasAlpha)
 			{
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
 					pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
@@ -185,7 +175,7 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 			if (!pipeline.pixelShader.empty())
-				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u));
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
@@ -220,10 +210,9 @@ namespace Marvel {
 			pipeline.rasterizerStateClamp = 0.1f;
 
 			// pixel shader stage
-			aiString texFileName;
 			if (hasColorMap && hasAlpha)
 			{
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
 					pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
@@ -243,7 +232,7 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 			if (!pipeline.pixelShader.empty())
-				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u));
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);

@@ -2,13 +2,11 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCommonBuffers.h"
-#include "assimp/Importer.hpp"
-#include "assimp/Scene.h"
-#include "assimp/postprocess.h"
+#include "mvObjMaterial.h"
 
 namespace Marvel {
 
-	mvPhongMaterial::mvPhongMaterial(mvGraphics& graphics, const aiMaterial& material, const std::string& path)
+	mvPhongMaterial::mvPhongMaterial(mvGraphics& graphics, const std::string& path, const mvObjMaterial& material)
 	{
 
 		bool hasAlpha = false;
@@ -18,33 +16,20 @@ namespace Marvel {
 		{
 			m_material = std::make_shared<mvPhongMaterialCBuf>(graphics, 1);
 
-			aiColor3D diffuseColor = { 0.45f,0.45f,0.85f };
-			material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-			m_material->material.materialColor = { diffuseColor.r, diffuseColor.g, diffuseColor.b, 1.0f };
-
-			aiColor3D transparentColor = { 1.0f, 1.0f, 1.0f };
-
-			material.Get(AI_MATKEY_COLOR_TRANSPARENT, transparentColor);
-			m_material->material.materialColor.w = transparentColor.r;
-
-			aiColor3D specularColor = { 0.18f,0.18f,0.18f };
-			material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-			m_material->material.specularColor = { specularColor.r, specularColor.g, specularColor.b };
-
-			float gloss = 8.0f;
-			material.Get(AI_MATKEY_SHININESS, gloss);
-			m_material->material.specularGloss = gloss;
+			m_material->material.materialColor = glm::vec4(material.diffuseColor, 1.0f);
+			m_material->material.specularColor = glm::vec4(material.specularColor, 1.0f);
+			m_material->material.materialColor.w = material.dissolve;
+			m_material->material.specularGloss = material.specularExponent;
 
 			{
 
 				mvStep step("lambertian");
-				aiString texFileName;
 
 				// diffuse
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					m_material->material.useTextureMap = true;
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u);
 					step.addBindable(texture);
 					m_material->material.hasAlpha = texture->hasAlpha();
 					hasAlpha = texture->hasAlpha();
@@ -57,9 +42,9 @@ namespace Marvel {
 				}
 
 				// specular
-				if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.specularMap.empty())
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 1u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.specularMap, 1u);
 					step.addBindable(texture);
 					//hasGlossAlpha = texture->hasAlpha();
 					m_material->material.useSpecularMap = true;
@@ -68,9 +53,9 @@ namespace Marvel {
 					m_material->material.useSpecularMap = false;
 
 				// normals
-				if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.normalMap.empty())
 				{
-					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 2u);
+					auto texture = mvBindableRegistry::Request<mvTexture>(graphics, path + material.normalMap, 2u);
 					step.addBindable(texture);
 					m_material->material.useNormalMap = true;
 
@@ -158,10 +143,9 @@ namespace Marvel {
 			pipeline.rasterizerStateClamp = 0.1f;
 
 			// pixel shader stage
-			aiString texFileName;
 			if (hasColorMap && hasAlpha)
 			{
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
 					pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
@@ -181,7 +165,7 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 			if (!pipeline.pixelShader.empty())
-				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u));
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
@@ -216,10 +200,9 @@ namespace Marvel {
 			pipeline.rasterizerStateClamp = 0.1f;
 
 			// pixel shader stage
-			aiString texFileName;
 			if (hasColorMap && hasAlpha)
 			{
-				if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+				if (!material.diffuseMap.empty())
 				{
 					pipeline.pixelShader = graphics.getShaderRoot() + "PhongShadow_PS.hlsl";
 					pipeline.samplers.push_back({ mvSamplerStateTypeFlags::ANISOTROPIC, mvSamplerStateAddressingFlags::WRAP, 0u, false });
@@ -239,7 +222,7 @@ namespace Marvel {
 			step.addBuffer(mvBufferRegistry::GetBuffer("transCBuf"));
 
 			if (!pipeline.pixelShader.empty())
-				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + texFileName.C_Str(), 0u));
+				step.addBindable(mvBindableRegistry::Request<mvTexture>(graphics, path + material.diffuseMap, 0u));
 
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);

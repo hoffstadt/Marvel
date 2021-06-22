@@ -32,6 +32,8 @@ target_sources(marvel
 		"renderer/mvModel.cpp"
 		"renderer/mvModelProbe.cpp"
 
+		"renderer/materials/mvObjMaterial.cpp"
+
 		"renderer/render_graph/mvMaterial.cpp"
 		"renderer/render_graph/mvPhongMaterial.cpp"
 		"renderer/render_graph/mvPBRMaterial.cpp"
@@ -119,12 +121,12 @@ target_include_directories(marvel
 		"renderer/bindables"
 		"renderer/drawables"
 		"renderer/passes"
+		"renderer/materials"
 		"renderer/render_graph"
 		"vendor/implot"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/assimp/include/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
 
@@ -134,5 +136,4 @@ target_link_libraries(marvel
 	PRIVATE
 		d3d11
 		d3dcompiler
-		assimp
 )

@@ -4,12 +4,6 @@
 #include "mvDrawable.h"
 #include "mvMaterial.h"
 
-//-----------------------------------------------------------------------------
-// forward declarations
-//-----------------------------------------------------------------------------
-struct aiMesh;
-struct aiMaterial;
-
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
@@ -17,6 +11,8 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
 	class mvRenderGraph;
+	struct mvObjMesh;
+	struct mvObjMaterial;
 
 	//-----------------------------------------------------------------------------
 	// mvMesh
@@ -26,8 +22,8 @@ namespace Marvel {
 
 	public:
 
-		mvMesh(mvGraphics& graphics, const std::string& name, const aiMesh& mesh, 
-			const aiMaterial& material, const std::filesystem::path& path, float scale = 1.0f, bool PBR = false);
+		mvMesh(mvGraphics& graphics, const std::string& name, const mvObjMesh& mesh,
+			const mvObjMaterial& material, const std::filesystem::path& path, float scale = 1.0f);
 
 		// propagates through graph submitting jobs
 		// mesh -> technique -> step -> pass
