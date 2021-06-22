@@ -7,9 +7,6 @@
 [submodule "Dependencies/imgui"]
 	path = Dependencies/imgui
 	url = https://github.com/ocornut/imgui
-[submodule "Dependencies/assimp"]
-	path = Dependencies/assimp
-	url = https://github.com/assimp/assimp
 [submodule "Dependencies/MarvelAssets"]
 	path = Dependencies/MarvelAssets
 	url = https://github.com/hoffstadt/MarvelAssets
