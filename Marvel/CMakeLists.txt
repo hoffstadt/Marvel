@@ -129,6 +129,7 @@ target_include_directories(marvel
 		"../Dependencies/imgui/backends/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
+		"../Dependencies/json/"
 
 )
 

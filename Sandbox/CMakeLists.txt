@@ -30,6 +30,7 @@ target_include_directories(sandbox
 		"../Dependencies/imgui/backends/"
 		"../Dependencies/stb/"
 		"../Dependencies/glm/"
+		"../Dependencies/json/"
 
 )
 
