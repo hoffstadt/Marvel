@@ -12,7 +12,6 @@ namespace Marvel {
 		bool hasAlpha = false;
 		bool hasColorMap = false;
 
-		mvTechnique phong;
 		{
 			m_material = std::make_shared<mvPhongMaterialCBuf>(graphics, 1);
 
@@ -110,13 +109,11 @@ namespace Marvel {
 				// registers required pipeline
 				step.registerPipeline(graphics, pipeline);
 
-				phong.addStep(step);
+				m_steps.push_back(step);
 				m_layout = pipeline.vertexLayout;
 			}
 		}
 
-
-		mvTechnique map;
 		{
 			//-----------------------------------------------------------------------------
 			// shadow mapping pipeline state setup
@@ -170,10 +167,9 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			map.addStep(step);
+			m_steps.push_back(step);
 		}
 
-		mvTechnique dmap;
 		{
 			//-----------------------------------------------------------------------------
 			// shadow mapping pipeline state setup
@@ -227,13 +223,8 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			dmap.addStep(step);
+			m_steps.push_back(step);
 		}
-
-
-		m_techniques.push_back(phong);
-		m_techniques.push_back(map);
-		m_techniques.push_back(dmap);
 	}
 
 }

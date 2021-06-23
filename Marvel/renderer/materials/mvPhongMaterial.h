@@ -5,7 +5,6 @@
 #include "mvBindable.h"
 #include "mvMaterial.h"
 #include "mvConstantBuffer.h"
-#include "mvTechnique.h"
 #include "mvVertexLayout.h"
 #include "mvPhongMaterialCBuf.h"
 #include "mvPBRMaterialCBuf.h"

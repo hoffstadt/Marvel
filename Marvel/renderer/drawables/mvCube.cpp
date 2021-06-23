@@ -3,7 +3,7 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "Sphere.h"
-#include "mvTechnique.h"
+#include "mvStep.h"
 
 namespace Marvel {
 
@@ -94,7 +94,6 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
-		mvTechnique phong;
 		{
 			mvStep step("lambertian");
 
@@ -142,10 +141,9 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			phong.addStep(step);
+			addStep(step);
 		}
 
-		mvTechnique map;
 		{
 			//-----------------------------------------------------------------------------
 			// shadow mapping pipeline state setup
@@ -189,10 +187,9 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			map.addStep(step);
+			addStep(step);
 		}
 
-		mvTechnique dmap;
 		{
 			//-----------------------------------------------------------------------------
 			// shadow mapping pipeline state setup
@@ -236,12 +233,8 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			dmap.addStep(step);
+			addStep(step);
 		}
-
-		addTechnique(phong);
-		addTechnique(map);
-		addTechnique(dmap);
 	}
 
 	glm::mat4 mvCube::getTransform() const

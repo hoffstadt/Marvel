@@ -41,7 +41,7 @@ namespace Marvel {
 		mvPointLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos = { 0.0f,0.0f,0.5f });
 
 		void bind(mvGraphics& graphics, glm::mat4 view);
-		void linkTechniques(mvRenderGraph& graph);
+		void linkSteps(mvRenderGraph& graph);
 		void submit        (mvRenderGraph& graph);
 		std::shared_ptr<mvCamera> getCamera() const;
 		void setPosition(float x, float y, float z);

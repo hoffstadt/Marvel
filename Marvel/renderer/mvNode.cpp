@@ -50,13 +50,13 @@ namespace Marvel {
 		}
 	}
 
-	void mvNode::linkTechniques(mvRenderGraph& graph)
+	void mvNode::linkSteps(mvRenderGraph& graph)
 	{
 		for (auto& mesh : m_meshes)
-			mesh->linkTechniques(graph);
+			mesh->linkSteps(graph);
 
 		for (auto& node : m_children)
-			node->linkTechniques(graph);
+			node->linkSteps(graph);
 	}
 
 	void mvNode::setAppliedTransform(glm::mat4 transform)

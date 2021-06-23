@@ -5,7 +5,7 @@
 #include "mvMath.h"
 #include "mvCommonBindables.h"
 #include "mvCommonBuffers.h"
-#include "mvTechnique.h"
+#include "mvStep.h"
 
 namespace Marvel {
 
@@ -33,8 +33,8 @@ namespace Marvel {
 		virtual glm::mat4 getTransform() const = 0;
 
 		// propagates through graph linking steps to passes
-		// drawable -> technique -> step -> pass
-		void linkTechniques(mvRenderGraph& graph);
+		// drawable -> step -> pass
+		void linkSteps(mvRenderGraph& graph);
 
 		// propagates through graph submitting jobs
 		// drawable -> technique -> step -> pass
@@ -43,13 +43,13 @@ namespace Marvel {
 		// binds topology, index buffer, and vertex buffer
 		void bind(mvGraphics& graphics) const;
 
-		void addTechnique (mvTechnique technique);
+		void addStep(mvStep step);
 		
 	protected:
 
 		std::shared_ptr<mvIndexBuffer>             m_indexBuffer;
 		std::shared_ptr<mvVertexBuffer>            m_vertexBuffer;
-		std::vector<mvTechnique>                   m_techniques;
+		std::vector<mvStep>                        m_steps;
 
 	};
 

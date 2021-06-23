@@ -27,7 +27,7 @@ namespace Marvel {
 		// propagates through node children submitting jobs
 		// node -> mesh -> technique -> step -> pass
 		void submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const;
-		void linkTechniques(mvRenderGraph& graph);
+		void linkSteps(mvRenderGraph& graph);
 
 		// transforms
 		const glm::mat4& getTransform       () const; // internal transform

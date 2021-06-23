@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
-#include "mvTechnique.h"
+#include "mvStep.h"
 #include "mvMarvelUtils.h"
 
 namespace Marvel {
@@ -58,9 +58,7 @@ namespace Marvel {
 		// registers required pipeline
 		step.registerPipeline(graphics, pipeline);
 
-		mvTechnique technique;
-		technique.addStep(std::move(step));
-		addTechnique(technique);
+		addStep(std::move(step));
 
 		// create vertex buffer
 		m_vertexBuffer = std::make_shared<mvVertexBuffer>(graphics, name, std::vector<float>{

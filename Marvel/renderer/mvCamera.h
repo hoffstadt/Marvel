@@ -30,7 +30,7 @@ namespace Marvel {
 		void setPos   (float x, float y, float z);
 		glm::vec3 getPos() const { return m_pos; }
 		void setRotation(float x, float y, float z);
-		void linkTechniques(mvRenderGraph& graph);
+		void linkSteps(mvRenderGraph& graph);
 		void submit(mvRenderGraph& graph) const;
 		void show_imgui_windows();
 		void show_pos() const;

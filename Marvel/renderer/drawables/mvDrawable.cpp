@@ -12,21 +12,21 @@ namespace Marvel {
 		m_vertexBuffer->bind(graphics);
 	}
 
-	void mvDrawable::addTechnique(mvTechnique technique)
+	void mvDrawable::addStep(mvStep step)
 	{
-		m_techniques.push_back(std::move(technique));
+		m_steps.push_back(std::move(step));
 	}
 
 	void mvDrawable::submit(mvRenderGraph& graph) const
 	{
-		for (const auto& tech : m_techniques)
-			tech.submit(*this);
+		for (const auto& step : m_steps)
+			step.submit(*this);
 	}
 
-	void mvDrawable::linkTechniques(mvRenderGraph& graph)
+	void mvDrawable::linkSteps(mvRenderGraph& graph)
 	{
-		for (auto& tech : m_techniques)
-			tech.link(graph);
+		for (auto& step : m_steps)
+			step.link(graph);
 	}
 
 }

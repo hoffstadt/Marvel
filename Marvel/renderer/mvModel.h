@@ -28,7 +28,7 @@ namespace Marvel {
 
 		// propagates through graph linking steps to passes
 		// model -> node -> mesh -> technique -> step -> pass
-		void linkTechniques(mvRenderGraph& graph);
+		void linkSteps(mvRenderGraph& graph);
 
 		// propagates through graph submitting jobs
 		// model -> node -> mesh -> technique -> step -> pass

@@ -3,7 +3,6 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "Sphere.h"
-#include "mvTechnique.h"
 #include "mvMarvelUtils.h"
 
 namespace Marvel {
@@ -175,11 +174,7 @@ namespace Marvel {
 			step.registerPipeline(graphics, pipeline);
 		}
 
-
-		mvTechnique technique;
-		technique.addStep(step);
-		addTechnique(technique);
-
+		addStep(step);
 	}
 
 	void mvSolidSphere::setTransform(glm::mat4 transform)

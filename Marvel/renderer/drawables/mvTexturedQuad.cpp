@@ -1,6 +1,5 @@
 #include "mvTexturedQuad.h"
 #include "mvGraphics.h"
-#include "mvTechnique.h"
 #include "mvCommonBindables.h"
 #include <imgui.h>
 #include "Sphere.h"
@@ -73,7 +72,6 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indices, false);
 
-		mvTechnique phong;
 		{
 			mvStep step("lambertian");
 
@@ -121,10 +119,9 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			phong.addStep(step);
+			addStep(step);
 		}
 
-		mvTechnique map;
 		{
 			//-----------------------------------------------------------------------------
 			// shadow mapping pipeline state setup
@@ -168,11 +165,9 @@ namespace Marvel {
 			// registers required pipeline
 			step.registerPipeline(graphics, pipeline);
 
-			map.addStep(step);
+			addStep(step);
 		}
 
-		addTechnique(phong);
-		addTechnique(map);
 	}
 
 	glm::mat4 mvTexturedQuad::getTransform() const

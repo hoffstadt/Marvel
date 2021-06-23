@@ -32,12 +32,12 @@ namespace Marvel {
 		m_root->accept(probe);
 	}
 
-	void mvModel::linkTechniques(mvRenderGraph& graph)
+	void mvModel::linkSteps(mvRenderGraph& graph)
 	{
-		m_mesh.linkTechniques(graph);
+		m_mesh.linkSteps(graph);
 		for (auto& mesh : m_meshes)
-			mesh->linkTechniques(graph);
-		m_root->linkTechniques(graph);
+			mesh->linkSteps(graph);
+		m_root->linkSteps(graph);
 	}
 
 	mvNode* mvModel::getNode(const std::string& name)

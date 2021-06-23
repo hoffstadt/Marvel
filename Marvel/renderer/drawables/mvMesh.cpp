@@ -6,7 +6,7 @@
 #include "mvPBRMaterial.h"
 #include "mvPhongMaterial.h"
 #include "mvCommonBindables.h"
-#include "mvTechnique.h"
+#include "mvStep.h"
 #include "mvObjMaterial.h"
 
 namespace Marvel {
@@ -66,10 +66,10 @@ namespace Marvel {
 		// create index buffer
 		m_indexBuffer = mvBufferRegistry::Request<mvIndexBuffer>(graphics, name, indicies, false);
 
-		auto techniques = m_material->getTechniques();
+		auto steps = m_material->getSteps();
 
-		for (auto& tech : techniques)
-			addTechnique(tech);
+		for (auto& tech : steps)
+			addStep(tech);
 
 	}
 

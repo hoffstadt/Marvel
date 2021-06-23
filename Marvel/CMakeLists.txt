@@ -38,7 +38,6 @@ target_sources(marvel
 		"renderer/materials/mvPBRMaterial.cpp"
 
 		"renderer/render_graph/mvStep.cpp"
-		"renderer/render_graph/mvTechnique.cpp"
 		"renderer/render_graph/mvJob.cpp"
 		"renderer/render_graph/mvRenderGraph.cpp"
 

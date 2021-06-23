@@ -4,15 +4,10 @@
 #include <vector>
 #include "mvBindable.h"
 #include "mvConstantBuffer.h"
-#include "mvTechnique.h"
+#include "mvStep.h"
 #include "mvVertexLayout.h"
 #include "mvPhongMaterialCBuf.h"
 #include "mvPBRMaterialCBuf.h"
-
-//-----------------------------------------------------------------------------
-// forward declarations
-//-----------------------------------------------------------------------------
-struct aiMaterial;
 
 namespace Marvel {
 
@@ -29,14 +24,14 @@ namespace Marvel {
 
 	public:
 
-		std::vector<mvTechnique> getTechniques() const;
-		const mvVertexLayout&    getLayout() const;
+		std::vector<mvStep> getSteps() const;
+		const mvVertexLayout& getLayout() const;
 		virtual void showControls() {}
 
 	protected:
 
-		std::vector<mvTechnique> m_techniques;
-		mvVertexLayout           m_layout;
+		std::vector<mvStep> m_steps;
+		mvVertexLayout      m_layout;
 
 	};
 

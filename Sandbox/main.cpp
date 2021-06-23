@@ -98,7 +98,7 @@ int main()
                     gun = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/cerberus/cereberus.obj", 1.0f);
                     gun->setRootTransform(glm::translate(glm::vec3(-5.0f, 5.0f, 0.0f)));
                 }
-                gun->linkTechniques(*graph);
+                gun->linkSteps(*graph);
             }
 
             if (showBall)
@@ -108,19 +108,19 @@ int main()
                     ball = std::make_shared<mvModel>(graphics, "../../Resources/shader_ball/shader_ball.obj", 1.0f);
                     ball->setRootTransform(glm::translate(glm::vec3(5.0f, 5.0f, 0.0f)));
                 }
-                ball->linkTechniques(*graph);
+                ball->linkSteps(*graph);
             }
 
             if (showSponza)
             {
                 if (!sponza)
                     sponza = std::make_shared<mvModel>(graphics, "../../Dependencies/MarvelAssets/Sponza/sponza.obj", 1.0f);
-                sponza->linkTechniques(*graph);
+                sponza->linkSteps(*graph);
             }
 
-            pointlight.linkTechniques(*graph);
-            camera.linkTechniques(*graph);
-            lightcamera->linkTechniques(*graph);
+            pointlight.linkSteps(*graph);
+            camera.linkSteps(*graph);
+            lightcamera->linkSteps(*graph);
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
             static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindDirectionalShadowCamera(*directionLight.getCamera());
             static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());

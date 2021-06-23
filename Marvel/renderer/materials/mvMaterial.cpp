@@ -5,9 +5,9 @@
 
 namespace Marvel {
 
-	std::vector<mvTechnique> mvMaterial::getTechniques() const
+	std::vector<mvStep> mvMaterial::getSteps() const
 	{
-		return m_techniques;
+		return m_steps;
 	}
 
 	const mvVertexLayout& mvMaterial::getLayout() const

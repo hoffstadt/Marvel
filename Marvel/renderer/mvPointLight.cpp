@@ -19,9 +19,9 @@ namespace Marvel {
 		m_mesh.submit(graph);
 	}
 
-	void mvPointLight::linkTechniques(mvRenderGraph& graph)
+	void mvPointLight::linkSteps(mvRenderGraph& graph)
 	{
-		m_mesh.linkTechniques(graph);
+		m_mesh.linkSteps(graph);
 	}
 
 	std::shared_ptr<mvCamera> mvPointLight::getCamera() const

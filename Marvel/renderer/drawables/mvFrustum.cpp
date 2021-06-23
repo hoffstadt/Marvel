@@ -2,7 +2,6 @@
 #include <imgui.h>
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
-#include "mvTechnique.h"
 #include "mvMarvelUtils.h"
 
 namespace Marvel {
@@ -67,8 +66,6 @@ namespace Marvel {
 			3u, 7u,
 		}, false);
 
-		mvTechnique technique;
-
 		{
 			mvStep step("overlay");
 
@@ -100,10 +97,8 @@ namespace Marvel {
 
 			step.registerPipeline(graphics, pipeline);
 
-			technique.addStep(std::move(step));
+			addStep(std::move(step));
 		}
-
-		addTechnique(technique);
 
 	}
 
