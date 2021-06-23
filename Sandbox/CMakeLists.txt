@@ -26,6 +26,8 @@ target_include_directories(sandbox
 		"../Marvel/renderer/materials"
 		"../Marvel/renderer/render_graph"
 
+		"../Marvel_importer/src/"
+
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
 		"../Dependencies/stb/"
@@ -37,4 +39,5 @@ target_include_directories(sandbox
 target_link_libraries(sandbox
 	PRIVATE
 		marvel
+		marvel_importer
 )

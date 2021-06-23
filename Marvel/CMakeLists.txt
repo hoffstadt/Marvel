@@ -137,4 +137,5 @@ target_link_libraries(marvel
 	PRIVATE
 		d3d11
 		d3dcompiler
+		marvel_importer
 )

@@ -15,6 +15,7 @@ add_definitions(-D_USE_MATH_DEFINES)
 
 add_subdirectory ("Dependencies/glfw")
 add_subdirectory ("Dependencies/glm")
+add_subdirectory ("Marvel_importer")
 
 if(MV_VULKAN)
 	add_subdirectory ("Marvel_vulkan")
