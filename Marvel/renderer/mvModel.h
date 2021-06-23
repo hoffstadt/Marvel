@@ -27,15 +27,15 @@ namespace Marvel {
 		mvModel(mvGraphics& graphics, const std::string& pathString, float scale = 1.0f);
 
 		// propagates through graph linking steps to passes
-		// model -> node -> mesh -> technique -> step -> pass
+		// model -> node -> mesh -> step -> pass
 		void linkSteps(mvRenderGraph& graph);
 
 		// propagates through graph submitting jobs
-		// model -> node -> mesh -> technique -> step -> pass
+		// model -> node -> mesh -> step -> pass
 		void submit(mvRenderGraph& graph) const;
 
 		// sets the root transform which will propagate
-		// trhough the graph
+		// through the graph
 		void setRootTransform(glm::mat4 tf);
 
 		void     accept          (mvModelProbe& probe);
