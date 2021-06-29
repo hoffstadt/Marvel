@@ -1,4 +1,5 @@
 #include <imgui_impl_dx11.h>
+#include <thread>
 #include "mvMath.h"
 #include "mvWindow.h"
 #include "mvGraphics.h"
@@ -63,12 +64,6 @@ int main()
     mvComputeShader computeShader(graphics, graphics.getShaderRoot() + "testcompute.hlsl");
     mvComputeInputBuffer<BufType> inputBuffer(graphics, 0, inputRawBuffer, 1024);
     mvComputeOutputBuffer<BufType> outputBuffer(graphics, 0, 1024);
-
-    inputBuffer.bind(graphics);
-    outputBuffer.bind(graphics);
-    computeShader.dispatch(graphics, 1024, 1, 1);
-
-    BufType* p = outputBuffer.getDataFromGPU(graphics);
 
     // timer
     Marvel::mvTimer timer;
@@ -176,6 +171,17 @@ int main()
 
         if (ImGui::Begin("Sandbox Options"))
         {
+            if (ImGui::Button("Execute"))
+            {
+                std::thread t([&]() {
+                    inputBuffer.bind(graphics);
+                    outputBuffer.bind(graphics);
+                    computeShader.dispatch(graphics, 1024, 1, 1);
+                    graphics.finishRecording();
+
+                    });
+                t.detach();
+            }
             if (ImGui::Checkbox("Sponza", &showSponza))
                 modelsDirty = true;
             if (ImGui::Checkbox("Gun", &showGun))
@@ -189,6 +195,16 @@ int main()
 
         graphics.endFrame();
 
+        if (graphics.isCommandListReady())
+        {
+            BufType* p = outputBuffer.getDataFromGPU(graphics);
+
+            float a = p[0].f;
+            float b = p[1].f;
+            float c = p[2].f;
+
+            graphics.resetCommandList();
+        }
     }
 
 }

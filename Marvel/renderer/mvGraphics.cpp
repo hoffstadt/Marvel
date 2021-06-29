@@ -8,7 +8,8 @@ namespace Marvel {
 
 	mvGraphics::mvGraphics(HWND hwnd, int width, int height, const std::string& root)
 	{
-        
+        m_mainid = std::this_thread::get_id();
+
         m_width = width;
         m_height = height;
         m_shaderRoot = root;
@@ -53,6 +54,10 @@ namespace Marvel {
         );
         assert(SUCCEEDED(hResult));
 
+        // create deferred contex
+        hResult = m_device->CreateDeferredContext(0, m_deviceDeferredContext.GetAddressOf());
+        assert(SUCCEEDED(hResult));
+
         // Create Framebuffer Render Target
         hResult = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
         assert(SUCCEEDED(hResult));
@@ -83,7 +88,6 @@ namespace Marvel {
            m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)m_frameBuffer.GetAddressOf());
 
            m_target = std::make_shared<mvRenderTarget>(*this, m_frameBuffer.Get());
-           //m_depthStencil = std::make_shared<mvDepthStencil>(*this, width, height);
 
         }
     }
@@ -116,6 +120,13 @@ namespace Marvel {
         m_camera = cam;
     }
 
+    void mvGraphics::finishRecording()
+    {
+        HRESULT hr = m_deviceDeferredContext->FinishCommandList(FALSE, m_commandList.GetAddressOf());
+        assert(SUCCEEDED(hr));
+        m_commandListReady = true;
+    }
+
     ID3D11Device* mvGraphics::getDevice() 
     { 
         return m_device.Get(); 
@@ -123,12 +134,19 @@ namespace Marvel {
 
     ID3D11DeviceContext* mvGraphics::getContext() 
     { 
-        return m_deviceContext.Get(); 
+        if(std::this_thread::get_id() == m_mainid)
+            return m_deviceContext.Get(); 
+        return m_deviceDeferredContext.Get(); 
     }
 
     IDXGISwapChain* mvGraphics::getSwapChain() 
     {
         return m_swapChain.Get(); 
+    }
+
+    ID3D11CommandList* mvGraphics::getCommandList()
+    {
+        return m_commandList.Get();
     }
 
     ID3D11Texture2D* mvGraphics::getFrameBuffer() 
@@ -171,6 +189,13 @@ namespace Marvel {
         m_imguiManager->endFrame();
 
         m_swapChain->Present(1, 0);
+
+        if (m_commandListReady)
+        {
+            m_deviceContext->ExecuteCommandList(m_commandList.Get(), TRUE);
+            m_commandListReady = true;
+            //m_commandList.Reset();
+        }
     }
 
 }
