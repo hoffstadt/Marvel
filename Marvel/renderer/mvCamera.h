@@ -8,7 +8,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvRenderGraph;
+	class mvBaseRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvCamera
@@ -30,8 +30,8 @@ namespace Marvel {
 		void setPos   (float x, float y, float z);
 		glm::vec3 getPos() const { return m_pos; }
 		void setRotation(float x, float y, float z);
-		void linkSteps(mvRenderGraph& graph);
-		void submit(mvRenderGraph& graph) const;
+		void linkSteps(mvBaseRenderGraph& graph);
+		void submit(mvBaseRenderGraph& graph) const;
 		void show_imgui_windows();
 		void show_pos() const;
 

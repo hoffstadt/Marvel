@@ -39,7 +39,9 @@ target_sources(marvel
 
 		"renderer/render_graph/mvStep.cpp"
 		"renderer/render_graph/mvJob.cpp"
+		"renderer/render_graph/mvBaseRenderGraph.cpp"
 		"renderer/render_graph/mvRenderGraph.cpp"
+		"renderer/render_graph/mvEmptyGraph.cpp"
 
 		"renderer/buffers/mvBufferRegistry.cpp"
 		"renderer/buffers/mvShadowCameraConstantBuffer.cpp"

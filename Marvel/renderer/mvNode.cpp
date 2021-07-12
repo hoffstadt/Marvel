@@ -24,7 +24,7 @@ namespace Marvel {
 		m_model = model;
 	}
 
-	void mvNode::submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const
+	void mvNode::submit(mvBaseRenderGraph& graph, glm::mat4 accumulatedTransform) const
 	{
 		const auto built = accumulatedTransform * m_transform * m_appliedTransform;
 
@@ -50,7 +50,7 @@ namespace Marvel {
 		}
 	}
 
-	void mvNode::linkSteps(mvRenderGraph& graph)
+	void mvNode::linkSteps(mvBaseRenderGraph& graph)
 	{
 		for (auto& mesh : m_meshes)
 			mesh->linkSteps(graph);

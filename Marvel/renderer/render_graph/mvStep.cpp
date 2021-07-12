@@ -11,7 +11,7 @@ namespace Marvel {
 		m_targetPass = targetPass;
 	}
 
-	void mvStep::link(mvRenderGraph& graph)
+	void mvStep::link(mvBaseRenderGraph& graph)
 	{
 		m_pass = graph.getPass(m_targetPass);
 	}

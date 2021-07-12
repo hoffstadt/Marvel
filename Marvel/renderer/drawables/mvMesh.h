@@ -10,7 +10,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvRenderGraph;
+	class mvBaseRenderGraph;
 	struct mvObjMesh;
 	struct mvObjMaterial;
 
@@ -27,7 +27,7 @@ namespace Marvel {
 
 		// propagates through graph submitting jobs
 		// mesh -> technique -> step -> pass
-		void submit(mvRenderGraph& graph, glm::mat4 accumulatedTranform) const;
+		void submit(mvBaseRenderGraph& graph, glm::mat4 accumulatedTranform) const;
 		
 		glm::mat4 getTransform() const override;
 

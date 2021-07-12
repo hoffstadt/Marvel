@@ -8,7 +8,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvRenderGraph;
+	class mvBaseRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvProjection
@@ -25,8 +25,8 @@ namespace Marvel {
 		// called when viewport is resized
 		void update(int width, int height);
 
-		void linkSteps(mvRenderGraph& graph) { m_frustum.linkSteps(graph); }
-		void submit(mvRenderGraph& graph) const { m_frustum.submit(graph); }
+		void linkSteps(mvBaseRenderGraph& graph) { m_frustum.linkSteps(graph); }
+		void submit(mvBaseRenderGraph& graph) const { m_frustum.submit(graph); }
 		void setPos(float x, float y, float z) { m_frustum.setPos(x, y, z); }
 		void setRotation(float x, float y, float z) { m_frustum.setRotation(x, y, z); }
 

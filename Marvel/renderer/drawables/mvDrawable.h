@@ -13,7 +13,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvRenderGraph;
+	class mvBaseRenderGraph;
 	class mvMaterial;
 
 	//-----------------------------------------------------------------------------
@@ -34,11 +34,11 @@ namespace Marvel {
 
 		// propagates through graph linking steps to passes
 		// drawable -> step -> pass
-		void linkSteps(mvRenderGraph& graph);
+		void linkSteps(mvBaseRenderGraph& graph);
 
 		// propagates through graph submitting jobs
 		// drawable -> technique -> step -> pass
-		void submit(mvRenderGraph& graph) const;
+		void submit(mvBaseRenderGraph& graph) const;
 
 		// binds topology, index buffer, and vertex buffer
 		void bind(mvGraphics& graphics) const;

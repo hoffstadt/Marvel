@@ -13,7 +13,7 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// forward declarations
 	//-----------------------------------------------------------------------------
-	class mvRenderGraph;
+	class mvBaseRenderGraph;
 	class mvModelProbe;
 
 	//-----------------------------------------------------------------------------
@@ -28,11 +28,11 @@ namespace Marvel {
 
 		// propagates through graph linking steps to passes
 		// model -> node -> mesh -> step -> pass
-		void linkSteps(mvRenderGraph& graph);
+		void linkSteps(mvBaseRenderGraph& graph);
 
 		// propagates through graph submitting jobs
 		// model -> node -> mesh -> step -> pass
-		void submit(mvRenderGraph& graph) const;
+		void submit(mvBaseRenderGraph& graph) const;
 
 		// sets the root transform which will propagate
 		// through the graph
