@@ -51,7 +51,7 @@ if(WIN32)
 		endif()
 	endif()
 elseif(APPLE)
-	# apple specifics
+	add_subdirectory("Demo_Metal")
 else() # linux
 	add_definitions(-DGLFW_EXPOSE_NATIVE_X11)
 endif()
