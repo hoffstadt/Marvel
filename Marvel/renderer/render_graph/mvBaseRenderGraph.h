@@ -23,6 +23,28 @@ namespace Marvel {
 	class mvBaseRenderGraph
 	{
 
+		struct GlobalSettings
+		{
+
+			float fogStart = 10.0f;
+			glm::vec3 fogColor = { 1.0f, 1.0f, 1.0f };
+			//-------------------------- ( 16 bytes )
+
+			float fogRange = 100.0f;
+			glm::vec3 ambientColor = { 0.05f, 0.05f, 0.05f };
+			//-------------------------- ( 16 bytes )
+
+			glm::vec3 camPos = { 0.0f, 0.0f, 0.0f };
+			int useShadows = true;
+			//-------------------------- ( 16 bytes )
+
+			int useSkybox = true;
+			char _pad0[12];
+			//-------------------------- ( 16 bytes )
+
+			//-------------------------- ( 4*16 = 64 bytes )
+		};
+
 	public:
 
 		mvBaseRenderGraph(mvGraphics& graphics);
@@ -33,7 +55,7 @@ namespace Marvel {
 		virtual void bindMainCamera(mvCamera& camera);
 
 		// binds global bindables
-		virtual void bind(mvGraphics& graphics) {}
+		void bind(mvGraphics& graphics);
 
 		// clears render target/depth stencil
 		void releaseBuffers();
@@ -41,24 +63,11 @@ namespace Marvel {
 		// reset depth/targets
 		void resize(mvGraphics& graphics);
 
-	protected:
+		void addPass(std::shared_ptr<mvPass> pass);
 
-		void addPass(std::unique_ptr<mvPass> pass);
+		void show_imgui_window();
 
-		// preps passes
-		void linkGlobalResourceToProduct(const std::string& resource, const std::string& pass, const std::string& product);
-
-		// performs actual linking
-		void linkResourcesToProducts(mvPass& pass);
-
-		void linkGlobalResources();
-		void bake();
-
-		// resource/products
-		void requestGlobalResource(std::unique_ptr<mvPassResource> resource);
-		void issueGlobalProduct(std::unique_ptr<mvPassProduct> product);
-
-	protected:
+	public:
 
 		const mvCamera*                        m_camera = nullptr;
 		std::shared_ptr<mvDepthStencil>        m_depthStencil; // master depth
@@ -66,12 +75,10 @@ namespace Marvel {
 
 	private:
 
-		std::vector <std::unique_ptr<mvPass>>  m_passes;
+		std::vector <std::shared_ptr<mvPass>>  m_passes;	
 
-		std::vector<std::unique_ptr<mvPassResource>> m_resources;
-		std::vector<std::unique_ptr<mvPassProduct>> m_products;
-
-		
+		GlobalSettings                         m_globalSettings = {};
+		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 	};
 
 }

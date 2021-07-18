@@ -21,6 +21,7 @@ namespace Marvel {
 		m_depthStencil(std::move(std::make_shared<mvOutputDepthStencil>(graphics))),
 		m_renderTarget(graphics.getTarget())
 	{
+		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 3, &m_globalSettings);
 	}
 
 	void mvBaseRenderGraph::execute(mvGraphics& graphics) const
@@ -66,37 +67,15 @@ namespace Marvel {
 		m_camera = &camera;
 	}
 
-	void mvBaseRenderGraph::requestGlobalResource(std::unique_ptr<mvPassResource> resource)
+	void mvBaseRenderGraph::bind(mvGraphics& graphics)
 	{
-		// ensure resource doesn't already exists
-		for (const auto& existing : m_resources)
-		{
-			if (existing->getName() == resource->getName())
-			{
-				assert(false && "global resource already exists");
-			}
-		}
-
-		m_resources.push_back(std::move(resource));
+		m_globalSettings.camPos = m_camera->getPos();
+		m_buffer->update(graphics, m_globalSettings);
+		m_buffer->bind(graphics);
 	}
 
-	void mvBaseRenderGraph::issueGlobalProduct(std::unique_ptr<mvPassProduct> product)
+	void mvBaseRenderGraph::addPass(std::shared_ptr<mvPass> pass)
 	{
-		// ensure product doesn't already exists
-		for (const auto& existing : m_products)
-		{
-			if (existing->getName() == product->getName())
-			{
-				assert(false && "global product already exists");
-			}
-		}
-
-		m_products.push_back(std::move(product));
-	}
-
-	void mvBaseRenderGraph::addPass(std::unique_ptr<mvPass> pass)
-	{
-		linkResourcesToProducts(*pass);
 
 		// ensure pass doesn't already exists
 		for (const auto& existing : m_passes)
@@ -110,80 +89,21 @@ namespace Marvel {
 		m_passes.push_back(std::move(pass));
 	}
 
-	void mvBaseRenderGraph::linkGlobalResourceToProduct(const std::string& resource, const std::string& pass, const std::string& product)
+	void mvBaseRenderGraph::show_imgui_window()
 	{
-		for (auto& global_resource : m_resources)
+
+		if (ImGui::Begin("Scene"))
 		{
-			if (global_resource->getName() == resource)
-			{
-				global_resource->setTarget(pass, product);
-				break;
-			}
+			ImGui::Text("Environment");
+			ImGui::ColorEdit3("Ambient Color", &m_globalSettings.ambientColor.x);
+
+			ImGui::Text("Fog");
+			ImGui::SliderFloat("Fog Start", &m_globalSettings.fogStart, 0.0f, 100.0f, "%.1f");
+			ImGui::SliderFloat("Fog Range", &m_globalSettings.fogRange, 0.0f, 100.0f, "%.1f");
+			ImGui::ColorEdit3("Fog Color", &m_globalSettings.fogColor.x);
+			ImGui::Checkbox("Use Shadows", (bool*)&m_globalSettings.useShadows);
+			ImGui::Checkbox("Use Skybox", (bool*)&m_globalSettings.useSkybox);
 		}
-	}
-
-	void mvBaseRenderGraph::linkGlobalResources()
-	{
-		for (auto& resource : m_resources)
-		{
-			const std::string& pass = resource->getPass();
-			for (auto& existingPass : m_passes)
-			{
-				if (existingPass->getName() == pass)
-				{
-					auto& product = existingPass->getPassProduct(resource->getProduct());
-					resource->bind(product);
-					break;
-				}
-			}
-		}
-	}
-
-	void mvBaseRenderGraph::linkResourcesToProducts(mvPass& pass)
-	{
-		// iterate through pass's unlinked resorces
-		for (auto& unlinkedResource : pass.getPassResources())
-		{
-			// pass local resource name
-			const std::string& passname = unlinkedResource->getPass();
-
-			if (passname == "global")
-			{
-				for (auto& globalproduct : m_products)
-				{
-					if (globalproduct->getName() == unlinkedResource->getProduct())
-					{
-						unlinkedResource->bind(*globalproduct);
-						break;
-					}
-				}
-			}
-
-			else
-			{
-				for (auto& existingPass : m_passes)
-				{
-					if (existingPass->getName() == passname)
-					{
-						auto& product = existingPass->getPassProduct(unlinkedResource->getProduct());
-						unlinkedResource->bind(product);
-						break;
-					}
-				}
-
-			}
-		}
-	}
-
-	void mvBaseRenderGraph::bake()
-	{
-		linkGlobalResources();
-
-		// ensure all pass resources have been linked
-		for (const auto& pass : m_passes)
-		{
-			if (!pass->isLinked())
-				break;
-		}
+		ImGui::End();
 	}
 }
