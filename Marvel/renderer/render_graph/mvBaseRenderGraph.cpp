@@ -179,18 +179,6 @@ namespace Marvel {
 	{
 		linkGlobalResources();
 
-		// ensure all global resources have been linked
-		for (const auto& globalResource : m_resources)
-		{
-			assert(globalResource->isPreLinked());
-		}
-
-		// ensure all global products have been linked
-		for (const auto& globalProduct : m_products)
-		{
-			assert(globalProduct->isLinked());
-		}
-
 		// ensure all pass resources have been linked
 		for (const auto& pass : m_passes)
 		{

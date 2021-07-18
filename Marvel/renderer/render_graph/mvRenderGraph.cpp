@@ -20,60 +20,37 @@ namespace Marvel {
 		:
 		mvBaseRenderGraph(graphics)
 	{
+		auto clear_target = std::make_unique<mvClearBufferPass>("clear_target");
+		clear_target->m_renderTarget = m_renderTarget;
+		addPass(std::move(clear_target));
 
-		requestGlobalResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("backbuffer", m_renderTarget));
-		requestGlobalResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("masterdepth", m_depthStencil));
+		auto clear_depth = std::make_unique<mvClearBufferPass>("clear_depth");
+		clear_depth->m_depthStencil = m_depthStencil;
+		addPass(std::move(clear_depth));
 
-		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("backbuffer", m_renderTarget));
-		issueGlobalProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("masterdepth", m_depthStencil));
+		auto point_shadow = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow", 3);
+		std::shared_ptr<mvCubeDepthTexture> depthCube = point_shadow->m_depthCube;
+		addPass(std::move(point_shadow));
 
-		{
-			auto pass = std::make_unique<mvClearBufferPass>("clear_target");
-			pass->linkResourceToProduct("buffer", "global", "backbuffer");
-			addPass(std::move(pass));
-		}
+		auto direction_shadow = std::make_unique<mvDirectionalShadowMappingPass>(graphics, "directional_shadow", 4);
+		std::shared_ptr<mvDepthTexture> depthTexture = direction_shadow->m_depthTexture;
+		addPass(std::move(direction_shadow));
 
-		{
-			auto pass = std::make_unique<mvClearBufferPass>("clear_depth");
-			pass->linkResourceToProduct("buffer", "global", "masterdepth");
-			addPass(std::move(pass));
-		}
+		auto lambertian = std::make_unique<mvLambertianPass>(graphics, "lambertian");
+		lambertian->m_depthStencil = m_depthStencil;
+		lambertian->m_renderTarget = m_renderTarget;
+		lambertian->m_depthCube = depthCube;
+		lambertian->m_depthTexture = depthTexture;
+		addPass(std::move(lambertian));
 
-		{
-			auto pass = std::make_unique<mvPointShadowMappingPass>(graphics, "shadow", 3);
-			addPass(std::move(pass));
-		}
+		auto skybox_pass = std::make_unique<mvSkyboxPass>(graphics, "skybox", skybox);
+		skybox_pass->m_depthStencil = m_depthStencil;
+		skybox_pass->m_renderTarget = m_renderTarget;
+		addPass(std::move(skybox_pass));
 
-		{
-			auto pass = std::make_unique<mvDirectionalShadowMappingPass>(graphics, "directional_shadow", 4);
-			addPass(std::move(pass));
-		}
-
-		{
-			auto pass = std::make_unique<mvLambertianPass>(graphics, "lambertian");
-			pass->linkResourceToProduct("map", "shadow", "map");
-			pass->linkResourceToProduct("directional_map", "directional_shadow", "map");
-			pass->linkResourceToProduct("render_target", "clear_target", "buffer");
-			pass->linkResourceToProduct("depth_stencil", "clear_depth", "buffer");
-			addPass(std::move(pass));
-		}
-
-		{
-			auto pass = std::make_unique<mvSkyboxPass>(graphics, "skybox", skybox);
-			pass->linkResourceToProduct("render_target", "lambertian", "render_target");
-			pass->linkResourceToProduct("depth_stencil", "lambertian", "depth_stencil");
-			addPass(std::move(pass));
-		}
-
-		{
-			auto pass = std::make_unique<mvOverlayPass>(graphics, "overlay");
-			pass->linkResourceToProduct("render_target", "skybox", "render_target");
-			addPass(std::move(pass));
-		}
-
-		// ensure something outputs the backbuffer
-		linkGlobalResourceToProduct("backbuffer", "overlay", "render_target");
-		linkGlobalResourceToProduct("masterdepth", "skybox", "depth_stencil");
+		auto overlay = std::make_unique<mvOverlayPass>(graphics, "overlay");
+		overlay->m_renderTarget = m_renderTarget;
+		addPass(std::move(overlay));
 
 		bake();
 

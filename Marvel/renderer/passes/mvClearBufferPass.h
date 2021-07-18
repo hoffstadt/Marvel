@@ -6,7 +6,7 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// forward declarations
 	//-----------------------------------------------------------------------------
-	class mvBufferResource;
+	class mv;
 
 	//-----------------------------------------------------------------------------
 	// mvClearBufferPass
@@ -19,10 +19,6 @@ namespace Marvel {
 		mvClearBufferPass(std::string name);
 
 		void execute(mvGraphics& graphics) const override;
-
-	private:
-
-		std::shared_ptr<mvBufferResource> m_buffer;
 	
 	};
 

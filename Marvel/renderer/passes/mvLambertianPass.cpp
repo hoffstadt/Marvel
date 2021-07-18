@@ -10,19 +10,7 @@ namespace Marvel {
 		mvPass(name)
 	{
 		m_shadowCBuf = std::make_shared<mvShadowCameraConstantBuffer>(graphics);
-		addBuffer(m_shadowCBuf);
-
-		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
-		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
-	
-
-		// for not this need to be after other bindables (reference to array junk, needs to be fixed)
-		addBindableResource<mvBindable>("map");
-		addBindableResource<mvBindable>("directional_map");
-		
-		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
-		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
-
+		addBuffer(m_shadowCBuf);	
 	}
 
 	void mvLambertianPass::execute(mvGraphics& graphics) const
@@ -30,6 +18,8 @@ namespace Marvel {
 
 		m_shadowCBuf->bind(graphics);
 		m_camera->bind(graphics);
+		m_depthCube->bind(graphics);
+		m_depthTexture->bind(graphics);
 
 		if (m_renderTarget)
 			m_renderTarget->bindAsBuffer(graphics, m_depthStencil.get());

@@ -9,8 +9,6 @@ namespace Marvel {
 		:
 		mvPass(name)
 	{
-		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
-		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
 	}
 
 	void mvOverlayPass::execute(mvGraphics& graphics) const

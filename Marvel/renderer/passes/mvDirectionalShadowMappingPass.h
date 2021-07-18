@@ -26,7 +26,7 @@ namespace Marvel {
 
 		void bindShadowCamera(const mvOrthoCamera& cam);
 
-	private:
+	public:
 
 		const mvOrthoCamera* m_shadowCamera = nullptr;
 		std::shared_ptr<mvDepthTexture> m_depthTexture;

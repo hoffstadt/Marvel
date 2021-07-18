@@ -8,12 +8,13 @@ namespace Marvel
 		:
 		mvPass(std::move(name))
 	{
-		requestResource(std::make_unique<mvBufferPassResource<mvBufferResource>>("buffer", m_buffer));
-		issueProduct(std::make_unique<mvBufferPassProduct<mvBufferResource>>("buffer", m_buffer));
 	}
 
 	void mvClearBufferPass::execute(mvGraphics& graphics) const
 	{
-		m_buffer->clear(graphics);
+		if (m_depthStencil)
+			m_depthStencil->clear(graphics);
+		else if (m_renderTarget)
+			m_renderTarget->clear(graphics);
 	}
 }

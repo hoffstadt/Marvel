@@ -65,7 +65,7 @@ namespace Marvel{
 		void requestResource(std::unique_ptr<mvPassResource> resource);
 		void issueProduct(std::unique_ptr<mvPassProduct> product);
 
-	protected:
+	public:
 
 		std::vector<mvJob>                       m_jobs;
 		std::vector<std::shared_ptr<mvBindable>> m_bindables;
