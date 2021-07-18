@@ -20,7 +20,7 @@ namespace Marvel {
 	//-----------------------------------------------------------------------------
 	// mvRenderGraph
 	//-----------------------------------------------------------------------------
-	class mvBaseRenderGraph
+	class mvRenderGraph
 	{
 
 		struct GlobalSettings
@@ -47,7 +47,7 @@ namespace Marvel {
 
 	public:
 
-		mvBaseRenderGraph(mvGraphics& graphics);
+		mvRenderGraph(mvGraphics& graphics);
 
 		void         execute(mvGraphics& graphics) const;
 		void         reset();

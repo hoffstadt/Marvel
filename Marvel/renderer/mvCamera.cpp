@@ -49,12 +49,12 @@ namespace Marvel {
 		m_proj.update(width, height);
 	}
 
-	void mvCamera::linkSteps(mvBaseRenderGraph& graph)
+	void mvCamera::linkSteps(mvRenderGraph& graph)
 	{
 		m_proj.linkSteps(graph);
 	}
 
-	void mvCamera::submit(mvBaseRenderGraph& graph) const
+	void mvCamera::submit(mvRenderGraph& graph) const
 	{
 		m_proj.submit(graph);
 	}

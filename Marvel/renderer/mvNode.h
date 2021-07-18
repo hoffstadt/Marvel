@@ -10,7 +10,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvBaseRenderGraph;
+	class mvRenderGraph;
 	class mvModelProbe;
 	class mvModel;
 
@@ -26,8 +26,8 @@ namespace Marvel {
 
 		// propagates through node children submitting jobs
 		// node -> mesh -> technique -> step -> pass
-		void submit(mvBaseRenderGraph& graph, glm::mat4 accumulatedTransform) const;
-		void linkSteps(mvBaseRenderGraph& graph);
+		void submit(mvRenderGraph& graph, glm::mat4 accumulatedTransform) const;
+		void linkSteps(mvRenderGraph& graph);
 
 		// transforms
 		const glm::mat4& getTransform       () const; // internal transform

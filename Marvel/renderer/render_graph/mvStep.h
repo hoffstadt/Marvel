@@ -15,7 +15,7 @@ namespace Marvel {
 	class mvGraphics;
 	class mvDrawable;
 	class mvPass;
-	class mvBaseRenderGraph;
+	class mvRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvStep
@@ -28,7 +28,7 @@ namespace Marvel {
 		mvStep(const std::string& targetPass);
 
 		// sets the pass this step targets
-		void link(mvBaseRenderGraph& graph);
+		void link(mvRenderGraph& graph);
 
 		// adds a job to target pass
 		void submit(const mvDrawable& drawable) const;

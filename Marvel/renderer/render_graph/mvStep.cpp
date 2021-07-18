@@ -2,7 +2,7 @@
 #include "mvDrawable.h"
 #include "mvPass.h"
 #include "mvJob.h"
-#include "mvBaseRenderGraph.h"
+#include "mvRenderGraph.h"
 
 namespace Marvel {
 
@@ -11,7 +11,7 @@ namespace Marvel {
 		m_targetPass = targetPass;
 	}
 
-	void mvStep::link(mvBaseRenderGraph& graph)
+	void mvStep::link(mvRenderGraph& graph)
 	{
 		m_pass = graph.getPass(m_targetPass);
 	}

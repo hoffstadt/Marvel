@@ -73,7 +73,7 @@ namespace Marvel {
 
 	}
 
-	void mvMesh::submit(mvBaseRenderGraph& graph, glm::mat4 accumulatedTranform) const
+	void mvMesh::submit(mvRenderGraph& graph, glm::mat4 accumulatedTranform) const
 	{
 		m_transform = accumulatedTranform;
 		mvDrawable::submit(graph);

@@ -21,7 +21,7 @@ namespace Marvel {
 		m_root.reset(parseNode(graphics, objmesh, mat, pathString, id, objmesh.getRootNode(), scale));
 	}
 
-	void mvModel::submit(mvBaseRenderGraph& graph) const
+	void mvModel::submit(mvRenderGraph& graph) const
 	{
 		m_mesh.submit(graph);
 		m_root->submit(graph, glm::mat4(1.0f));
@@ -32,7 +32,7 @@ namespace Marvel {
 		m_root->accept(probe);
 	}
 
-	void mvModel::linkSteps(mvBaseRenderGraph& graph)
+	void mvModel::linkSteps(mvRenderGraph& graph)
 	{
 		m_mesh.linkSteps(graph);
 		for (auto& mesh : m_meshes)

@@ -13,7 +13,7 @@
 #include "mvPointLight.h"
 #include "mvDirectionLight.h"
 #include "mvModel.h"
-#include "mvBaseRenderGraph.h"
+#include "mvRenderGraph.h"
 #include "mvModelProbe.h"
 #include "mvComputeShader.h"
 #include "mvObjMaterial.h"
@@ -33,7 +33,7 @@ static std::shared_ptr<mvOverlayPass>                  overlay;
 
 void HandleEvents(mvWindow& window, float dt, mvCamera& camera);
 
-void AddPasses(mvGraphics& graphics, mvBaseRenderGraph& graph)
+void AddPasses(mvGraphics& graphics, mvRenderGraph& graph)
 {
     clear_target = std::make_shared<mvClearBufferPass>("clear_target");
     clear_target->m_renderTarget = graph.m_renderTarget;
@@ -90,7 +90,7 @@ int main()
     mvGraphics graphics(window.getHandle(), width, height);
 
     // create render graph
-    auto graph = std::make_unique<mvBaseRenderGraph>(graphics);
+    auto graph = std::make_unique<mvRenderGraph>(graphics);
     AddPasses(graphics, *graph);
 
     auto directionLight = mvDirectionLight(graphics, { 0.0f, -1.0f, 0.0f });
@@ -141,7 +141,7 @@ int main()
             camera.updateProjection(window.getClientWidth(), window.getClientHeight());
             window.setResizedFlag(false);
 
-            graph = std::make_unique<mvBaseRenderGraph>(graphics);
+            graph = std::make_unique<mvRenderGraph>(graphics);
             AddPasses(graphics, *graph);
 
             if (showGun)

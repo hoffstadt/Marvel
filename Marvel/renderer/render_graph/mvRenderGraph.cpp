@@ -1,4 +1,4 @@
-#include "mvBaseRenderGraph.h"
+#include "mvRenderGraph.h"
 #include <vector>
 #include <imgui.h>
 #include <assert.h>
@@ -16,7 +16,7 @@
 namespace Marvel {
 
 
-	mvBaseRenderGraph::mvBaseRenderGraph(mvGraphics& graphics)
+	mvRenderGraph::mvRenderGraph(mvGraphics& graphics)
 		:
 		m_depthStencil(std::move(std::make_shared<mvOutputDepthStencil>(graphics))),
 		m_renderTarget(graphics.getTarget())
@@ -24,19 +24,19 @@ namespace Marvel {
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 3, &m_globalSettings);
 	}
 
-	void mvBaseRenderGraph::execute(mvGraphics& graphics) const
+	void mvRenderGraph::execute(mvGraphics& graphics) const
 	{
 		for (auto& pass : m_passes)
 			pass->execute(graphics);
 	}
 
-	void mvBaseRenderGraph::reset()
+	void mvRenderGraph::reset()
 	{
 		for (auto& pass : m_passes)
 			pass->reset();
 	}
 
-	void mvBaseRenderGraph::releaseBuffers()
+	void mvRenderGraph::releaseBuffers()
 	{
 		for (auto& pass : m_passes)
 			pass->releaseBuffers();
@@ -45,13 +45,13 @@ namespace Marvel {
 		m_depthStencil.reset();
 	}
 
-	void mvBaseRenderGraph::resize(mvGraphics& graphics)
+	void mvRenderGraph::resize(mvGraphics& graphics)
 	{
 		m_renderTarget = graphics.getTarget();
 		m_depthStencil = std::move(std::make_shared<mvOutputDepthStencil>(graphics));
 	}
 
-	mvPass* mvBaseRenderGraph::getPass(const std::string& name)
+	mvPass* mvRenderGraph::getPass(const std::string& name)
 	{
 		for (auto& pass : m_passes)
 		{
@@ -62,19 +62,19 @@ namespace Marvel {
 		assert(false);
 	}
 
-	void mvBaseRenderGraph::bindMainCamera(mvCamera& camera)
+	void mvRenderGraph::bindMainCamera(mvCamera& camera)
 	{
 		m_camera = &camera;
 	}
 
-	void mvBaseRenderGraph::bind(mvGraphics& graphics)
+	void mvRenderGraph::bind(mvGraphics& graphics)
 	{
 		m_globalSettings.camPos = m_camera->getPos();
 		m_buffer->update(graphics, m_globalSettings);
 		m_buffer->bind(graphics);
 	}
 
-	void mvBaseRenderGraph::addPass(std::shared_ptr<mvPass> pass)
+	void mvRenderGraph::addPass(std::shared_ptr<mvPass> pass)
 	{
 
 		// ensure pass doesn't already exists
@@ -89,7 +89,7 @@ namespace Marvel {
 		m_passes.push_back(std::move(pass));
 	}
 
-	void mvBaseRenderGraph::show_imgui_window()
+	void mvRenderGraph::show_imgui_window()
 	{
 
 		if (ImGui::Begin("Scene"))

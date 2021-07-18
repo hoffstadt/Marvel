@@ -14,12 +14,12 @@ namespace Marvel {
 		m_buffer = std::make_unique<mvPixelConstantBuffer>(graphics, 0, &m_info);
 	}
 
-	void mvPointLight::submit(mvBaseRenderGraph& graph)
+	void mvPointLight::submit(mvRenderGraph& graph)
 	{
 		m_mesh.submit(graph);
 	}
 
-	void mvPointLight::linkSteps(mvBaseRenderGraph& graph)
+	void mvPointLight::linkSteps(mvRenderGraph& graph)
 	{
 		m_mesh.linkSteps(graph);
 	}
