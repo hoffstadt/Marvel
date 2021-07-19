@@ -17,10 +17,65 @@
 #include "mvModelProbe.h"
 #include "mvComputeShader.h"
 #include "mvObjMaterial.h"
+#include "mvClearBufferPass.h"
+#include "mvOverlayPass.h"
+#include "mvSkyboxPass.h"
 
 using namespace Marvel;
 
+static std::shared_ptr<mvClearBufferPass>              clear_target;
+static std::shared_ptr<mvClearBufferPass>              clear_depth;
+static std::shared_ptr<mvPointShadowMappingPass>       point_shadow;
+static std::shared_ptr<mvDirectionalShadowMappingPass> direction_shadow;
+static std::shared_ptr<mvLambertianPass>               lambertian;
+static std::shared_ptr<mvSkyboxPass>                   skybox_pass;
+static std::shared_ptr<mvOverlayPass>                  overlay;
+
 void HandleEvents(mvWindow& window, float dt, mvCamera& camera);
+
+void AddPasses(mvGraphics& graphics, mvRenderGraph& graph)
+{
+    clear_target = std::make_shared<mvClearBufferPass>("clear_target");
+    clear_target->linkRenderTarget(graph);
+    graph.addPass(clear_target);
+
+    clear_depth = std::make_shared<mvClearBufferPass>("clear_depth");
+    clear_depth->linkDepthStencil(graph);
+    graph.addPass(clear_depth);
+
+    point_shadow = std::make_shared<mvPointShadowMappingPass>(graphics, "shadow", 3);
+    graph.addPass(point_shadow);
+
+    direction_shadow = std::make_shared<mvDirectionalShadowMappingPass>(graphics, "directional_shadow", 4);
+    graph.addPass(direction_shadow);
+
+    lambertian = std::make_shared<mvLambertianPass>(graphics, "lambertian");
+    lambertian->linkDepthStencil(*clear_depth);
+    lambertian->linkRenderTarget(*clear_target);
+    lambertian->linkDepthCube(*point_shadow);
+    lambertian->linkDepthTexture(*direction_shadow);
+    graph.addPass(lambertian);
+
+    skybox_pass = std::make_shared<mvSkyboxPass>(graphics, "skybox", "../../Resources/SkyBox");
+    skybox_pass->linkDepthStencil(*lambertian);
+    skybox_pass->linkRenderTarget(*lambertian);
+    graph.addPass(skybox_pass);
+
+    overlay = std::make_shared<mvOverlayPass>(graphics, "overlay");
+    overlay->linkRenderTarget(*skybox_pass);
+    graph.addPass(overlay);
+}
+
+void ResetPasses()
+{
+    clear_target = nullptr;
+    clear_depth = nullptr;
+    point_shadow = nullptr;
+    direction_shadow = nullptr;
+    lambertian = nullptr;
+    skybox_pass = nullptr;
+    overlay = nullptr;
+}
 
 int main()
 {
@@ -35,7 +90,8 @@ int main()
     mvGraphics graphics(window.getHandle(), width, height);
 
     // create render graph
-    auto graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
+    auto graph = std::make_unique<mvRenderGraph>(graphics);
+    AddPasses(graphics, *graph);
 
     auto directionLight = mvDirectionLight(graphics, { 0.0f, -1.0f, 0.0f });
 
@@ -55,7 +111,7 @@ int main()
     bool modelsDirty = true;
 
     // testing compute shaders
-    struct BufType { float f;};
+    struct BufType { float f; };
     BufType* inputRawBuffer = new BufType[1024];
 
     for (int i = 0; i < 1024; ++i)
@@ -77,6 +133,7 @@ int main()
 
         if (modelsDirty || window.wantsResize())
         {
+            ResetPasses();
             graph.reset();
 
             graphics.releaseBuffers();
@@ -84,7 +141,8 @@ int main()
             camera.updateProjection(window.getClientWidth(), window.getClientHeight());
             window.setResizedFlag(false);
 
-            graph = std::make_unique<mvRenderGraph>(graphics, "../../Resources/SkyBox");
+            graph = std::make_unique<mvRenderGraph>(graphics);
+            AddPasses(graphics, *graph);
 
             if (showGun)
             {
@@ -116,10 +174,12 @@ int main()
             pointlight.linkSteps(*graph);
             camera.linkSteps(*graph);
             lightcamera->linkSteps(*graph);
-            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
-            static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindDirectionalShadowCamera(*directionLight.getCamera());
-            static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
-            static_cast<mvDirectionalShadowMappingPass*>(graph->getPass("directional_shadow"))->bindShadowCamera(*directionLight.getCamera());
+
+
+            lambertian->bindShadowCamera(*pointlight.getCamera());
+            lambertian->bindDirectionalShadowCamera(*directionLight.getCamera());
+            point_shadow->bindShadowCamera(*pointlight.getCamera());
+            direction_shadow->bindShadowCamera(*directionLight.getCamera());
             modelsDirty = false;
         }
 
@@ -130,19 +190,22 @@ int main()
         graphics.beginFrame();
 
         graph->bindMainCamera(camera);
-        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindShadowCamera(*pointlight.getCamera());
-        static_cast<mvLambertianPass*>(graph->getPass("lambertian"))->bindDirectionalShadowCamera(*directionLight.getCamera());
-        static_cast<mvPointShadowMappingPass*>(graph->getPass("shadow"))->bindShadowCamera(*pointlight.getCamera());
-        static_cast<mvDirectionalShadowMappingPass*>(graph->getPass("directional_shadow"))->bindShadowCamera(*directionLight.getCamera());
+        lambertian->bindMainCamera(camera);
+        overlay->bindMainCamera(camera);
+
+        lambertian->bindShadowCamera(*pointlight.getCamera());
+        lambertian->bindDirectionalShadowCamera(*directionLight.getCamera());
+        point_shadow->bindShadowCamera(*pointlight.getCamera());
+        direction_shadow->bindShadowCamera(*directionLight.getCamera());
 
         graph->bind(graphics);
 
         pointlight.bind(graphics, camera.getMatrix());
         directionLight.bind(graphics, camera.getMatrix());
 
-        if(showSponza)
+        if (showSponza)
             sponza->submit(*graph);
-        if(showGun)
+        if (showGun)
             gun->submit(*graph);
         if (showBall)
             ball->submit(*graph);
@@ -155,7 +218,7 @@ int main()
         static mvModelProbe probe3(graphics, "Ball Model Probe");
         if (showSponza)
             probe1.spawnWindow(*sponza);
-        if(showGun)
+        if (showGun)
             probe2.spawnWindow(*gun);
         if (showBall)
             probe3.spawnWindow(*ball);
@@ -191,7 +254,7 @@ int main()
         }
         ImGui::End();
 
-        graph->reset();
+        graph->clearJobs();
 
         graphics.endFrame();
 

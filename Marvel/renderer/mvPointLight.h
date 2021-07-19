@@ -9,7 +9,7 @@ namespace Marvel {
 	// forward declarations
 	//-----------------------------------------------------------------------------
 	class mvGraphics;
-	class mvBaseRenderGraph;
+	class mvRenderGraph;
 
 	//-----------------------------------------------------------------------------
 	// mvPointLight
@@ -41,8 +41,8 @@ namespace Marvel {
 		mvPointLight(mvGraphics& graphics, const std::string& name, glm::vec3 pos = { 0.0f,0.0f,0.5f });
 
 		void bind(mvGraphics& graphics, glm::mat4 view);
-		void linkSteps(mvBaseRenderGraph& graph);
-		void submit        (mvBaseRenderGraph& graph);
+		void linkSteps(mvRenderGraph& graph);
+		void submit        (mvRenderGraph& graph);
 		std::shared_ptr<mvCamera> getCamera() const;
 		void setPosition(float x, float y, float z);
 		void show_imgui_window();

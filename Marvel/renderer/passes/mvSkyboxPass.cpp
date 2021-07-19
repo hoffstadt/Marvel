@@ -51,11 +51,6 @@ namespace Marvel {
 
 		m_pipeline = mvPipeline::Request(graphics, pipeline);
 
-		requestResource(std::make_unique<mvBufferPassResource<mvRenderTarget>>("render_target", m_renderTarget));
-		requestResource(std::make_unique<mvBufferPassResource<mvDepthStencil>>("depth_stencil", m_depthStencil));
-		issueProduct(std::make_unique<mvBufferPassProduct<mvRenderTarget>>("render_target", m_renderTarget));
-		issueProduct(std::make_unique<mvBufferPassProduct<mvDepthStencil>>("depth_stencil", m_depthStencil));
-
 		constexpr float side = 1.0f / 2.0f;
 
 		// create vertex buffer

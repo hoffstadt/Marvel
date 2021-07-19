@@ -12,7 +12,7 @@ namespace Marvel {
 
 		UINT size = 2000;
 		m_depthCube = std::make_shared<mvCubeDepthTexture>(graphics, size, slot);
-		issueProduct(std::make_unique<mvBindPassProduct<mvCubeDepthTexture>>("map", m_depthCube));
+		//issueProduct(std::make_unique<mvBindPassProduct<mvCubeDepthTexture>>("map", m_depthCube));
 		
 		m_cameraDirections.push_back(glm::vec3{ 1.0f, 0.0f, 0.0f });
 		m_cameraDirections.push_back(glm::vec3{ -1.0f, 0.0f, 0.0f });
@@ -61,6 +61,11 @@ namespace Marvel {
 	void mvPointShadowMappingPass::bindShadowCamera(const mvCamera& cam)
 	{
 		m_shadowCamera = &cam;
+	}
+
+	std::shared_ptr<mvCubeDepthTexture> mvPointShadowMappingPass::getDepthCube()
+	{
+		return m_depthCube;
 	}
 
 }

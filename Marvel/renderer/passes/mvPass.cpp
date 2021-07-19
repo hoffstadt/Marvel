@@ -1,4 +1,5 @@
 #include "mvPass.h"
+#include "mvRenderGraph.h"
 #include "mvGraphics.h"
 #include "mvRenderTarget.h"
 #include "mvDepthStencil.h"
@@ -17,7 +18,7 @@ namespace Marvel {
 	}
 
 
-	void mvPass::reset()
+	void mvPass::clearJobs()
 	{
 		m_jobs.clear();
 	}
@@ -37,54 +38,6 @@ namespace Marvel {
 		return m_name;
 	}
 
-	void mvPass::requestResource(std::unique_ptr<mvPassResource> resource)
-	{
-		m_resources.push_back(std::move(resource));
-	}
-
-	void mvPass::issueProduct(std::unique_ptr<mvPassProduct> product)
-	{
-		m_products.push_back(std::move(product));
-	}
-
-	mvPassResource& mvPass::getPassResource(const std::string& name) const
-	{
-		for (const auto& resource : m_resources)
-		{
-			if (resource->getName() == name)
-				return *resource;
-		}
-
-		assert(false && "pass resource not found");
-	}
-
-	mvPassProduct& mvPass::getPassProduct(const std::string& name) const
-	{
-		for (const auto& product : m_products)
-		{
-			if (product->getName() == name)
-				return *product;
-		}
-
-		assert(false && "pass product not found");
-	}
-
-	void mvPass::linkResourceToProduct(const std::string& name, const std::string& pass, const std::string& product)
-	{
-		auto& resource = getPassResource(name);
-		resource.setTarget(pass, product);
-	}
-
-	const std::vector<std::unique_ptr<mvPassResource>>& mvPass::getPassResources() const
-	{
-		return m_resources;
-	}
-
-	const std::vector<std::unique_ptr<mvPassProduct>>& mvPass::getPassProducts() const
-	{
-		return m_products;
-	}
-
 	void mvPass::releaseBuffers()
 	{
 		m_renderTarget->reset();
@@ -93,32 +46,33 @@ namespace Marvel {
 		m_depthStencil.reset();
 	}
 
-	bool mvPass::isLinked() const
+	std::shared_ptr<mvRenderTarget> mvPass::getRenderTarget()
 	{
-		for (const auto& resource : m_resources)
-		{
-			if (!resource->isPreLinked())
-			{
-				assert(false);
-				return false;
-			}
+		return m_renderTarget;
+	}
 
-			if (!resource->isLinked())
-			{
-				assert(false);
-				return false;
-			}
-		}
+	std::shared_ptr<mvDepthStencil> mvPass::getDepthStencil()
+	{
+		return m_depthStencil;
+	}
 
-		for (const auto& product : m_products)
-		{
-			if (!product->isLinked())
-			{
-				assert(false);
-				return false;
-			}
-		}
+	void mvPass::linkRenderTarget(mvPass& pass)
+	{
+		m_renderTarget = pass.m_renderTarget;
+	}
 
-		return true;
+	void mvPass::linkDepthStencil(mvPass& pass)
+	{
+		m_depthStencil = pass.m_depthStencil;
+	}
+
+	void mvPass::linkRenderTarget(mvRenderGraph& graph)
+	{
+		m_renderTarget = graph.getMasterRenderTarget();
+	}
+
+	void mvPass::linkDepthStencil(mvRenderGraph& graph)
+	{
+		m_depthStencil = graph.getMasterDepthStencil();
 	}
 }

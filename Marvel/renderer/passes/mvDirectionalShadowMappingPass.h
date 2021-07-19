@@ -23,8 +23,8 @@ namespace Marvel {
 		mvDirectionalShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot);
 
 		void execute(mvGraphics& graphics) const override;
-
 		void bindShadowCamera(const mvOrthoCamera& cam);
+		std::shared_ptr<mvDepthTexture> getDepthTexture();
 
 	private:
 

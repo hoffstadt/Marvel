@@ -6,19 +6,26 @@
 #include "mvPass.h"
 #include "mvVertexBuffer.h"
 #include "mvIndexBuffer.h"
-#include "mvBaseRenderGraph.h"
 
 namespace Marvel {
 
 	//-----------------------------------------------------------------------------
+	// forward declarations
+	//-----------------------------------------------------------------------------
+	class mvGraphics;
+	class mvCamera;
+	class mvDepthStencil;
+	class mvRenderTarget;
+
+	//-----------------------------------------------------------------------------
 	// mvRenderGraph
 	//-----------------------------------------------------------------------------
-	class mvRenderGraph : public mvBaseRenderGraph
+	class mvRenderGraph
 	{
 
 		struct GlobalSettings
 		{
-			
+
 			float fogStart = 10.0f;
 			glm::vec3 fogColor = { 1.0f, 1.0f, 1.0f };
 			//-------------------------- ( 16 bytes )
@@ -40,20 +47,28 @@ namespace Marvel {
 
 	public:
 
-		mvRenderGraph(mvGraphics& graphics, const char* skybox);
+		mvRenderGraph(mvGraphics& graphics);
 
-		void    show_imgui_window();
-
-		void bind(mvGraphics& graphics) override;
-		void bindMainCamera(mvCamera& camera) override;
-
-
+		void                            execute(mvGraphics& graphics) const;
+		void                            clearJobs();
+		virtual void                    bindMainCamera(mvCamera& camera);
+		void                            bind(mvGraphics& graphics);
+		void                            releaseBuffers();
+		void                            resize(mvGraphics& graphics);
+		void                            addPass(std::shared_ptr<mvPass> pass);
+		void                            show_imgui_window();
+		mvPass*                         getPass(const std::string& name);
+		std::shared_ptr<mvRenderTarget> getMasterRenderTarget();
+		std::shared_ptr<mvDepthStencil> getMasterDepthStencil();
 
 	private:
 
+		const mvCamera*                        m_camera = nullptr;
+		std::shared_ptr<mvDepthStencil>        m_depthStencil; // master depth
+		std::shared_ptr<mvRenderTarget>        m_renderTarget; // back buffer
+		std::vector <std::shared_ptr<mvPass>>  m_passes;	
 		GlobalSettings                         m_globalSettings = {};
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
-
 	};
 
 }
