@@ -13,6 +13,8 @@ namespace Marvel {
 	class mvCamera;
 	class mvCubeDepthTexture;
 	class mvDepthTexture;
+	class mvPointShadowMappingPass;
+	class mvDirectionalShadowMappingPass;
 
 	//-----------------------------------------------------------------------------
 	// mvLambertianPass
@@ -29,6 +31,8 @@ namespace Marvel {
 		void bindMainCamera(const mvCamera& cam);
 		void bindShadowCamera(const mvCamera& cam);
 		void bindDirectionalShadowCamera(const mvOrthoCamera& cam);
+		void linkDepthCube(mvPointShadowMappingPass& pass);
+		void linkDepthTexture(mvDirectionalShadowMappingPass& pass);
 
 	public:
 

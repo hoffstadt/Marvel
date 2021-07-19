@@ -23,10 +23,10 @@ namespace Marvel {
 		mvPointShadowMappingPass(mvGraphics& graphics, const std::string& name, int slot);
 
 		void execute(mvGraphics& graphics) const override;
-
 		void bindShadowCamera(const mvCamera& cam);
+		std::shared_ptr<mvCubeDepthTexture> getDepthCube();
 
-	public:
+	private:
 
 		const mvCamera* m_shadowCamera = nullptr;
 		std::shared_ptr<mvCubeDepthTexture> m_depthCube;

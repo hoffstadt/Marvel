@@ -39,4 +39,9 @@ namespace Marvel {
 		m_shadowCamera = &cam;
 	}
 
+	std::shared_ptr<mvDepthTexture> mvDirectionalShadowMappingPass::getDepthTexture()
+	{
+		return m_depthTexture;
+	}
+
 }

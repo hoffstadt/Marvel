@@ -2,6 +2,8 @@
 #include "mvGraphics.h"
 #include "mvCommonBindables.h"
 #include "mvCamera.h"
+#include "mvPointShadowMappingPass.h"
+#include "mvDirectionalShadowMappingPass.h"
 
 namespace Marvel {
 
@@ -46,5 +48,15 @@ namespace Marvel {
 	void mvLambertianPass::bindDirectionalShadowCamera(const mvOrthoCamera& cam)
 	{
 		m_shadowCBuf->setOrthoCamera(&cam);
+	}
+
+	void mvLambertianPass::linkDepthCube(mvPointShadowMappingPass& pass)
+	{
+		m_depthCube = pass.getDepthCube();
+	}
+
+	void mvLambertianPass::linkDepthTexture(mvDirectionalShadowMappingPass& pass)
+	{
+		m_depthTexture = pass.getDepthTexture();
 	}
 }

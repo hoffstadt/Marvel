@@ -49,34 +49,24 @@ namespace Marvel {
 
 		mvRenderGraph(mvGraphics& graphics);
 
-		void         execute(mvGraphics& graphics) const;
-		void         reset();
-		mvPass*      getPass(const std::string& name);
-		virtual void bindMainCamera(mvCamera& camera);
+		void                            execute(mvGraphics& graphics) const;
+		void                            clearJobs();
+		virtual void                    bindMainCamera(mvCamera& camera);
+		void                            bind(mvGraphics& graphics);
+		void                            releaseBuffers();
+		void                            resize(mvGraphics& graphics);
+		void                            addPass(std::shared_ptr<mvPass> pass);
+		void                            show_imgui_window();
+		mvPass*                         getPass(const std::string& name);
+		std::shared_ptr<mvRenderTarget> getMasterRenderTarget();
+		std::shared_ptr<mvDepthStencil> getMasterDepthStencil();
 
-		// binds global bindables
-		void bind(mvGraphics& graphics);
-
-		// clears render target/depth stencil
-		void releaseBuffers();
-
-		// reset depth/targets
-		void resize(mvGraphics& graphics);
-
-		void addPass(std::shared_ptr<mvPass> pass);
-
-		void show_imgui_window();
-
-	public:
+	private:
 
 		const mvCamera*                        m_camera = nullptr;
 		std::shared_ptr<mvDepthStencil>        m_depthStencil; // master depth
 		std::shared_ptr<mvRenderTarget>        m_renderTarget; // back buffer
-
-	private:
-
 		std::vector <std::shared_ptr<mvPass>>  m_passes;	
-
 		GlobalSettings                         m_globalSettings = {};
 		std::unique_ptr<mvPixelConstantBuffer> m_buffer;
 	};

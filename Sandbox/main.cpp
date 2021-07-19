@@ -36,11 +36,11 @@ void HandleEvents(mvWindow& window, float dt, mvCamera& camera);
 void AddPasses(mvGraphics& graphics, mvRenderGraph& graph)
 {
     clear_target = std::make_shared<mvClearBufferPass>("clear_target");
-    clear_target->m_renderTarget = graph.m_renderTarget;
+    clear_target->linkRenderTarget(graph);
     graph.addPass(clear_target);
 
     clear_depth = std::make_shared<mvClearBufferPass>("clear_depth");
-    clear_depth->m_depthStencil = graph.m_depthStencil;
+    clear_depth->linkDepthStencil(graph);
     graph.addPass(clear_depth);
 
     point_shadow = std::make_shared<mvPointShadowMappingPass>(graphics, "shadow", 3);
@@ -50,19 +50,19 @@ void AddPasses(mvGraphics& graphics, mvRenderGraph& graph)
     graph.addPass(direction_shadow);
 
     lambertian = std::make_shared<mvLambertianPass>(graphics, "lambertian");
-    lambertian->m_depthStencil = clear_depth->m_depthStencil;
-    lambertian->m_renderTarget = clear_target->m_renderTarget;
-    lambertian->m_depthCube = point_shadow->m_depthCube;
-    lambertian->m_depthTexture = direction_shadow->m_depthTexture;
+    lambertian->linkDepthStencil(*clear_depth);
+    lambertian->linkRenderTarget(*clear_target);
+    lambertian->linkDepthCube(*point_shadow);
+    lambertian->linkDepthTexture(*direction_shadow);
     graph.addPass(lambertian);
 
     skybox_pass = std::make_shared<mvSkyboxPass>(graphics, "skybox", "../../Resources/SkyBox");
-    skybox_pass->m_depthStencil = lambertian->m_depthStencil;
-    skybox_pass->m_renderTarget = lambertian->m_renderTarget;
+    skybox_pass->linkDepthStencil(*lambertian);
+    skybox_pass->linkRenderTarget(*lambertian);
     graph.addPass(skybox_pass);
 
     overlay = std::make_shared<mvOverlayPass>(graphics, "overlay");
-    overlay->m_renderTarget = skybox_pass->m_renderTarget;
+    overlay->linkRenderTarget(*skybox_pass);
     graph.addPass(overlay);
 }
 
@@ -254,7 +254,7 @@ int main()
         }
         ImGui::End();
 
-        graph->reset();
+        graph->clearJobs();
 
         graphics.endFrame();
 

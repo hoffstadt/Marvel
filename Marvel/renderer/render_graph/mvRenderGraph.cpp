@@ -30,10 +30,10 @@ namespace Marvel {
 			pass->execute(graphics);
 	}
 
-	void mvRenderGraph::reset()
+	void mvRenderGraph::clearJobs()
 	{
 		for (auto& pass : m_passes)
-			pass->reset();
+			pass->clearJobs();
 	}
 
 	void mvRenderGraph::releaseBuffers()
@@ -105,5 +105,15 @@ namespace Marvel {
 			ImGui::Checkbox("Use Skybox", (bool*)&m_globalSettings.useSkybox);
 		}
 		ImGui::End();
+	}
+
+	std::shared_ptr<mvRenderTarget> mvRenderGraph::getMasterRenderTarget()
+	{
+		return m_renderTarget;
+	}
+
+	std::shared_ptr<mvDepthStencil> mvRenderGraph::getMasterDepthStencil()
+	{
+		return m_depthStencil;
 	}
 }

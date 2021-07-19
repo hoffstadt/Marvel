@@ -63,4 +63,9 @@ namespace Marvel {
 		m_shadowCamera = &cam;
 	}
 
+	std::shared_ptr<mvCubeDepthTexture> mvPointShadowMappingPass::getDepthCube()
+	{
+		return m_depthCube;
+	}
+
 }

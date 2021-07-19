@@ -1,4 +1,5 @@
 #include "mvPass.h"
+#include "mvRenderGraph.h"
 #include "mvGraphics.h"
 #include "mvRenderTarget.h"
 #include "mvDepthStencil.h"
@@ -17,7 +18,7 @@ namespace Marvel {
 	}
 
 
-	void mvPass::reset()
+	void mvPass::clearJobs()
 	{
 		m_jobs.clear();
 	}
@@ -45,9 +46,33 @@ namespace Marvel {
 		m_depthStencil.reset();
 	}
 
-	bool mvPass::isLinked() const
+	std::shared_ptr<mvRenderTarget> mvPass::getRenderTarget()
 	{
+		return m_renderTarget;
+	}
 
-		return true;
+	std::shared_ptr<mvDepthStencil> mvPass::getDepthStencil()
+	{
+		return m_depthStencil;
+	}
+
+	void mvPass::linkRenderTarget(mvPass& pass)
+	{
+		m_renderTarget = pass.m_renderTarget;
+	}
+
+	void mvPass::linkDepthStencil(mvPass& pass)
+	{
+		m_depthStencil = pass.m_depthStencil;
+	}
+
+	void mvPass::linkRenderTarget(mvRenderGraph& graph)
+	{
+		m_renderTarget = graph.getMasterRenderTarget();
+	}
+
+	void mvPass::linkDepthStencil(mvRenderGraph& graph)
+	{
+		m_depthStencil = graph.getMasterDepthStencil();
 	}
 }
